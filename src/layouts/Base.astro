@@ -1,0 +1,98 @@
+---
+import { dirOf, otherLang, ui, type Lang } from '../lib/i18n';
+import Masthead from '../components/Masthead.astro';
+import Footer from '../components/Footer.astro';
+import { getImage } from 'astro:assets';
+import { imageFor } from '../lib/images';
+import '../styles/global.css';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description?: string;
+  /** Set on pages that supply their own full-width opening (the home hero). */
+  bleed?: boolean;
+  /**
+   * Pages that exist at only one URL - the single bilingual /404 - have no
+   * page-to-page twin, so the segment swap below would aim the toggle at a URL
+   * that was never built. Such a page overrides where the toggle goes and is
+   * kept out of the index: no canonical, no hreflang, `robots: noindex`.
+   */
+  altHrefOverride?: string;
+  noindex?: boolean;
+}
+
+const { lang, title, description, bleed = false, altHrefOverride, noindex = false } = Astro.props;
+const t = ui[lang];
+const dir = dirOf(lang);
+// The share card. The widest photograph the book gives us (1418px) - see the
+// resolution ceiling in CLAUDE.md - resized to the 1200px that the scrapers
+// actually want, and left as JPEG because several of them still do not take
+// WebP. The URL is content-hashed, so it changes only when the file does.
+const og = await getImage({ src: imageFor('p05-1.jpeg'), width: 1200, format: 'jpeg' });
+const alt = otherLang(lang);
+
+// Every route is /<lang>/<shared-slug>, so the toggle is a segment swap - the
+// visitor lands on the same page in the other language, never on the homepage.
+const rest = Astro.url.pathname.replace(/^\/(ar|en)/, '');
+const altHref = altHrefOverride ?? `/${alt}${rest}`;
+
+// Arabic takes its own comma; English takes the pipe that is conventional in
+// page titles. Neither is an em-dash, which used to sit in all 74 of them.
+const sep = lang === 'ar' ? '، ' : ' | ';
+const pageTitle = title === t.siteName ? `${t.siteName}${sep}${t.tagline}` : `${title}${sep}${t.siteName}`;
+---
+<!doctype html>
+<html lang={lang} dir={dir}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>{pageTitle}</title>
+    {description && <meta name="description" content={description} />}
+    {/* The mark, from work/build_icons.py. public/icon.svg is generated - do not hand-edit. */}
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    {noindex && <meta name="robots" content="noindex" />}
+    {!noindex && <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />}
+    {!noindex && <link rel="alternate" hreflang={alt} href={new URL(altHref, Astro.site)} />}
+    {!noindex && <link rel="alternate" hreflang={lang} href={new URL(Astro.url.pathname, Astro.site)} />}
+    {/* Trailing slash: build format is 'directory', so every real URL ends in one.
+        Without it here the x-default alone disagreed with the canonical and the sitemap. */}
+    {!noindex && <link rel="alternate" hreflang="x-default" href={new URL('/ar/', Astro.site)} />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:locale" content={lang === 'ar' ? 'ar_OM' : 'en_GB'} />
+    <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site)} />
+    <meta property="og:image" content={new URL(og.src, Astro.site)} />
+    <meta property="og:image:width" content={String(og.attributes.width)} />
+    <meta property="og:image:height" content={String(og.attributes.height)} />
+    <meta property="og:image:alt" content={t.tagline} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {/* Self-hosted from work/fetch_fonts.py. Preload only the display face and
+        the body face this language paints with - the rest are picked up from
+        fonts.css by unicode-range and never fetched on the other language. */}
+    {
+      (lang === 'ar'
+        ? ['/fonts/amiri-arabic-700.woff2', '/fonts/tajawal-arabic-400.woff2']
+        : ['/fonts/amiri-latin-700.woff2', '/fonts/lora-latin-400.woff2']
+      ).map((f) => <link rel="preload" href={f} as="font" type="font/woff2" crossorigin />)
+    }
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t.skipToContent}</a>
+    <Masthead lang={lang} altHref={altHref} />
+    <main id="main" class={bleed ? '' : 'wrap main-pad'}>
+      <slot />
+    </main>
+    <Footer lang={lang} />
+  </body>
+</html>
+
+<style>
+  .main-pad { padding-block: clamp(2rem, 5vw, 3.5rem) 4rem; }
+</style>

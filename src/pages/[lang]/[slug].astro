@@ -1,0 +1,222 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Plate from '../../components/Plate.astro';
+import SourceNote from '../../components/SourceNote.astro';
+import { LANGS, href, ui, type Lang } from '../../lib/i18n';
+import { photosFor, photoGroupsFor } from '../../lib/photos';
+import { notesFor } from '../../lib/notes';
+import { placeForEntry, placeName, CHECKED } from '../../lib/places';
+import { excerpt } from '../../lib/excerpt';
+import { AUTHOR } from '../../lib/credits';
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const lang of LANGS) {
+    const entries = (await getCollection(lang)).sort((a, b) => a.data.order - b.data.order);
+    for (const [i, entry] of entries.entries()) {
+      paths.push({
+        params: { lang, slug: entry.data.slug },
+        props: { entry, prev: entries[i - 1] ?? null, next: entries[i + 1] ?? null }
+      });
+    }
+  }
+  return paths;
+}
+
+const lang = Astro.params.lang as Lang;
+const t = ui[lang];
+const { entry, prev, next } = Astro.props;
+const { Content } = await render(entry);
+
+// Photographs are grouped by the book page they were printed on, because a page
+// is the unit the book's captions actually apply to - it prints several images
+// under one caption. The opening plate is whichever page holds the largest
+// image the book has for this entry, so the entry still leads with its best
+// photograph without separating it from the caption that covers it.
+const photos = photosFor(entry.data.slug);
+const best = photos[0];
+const allGroups = photoGroupsFor(entry.data.slug);
+const leadGroup = best ? allGroups.find((g) => g.page === best.pdf_page) : undefined;
+const leadPhotos = leadGroup
+  ? [best!, ...leadGroup.photos.filter((p) => p.file !== best!.file)]
+  : [];
+const galleryGroups = allGroups.filter((g) => g !== leadGroup);
+const notes = notesFor(entry.data.slug);
+const place = placeForEntry(entry.data.slug);
+
+const num =
+  lang === 'ar'
+    ? new Intl.NumberFormat('ar-EG').format(entry.data.order + 1)
+    : String(entry.data.order + 1).padStart(2, '0');
+const kicker = lang === 'ar' ? `المدخل ${num} من ٣١` : `Entry ${num} of 31`;
+---
+
+<Base lang={lang} title={entry.data.title} description={excerpt(entry.body ?? '', 155)}>
+  <nav class="crumb" aria-label={t.backToDiscover}>
+    <a href={href(lang, 'discover')}>← {t.backToDiscover}</a>
+  </nav>
+
+  <article>
+    <header class="head">
+      <span class="eyebrow">{kicker}</span>
+      <h1>{entry.data.title}</h1>
+    </header>
+
+    <div class="layout">
+      <div class="column">
+        {
+          leadGroup && (
+            <Plate
+              photos={leadPhotos}
+              page={leadGroup.page}
+              lang={lang}
+              subject={entry.data.title}
+              variant="lead"
+            />
+          )
+        }
+
+        <div class="prose">
+          <Content />
+        </div>
+
+        {notes.map((n) => <SourceNote note={n} lang={lang} />)}
+
+        {
+          galleryGroups.length > 0 && (
+            <section class="gallery" aria-label={t.photoCredit}>
+              {galleryGroups.map((g) => (
+                <Plate photos={g.photos} page={g.page} lang={lang} subject={entry.data.title} />
+              ))}
+            </section>
+          )
+        }
+      </div>
+
+      <aside class="rail">
+        <div class="card">
+          <p class="card-title">{lang === 'ar' ? 'بطاقة المدخل' : 'Entry card'}</p>
+          <dl>
+            <div>
+              <dt>{lang === 'ar' ? 'المصدر' : 'Source'}</dt>
+              <dd>
+                {lang === 'ar' ? 'كتاب «حارة العقر»، ٢٠٢١م' : 'Harat Al Aqur (2021)'}
+                <br />
+                <a href={href(lang, 'credits')}>{lang === 'ar' ? AUTHOR.ar : AUTHOR.en}</a>
+              </dd>
+            </div>
+            <div>
+              <dt>{lang === 'ar' ? 'ترتيبه في الكتاب' : 'Position in the book'}</dt>
+              <dd>{kicker}</dd>
+            </div>
+            {
+              photos.length > 0 && (
+                <div>
+                  <dt>{lang === 'ar' ? 'صور الكتاب' : "The book's photographs"}</dt>
+                  <dd>
+                    {lang === 'ar'
+                      ? `${new Intl.NumberFormat('ar-EG').format(photos.length)} صورة`
+                      : `${photos.length} image${photos.length === 1 ? '' : 's'}`}
+                  </dd>
+                </div>
+              )
+            }
+          </dl>
+        </div>
+
+        {
+          place && (
+            <div class="card">
+              <p class="card-title">{lang === 'ar' ? 'الموقع' : 'Location'}</p>
+              <dl>
+                <div>
+                  <dt>{lang === 'ar' ? 'الاسم على الخريطة' : 'Name on the map'}</dt>
+                  <dd>{placeName(place, lang)}</dd>
+                </div>
+                {place.hours && (
+                  <div>
+                    <dt>{lang === 'ar' ? 'أوقات العمل' : 'Hours'}</dt>
+                    <dd>{place.hours}</dd>
+                  </div>
+                )}
+                {place.phone && (
+                  <div>
+                    <dt>{lang === 'ar' ? 'الهاتف' : 'Phone'}</dt>
+                    <dd>
+                      <a href={`tel:${place.phone.replace(/\s+/g, '')}`} dir="ltr">
+                        {place.phone}
+                      </a>
+                    </dd>
+                  </div>
+                )}
+              </dl>
+              <a class="maps" href={place.maps_url} rel="noopener noreferrer" target="_blank">
+                {lang === 'ar' ? 'افتح في خرائط جوجل ↗' : 'Open in Google Maps ↗'}
+              </a>
+              <p class="checked">{t.lastChecked}: {CHECKED}</p>
+            </div>
+          )
+        }
+      </aside>
+    </div>
+
+    <nav class="pager" aria-label={t.backToDiscover}>
+      {
+        prev ? (
+          <a class="pager-link" href={href(lang, prev.data.slug)}>
+            <span class="pager-label">{t.prevEntry}</span>
+            <span class="pager-title">{prev.data.title}</span>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        next && (
+          <a class="pager-link pager-link--next" href={href(lang, next.data.slug)}>
+            <span class="pager-label">{t.nextEntry}</span>
+            <span class="pager-title">{next.data.title}</span>
+          </a>
+        )
+      }
+    </nav>
+  </article>
+</Base>
+
+<style>
+  .crumb { font-family: var(--sans); font-size: .85rem; margin-block-end: 1.5rem; }
+  .head { display: flex; flex-direction: column; gap: .5rem; margin-block-end: 1rem; max-width: 46rem; }
+  .head h1 { font-size: clamp(2rem, 5.5vw, 3rem); }
+
+  .layout { display: grid; gap: 2.5rem; grid-template-columns: minmax(0, 1fr); align-items: start; }
+  @media (min-width: 62rem) {
+    .layout { grid-template-columns: minmax(0, 1fr) 17rem; gap: 3.5rem; }
+    .rail { position: sticky; top: 2rem; }
+  }
+
+  .gallery { display: grid; gap: 2.25rem; grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); margin-block-start: 3rem; }
+
+  .rail { display: flex; flex-direction: column; gap: 1rem; font-family: var(--sans); }
+  .card { border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); padding: 1.1rem 1.2rem; }
+  .card-title {
+    font-size: .72rem; letter-spacing: .14em; color: var(--ink-muted);
+    padding-block-end: .7rem; margin-block-end: .8rem; border-block-end: 1px solid var(--rule-light);
+  }
+  [dir='ltr'] .card-title { text-transform: uppercase; }
+  dl { margin: 0; display: flex; flex-direction: column; gap: .8rem; }
+  dt { font-size: .72rem; color: var(--ink-faint); letter-spacing: .04em; }
+  dd { margin: 0; font-size: .88rem; line-height: 1.6; color: var(--ink); }
+  .maps { display: inline-block; margin-block-start: 1rem; font-size: .85rem; }
+  .checked { margin-block-start: .6rem; font-size: .72rem; color: var(--ink-faint); }
+
+  .pager {
+    display: flex; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap;
+    margin-block-start: 4rem; padding-block-start: 1.75rem; border-block-start: 1px solid var(--rule);
+  }
+  .pager-link { display: flex; flex-direction: column; gap: .25rem; max-width: 18rem; color: var(--ink); }
+  .pager-link:hover { color: var(--clay); }
+  .pager-link--next { text-align: end; margin-inline-start: auto; }
+  .pager-label { font-family: var(--sans); font-size: .72rem; letter-spacing: .12em; color: var(--ink-faint); }
+  .pager-title { font-family: var(--display); font-size: 1.1rem; }
+</style>

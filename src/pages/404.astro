@@ -1,0 +1,65 @@
+---
+import Base from '../layouts/Base.astro';
+import { href } from '../lib/i18n';
+
+// One 404 for the whole site. A missing URL does not tell us which language the
+// visitor wanted, so the page is bilingual: Arabic first, because Arabic is
+// primary, then the same three ways out in English. The chrome around it
+// (masthead, footer) is Arabic — the page is `lang="ar"` and the English block
+// carries its own lang/dir so a screen reader switches voice for it.
+
+const ways = [
+  { ar: 'الصفحة الرئيسية', en: 'Home', path: '' },
+  { ar: 'اكتشف الحارة', en: 'Discover the quarter', path: 'discover' },
+  { ar: 'مخطط السور', en: 'The wall map', path: 'map' }
+];
+---
+
+<Base
+  lang="ar"
+  title="لا توجد هذه الصفحة"
+  description="الصفحة المطلوبة غير موجودة على هذا الموقع."
+  altHrefOverride="/en"
+  noindex
+>
+  <div class="notfound">
+    <p class="eyebrow">٤٠٤</p>
+    <h1>لا توجد هذه الصفحة</h1>
+    <p class="lead">
+      ربّما تغيّر الرابط، أو كُتب على غير وجهه. هذه أقرب الطرق إلى الحارة:
+    </p>
+    <ul class="ways">
+      {ways.map((w) => <li><a href={href('ar', w.path)}>{w.ar}</a></li>)}
+    </ul>
+
+    <div class="other" lang="en" dir="ltr">
+      <p class="eyebrow">Page not found</p>
+      <p class="lead">
+        The link may have changed, or been mistyped. These are the ways back in:
+      </p>
+      <ul class="ways">
+        {ways.map((w) => <li><a href={href('en', w.path)}>{w.en}</a></li>)}
+      </ul>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .notfound { max-width: var(--measure); margin-block: clamp(2rem, 8vh, 5rem); }
+  h1 { font-size: clamp(1.8rem, 5vw, 2.6rem); margin-block-start: .5rem; }
+  .lead { color: var(--ink-muted); margin-block-start: 1rem; line-height: 1.9; }
+  .ways { list-style: none; padding: 0; margin-block-start: 1.5rem; }
+  .ways li + li { margin-block-start: .6rem; }
+  .ways a {
+    text-decoration: underline;
+    text-underline-offset: .2em;
+    text-decoration-thickness: 1px;
+  }
+  .other {
+    margin-block-start: 3rem;
+    padding-block-start: 2rem;
+    border-block-start: 1px solid var(--rule);
+    font-family: var(--serif);
+  }
+  .other .eyebrow { text-transform: uppercase; letter-spacing: .16em; }
+</style>

@@ -1,0 +1,406 @@
+{
+  "checked": "2026-08-20",
+  "source": "Google Maps directory for حارة العقر القديمة, plus Booking.com and Omani press",
+  "display_policy": "Do NOT render rating/reviews/rate_omr/price on the site - they go stale. Render name, type, hours, phone and maps_url only, with the checked date.",
+  "places": [
+    {
+      "category": "heritage",
+      "name_ar": "حارة العقر القديمة",
+      "name_en": "Harat Al Aqur (old quarter)",
+      "coords": "22.9308327,57.5314614",
+      "plus_code": "WGJJ+8H",
+      "rating": 4.7,
+      "reviews": 494,
+      "hours": "open 24h",
+      "phone": "+968 7766 9728",
+      "note": "canonical pin for the quarter",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=22.9308327%2C57.5314614"
+    },
+    {
+      "category": "heritage",
+      "name_ar": "سور حارة العقر",
+      "name_en": "Al Aqur Wall",
+      "plus_code": "WGJJ+39H",
+      "rating": 4.7,
+      "reviews": 231,
+      "hours": "open 24h",
+      "note": "restored stretches are walkable; step-free entrance from phase 3, lift from phase 4",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=WGJJ%2B39H%20Nizwa"
+    },
+    {
+      "category": "heritage",
+      "name_ar": "متحف نزوى",
+      "name_en": "Nizwa Museum",
+      "plus_code": "WGMH+2V",
+      "rating": 4.8,
+      "reviews": 106,
+      "hours": "opens 08:00",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=WGMH%2B2V%20Nizwa"
+    },
+    {
+      "category": "heritage",
+      "name_ar": "متحف أبي المؤثر",
+      "name_en": "Abu Al Mu'thir Museum",
+      "note": "above صباح أبي المؤثر, on the wall itself; wall walk, guard room, tower climb",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D9%85%D8%AA%D8%AD%D9%81%20%D8%A3%D8%A8%D9%8A%20%D8%A7%D9%84%D9%85%D8%A4%D8%AB%D8%B1%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "heritage",
+      "name_ar": "فلج ضوت",
+      "name_en": "Falaj Dawt",
+      "plus_code": "WGMH+97Q",
+      "rating": 4.2,
+      "reviews": 6,
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=WGMH%2B97Q%20Nizwa"
+    },
+    {
+      "category": "heritage",
+      "name_ar": "برج صباح الصبخة",
+      "name_en": "Sabah Al Sabkha Tower",
+      "plus_code": "WGJJ+8VP",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=WGJJ%2B8VP%20Nizwa"
+    },
+    {
+      "category": "heritage",
+      "name_ar": "باب الصبخة",
+      "name_en": "Al Sabkha Gate",
+      "plus_code": "WGJJ+8VP",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=WGJJ%2B8VP%20Nizwa"
+    },
+    {
+      "category": "heritage",
+      "name_ar": "مدرسة الجليلين",
+      "name_en": "Al Jalilain School",
+      "plus_code": "WGJJ+872",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=WGJJ%2B872%20Nizwa"
+    },
+    {
+      "category": "heritage",
+      "name_ar": "مسجد الشواذنة",
+      "name_en": "Al Shawadhna Mosque",
+      "note": "936 AH mihrab; restored 2003",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D9%85%D8%B3%D8%AC%D8%AF%20%D8%A7%D9%84%D8%B4%D9%88%D8%A7%D8%B0%D9%86%D8%A9%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "heritage",
+      "name_ar": "مسجد مزارعة",
+      "name_en": "Mazara'a Mosque",
+      "note": "3rd c. AH; restored 2020",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D9%85%D8%B3%D8%AC%D8%AF%20%D9%85%D8%B2%D8%A7%D8%B1%D8%B9%D8%A9%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "heritage",
+      "name_ar": "قلعة نزوى",
+      "name_en": "Nizwa Fort",
+      "note": "adjacent; the great round tower",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D9%82%D9%84%D8%B9%D8%A9%20%D9%86%D8%B2%D9%88%D9%89%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "heritage",
+      "name_ar": "حصن نزوى",
+      "name_en": "Nizwa Castle",
+      "note": "adjacent to the fort",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D8%AD%D8%B5%D9%86%20%D9%86%D8%B2%D9%88%D9%89%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "heritage",
+      "name_ar": "سوق نزوى",
+      "name_en": "Nizwa Souq",
+      "note": "seven sub-souqs; Friday livestock auction from 07:00",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D8%B3%D9%88%D9%82%20%D9%86%D8%B2%D9%88%D9%89%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "services",
+      "name_ar": "حاضنة أعمال هيئة تنمية المؤسسات الصغيرة والمتوسطة",
+      "name_en": "SME Development Authority business incubator",
+      "plus_code": "WGJM+C2M",
+      "rating": 5.0,
+      "reviews": 1,
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=WGJM%2BC2M%20Nizwa"
+    },
+    {
+      "category": "stay",
+      "name_ar": "نزل إحياء",
+      "name_en": "IHYAA Inn",
+      "rating": 4.2,
+      "reviews": 384,
+      "phone": "+968 7335 9213",
+      "rate_omr": 25,
+      "note": "formerly نزل نزوى التراثية / Nizwa Heritage Inn; 2 restaurants; 3 min walk to the fort",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D9%86%D8%B2%D9%84%20%D8%A5%D8%AD%D9%8A%D8%A7%D8%A1%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "stay",
+      "name_ar": "أنتيك إن",
+      "name_en": "Antique Inn",
+      "rating": 4.2,
+      "reviews": 456,
+      "phone": "+968 25 225283",
+      "rate_omr": 18,
+      "note": "3-star; outdoor pool; 2 min walk to the fort",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D8%A3%D9%86%D8%AA%D9%8A%D9%83%20%D8%A5%D9%86%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "stay",
+      "name_ar": "نزل عطره",
+      "name_en": "Atrah Inn",
+      "rating": 4.9,
+      "reviews": 210,
+      "phone": "+968 6622 9242",
+      "rate_omr": 24,
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D9%86%D8%B2%D9%84%20%D8%B9%D8%B7%D8%B1%D9%87%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "stay",
+      "name_ar": "نزل واجهة العقر",
+      "name_en": "Alaqur View Inn",
+      "plus_code": "WGJJ+8HP",
+      "rating": 4.9,
+      "reviews": 190,
+      "rate_omr": 20,
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=WGJJ%2B8HP%20Nizwa"
+    },
+    {
+      "category": "stay",
+      "name_ar": "نزل البستان",
+      "name_en": "AlBustan Inn",
+      "rating": 4.3,
+      "reviews": 285,
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D9%86%D8%B2%D9%84%20%D8%A7%D9%84%D8%A8%D8%B3%D8%AA%D8%A7%D9%86%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "stay",
+      "name_ar": "نزل الدار",
+      "name_en": "Aldar Inn",
+      "rating": 4.5,
+      "reviews": 133,
+      "rate_omr": 28,
+      "note": "pool",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D9%86%D8%B2%D9%84%20%D8%A7%D9%84%D8%AF%D8%A7%D8%B1%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "stay",
+      "name_ar": "نزل بيت المعلم",
+      "name_en": "Bait Al Mualim Inn",
+      "rating": 4.7,
+      "reviews": 76,
+      "rate_omr": 43,
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D9%86%D8%B2%D9%84%20%D8%A8%D9%8A%D8%AA%20%D8%A7%D9%84%D9%85%D8%B9%D9%84%D9%85%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "stay",
+      "name_ar": "نزل مزارعة التراثية",
+      "name_en": "Mazarah Heritage Inn",
+      "rating": 4.8,
+      "reviews": 13,
+      "rate_omr": 64,
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D9%86%D8%B2%D9%84%20%D9%85%D8%B2%D8%A7%D8%B1%D8%B9%D8%A9%20%D8%A7%D9%84%D8%AA%D8%B1%D8%A7%D8%AB%D9%8A%D8%A9%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "stay",
+      "name_ar": "رياض نزوى",
+      "name_en": "Riad Nizwa",
+      "rating": 4.0,
+      "reviews": 60,
+      "rate_omr": 16,
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D8%B1%D9%8A%D8%A7%D8%B6%20%D9%86%D8%B2%D9%88%D9%89%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "stay",
+      "name_ar": "بيت العقر",
+      "name_en": "Bait Al Aqr",
+      "note": "Al Aqr Street, Nizwa Souq; 5 min walk to the fort",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D8%A8%D9%8A%D8%AA%20%D8%A7%D9%84%D8%B9%D9%82%D8%B1%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "stay",
+      "name_ar": "بيت الصاروج",
+      "name_en": "Bait Al Sarooj",
+      "note": "the book's grandest house; 10 rooms, part of the 36-room Bawariq portfolio",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D8%A8%D9%8A%D8%AA%20%D8%A7%D9%84%D8%B5%D8%A7%D8%B1%D9%88%D8%AC%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "eat",
+      "name_ar": "أناة كافيه",
+      "name_en": "Anaah Cafe",
+      "rating": 4.6,
+      "reviews": 1123,
+      "price": "OMR 2–4",
+      "hours": "to 23:00",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D8%A3%D9%86%D8%A7%D8%A9%20%D9%83%D8%A7%D9%81%D9%8A%D9%87%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "eat",
+      "name_ar": "مطعم العقر",
+      "name_en": "Al Aqur Restaurant",
+      "rating": 3.8,
+      "reviews": 947,
+      "price": "OMR 2–10",
+      "hours": "to 23:00",
+      "note": "the book's مطعم العقر التراثي; Omani food",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D9%85%D8%B7%D8%B9%D9%85%20%D8%A7%D9%84%D8%B9%D9%82%D8%B1%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "eat",
+      "name_ar": "تواد كافيه",
+      "name_en": "Tawad Cafe",
+      "plus_code": "WGJH+6VX",
+      "rating": 4.9,
+      "reviews": 926,
+      "price": "OMR 2–4",
+      "hours": "to 00:00",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=WGJH%2B6VX%20Nizwa"
+    },
+    {
+      "category": "eat",
+      "name_ar": "نيز كافيه",
+      "name_en": "Niz Cafe",
+      "rating": 4.6,
+      "reviews": 535,
+      "price": "OMR 2–4",
+      "hours": "to 23:00",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D9%86%D9%8A%D8%B2%20%D9%83%D8%A7%D9%81%D9%8A%D9%87%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "eat",
+      "name_ar": "مطعم كوارج",
+      "name_en": "Kawarij Restaurant",
+      "rating": 4.5,
+      "reviews": 213,
+      "price": "OMR 2–4",
+      "hours": "to 22:00; opens 07:30 Fri",
+      "note": "overlooks Nizwa Souq",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D9%85%D8%B7%D8%B9%D9%85%20%D9%83%D9%88%D8%A7%D8%B1%D8%AC%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "eat",
+      "name_ar": "براتا جبن العقر",
+      "name_en": "Paratha Jibn Al Aqr",
+      "plus_code": "WGJJ+2GW",
+      "rating": 4.7,
+      "reviews": 194,
+      "price": "OMR 0–2",
+      "hours": "to 23:30",
+      "note": "breakfast",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=WGJJ%2B2GW%20Nizwa"
+    },
+    {
+      "category": "eat",
+      "name_ar": "سباكس",
+      "name_en": "Spaks Italian Restaurant",
+      "rating": 4.3,
+      "reviews": 161,
+      "price": "OMR 2–4",
+      "hours": "to 02:00",
+      "note": "pizza",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D8%B3%D8%A8%D8%A7%D9%83%D8%B3%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "eat",
+      "name_ar": "مقيل كافيه",
+      "name_en": "Maqil Cafe",
+      "plus_code": "WGJJ+2PR",
+      "rating": 4.7,
+      "reviews": 140,
+      "price": "OMR 2–4",
+      "hours": "to 22:00; opens 08:00 Fri",
+      "note": "owner سعود بن سالم الفرقاني; traditional architecture and furnishing",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=WGJJ%2B2PR%20Nizwa"
+    },
+    {
+      "category": "eat",
+      "name_ar": "رواق كافيه",
+      "name_en": "Rawaq Cafe",
+      "rating": 4.2,
+      "reviews": 138,
+      "price": "OMR 2–4",
+      "hours": "to 22:00; opens 08:30 Fri",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D8%B1%D9%88%D8%A7%D9%82%20%D9%83%D8%A7%D9%81%D9%8A%D9%87%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "eat",
+      "name_ar": "سبلة العقر",
+      "name_en": "Sabalat Al Aqer",
+      "rating": 4.4,
+      "reviews": 105,
+      "price": "OMR 2–4",
+      "hours": "to 23:00",
+      "note": "multiple seating areas, family friendly",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D8%B3%D8%A8%D9%84%D8%A9%20%D8%A7%D9%84%D8%B9%D9%82%D8%B1%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "eat",
+      "name_ar": "الشرع - فرع نزوى",
+      "name_en": "Al Shara' (Nizwa branch)",
+      "plus_code": "WGJJ+W6X",
+      "rating": 4.5,
+      "reviews": 57,
+      "price": "OMR 2–4",
+      "note": "cafe / ice cream",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=WGJJ%2BW6X%20Nizwa"
+    },
+    {
+      "category": "eat",
+      "name_ar": "كوكو نزوى العقر",
+      "name_en": "KUCU Nizwa Al Aqur",
+      "plus_code": "WGJJ+4MG",
+      "rating": 3.7,
+      "reviews": 27,
+      "price": "OMR 2–4",
+      "hours": "to 01:00",
+      "note": "chicken",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=WGJJ%2B4MG%20Nizwa"
+    },
+    {
+      "category": "eat",
+      "name_ar": "مطعم سبلة العقر",
+      "name_en": "Sablah Restaurant",
+      "plus_code": "WGJM+93H",
+      "rating": 5.0,
+      "reviews": 16,
+      "price": "OMR 0–2",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=WGJM%2B93H%20Nizwa"
+    },
+    {
+      "category": "eat",
+      "name_ar": "حارة العقر (مقهى)",
+      "name_en": "Harat Al Aqr Cafe",
+      "plus_code": "WGJJ+W8F",
+      "rating": 5.0,
+      "reviews": 7,
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=WGJJ%2BW8F%20Nizwa"
+    },
+    {
+      "category": "eat",
+      "name_ar": "عربة ذرة العقر",
+      "name_en": "Al Aqr Corn Cart",
+      "rating": 4.7,
+      "reviews": 3,
+      "hours": "evenings from 16:30",
+      "note": "طريق العقر - حطة; youth project",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=%D8%B9%D8%B1%D8%A8%D8%A9%20%D8%B0%D8%B1%D8%A9%20%D8%A7%D9%84%D8%B9%D9%82%D8%B1%20%D9%86%D8%B2%D9%88%D9%89"
+    },
+    {
+      "category": "shop",
+      "name_ar": "سوار للمجوهرات",
+      "name_en": "Sewar Jewellery",
+      "plus_code": "WGMJ+24P",
+      "rating": 5.0,
+      "reviews": 32,
+      "hours": "to 22:00; opens 09:00 Fri",
+      "phone": "+968 7272 9444",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=WGMJ%2B24P%20Nizwa"
+    },
+    {
+      "category": "shop",
+      "name_ar": "محل غيور",
+      "name_en": "Ghayour Shop",
+      "plus_code": "WGJJ+V93",
+      "rating": 4.9,
+      "reviews": 24,
+      "hours": "to 23:00",
+      "note": "old-style shop kept in period character",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=WGJJ%2BV93%20Nizwa"
+    }
+  ]
+}

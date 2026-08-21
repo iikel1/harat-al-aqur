@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: oklch(0.55 0.10 45); text-decoration: none; }
+    a:hover { color: oklch(0.44 0.11 42); }
+  </style>
+</helmet>
+
+<div dir="rtl" style="width: 840px; background: oklch(0.965 0.010 78); font-family: Tajawal, 'Segoe UI', sans-serif; color: oklch(0.26 0.014 62); overflow: hidden">
+
+  <div style="padding: 30px 40px 22px; display: flex; flex-direction: column; gap: 10px; border-bottom: 1px solid oklch(0.86 0.014 76)">
+    <span style="font-family: Amiri, Georgia, serif; font-size: 34px">أكلٌ وإقامة داخل الحارة</span>
+    <span style="font-size: 14.5px; line-height: 1.9; color: oklch(0.48 0.014 62); max-width: 560px">نزلٌ في بيوتٍ مرمَّمة، ومقاهٍ ومطاعم فتحها شبابُ الولاية داخل السور. المواعيد تتغيّر — تحقّق قبل الذهاب.</span>
+  </div>
+
+  <div style="padding: 18px 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid oklch(0.90 0.012 76)">
+    <div style="display: flex; gap: 8px">
+      <span style="background: oklch(0.55 0.10 45); color: oklch(0.98 0.008 80); padding: 7px 16px; font-size: 13px; border-radius: 100px">الكل</span>
+      <span style="border: 1px solid oklch(0.84 0.014 76); padding: 7px 16px; font-size: 13px; border-radius: 100px">للإقامة</span>
+      <span style="border: 1px solid oklch(0.84 0.014 76); padding: 7px 16px; font-size: 13px; border-radius: 100px">مقاهٍ</span>
+      <span style="border: 1px solid oklch(0.84 0.014 76); padding: 7px 16px; font-size: 13px; border-radius: 100px">مطاعم</span>
+      <span style="border: 1px solid oklch(0.84 0.014 76); padding: 7px 16px; font-size: 13px; border-radius: 100px">متاجر</span>
+    </div>
+    <span style="font-size: 12px; color: oklch(0.55 0.012 62)">آخر تحقّق: أغسطس ٢٠٢٦</span>
+  </div>
+
+  <div style="padding: 22px 40px 30px; display: flex; flex-direction: column; gap: 12px">
+    <sc-for list="{{places}}" as="p" hint-placeholder-count="7">
+      <div style="border: 1px solid oklch(0.87 0.014 76); background: oklch(0.98 0.006 80); border-radius: 2px; padding: 17px 20px; display: flex; align-items: center; gap: 18px">
+        <div style="display: flex; flex-direction: column; gap: 5px; flex-grow: 1">
+          <div style="display: flex; align-items: baseline; gap: 10px">
+            <span style="font-family: Amiri, Georgia, serif; font-size: 20px">{{p.name}}</span>
+            <span style="font-size: 11px; letter-spacing: 0.10em; color: oklch(0.55 0.10 45)">{{p.kind}}</span>
+          </div>
+          <span style="font-size: 13px; line-height: 1.85; color: oklch(0.48 0.014 62)">{{p.note}}</span>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px; min-width: 150px">
+          <span style="font-size: 12.5px; color: oklch(0.45 0.014 62)">{{p.hours}}</span>
+          <span style="display: inline-flex; align-items: center; gap: 7px; border: 1px solid oklch(0.84 0.014 76); padding: 7px 14px; font-size: 12.5px; border-radius: 2px; color: oklch(0.42 0.06 48)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21s7-5.7 7-11a7 7 0 1 0-14 0c0 5.3 7 11 7 11Z"></path><circle cx="12" cy="10" r="2.4"></circle></svg>
+            الخرائط
+          </span>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="background: oklch(0.925 0.016 76); border-top: 1px solid oklch(0.87 0.014 76); padding: 22px 40px 28px; display: flex; gap: 14px; align-items: flex-start">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="oklch(0.50 0.012 62)" stroke-width="1.5" style="margin-top: 2px; flex-shrink: 0"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5.5"></path><path d="M12 7.6h.01"></path></svg>
+    <span style="font-size: 13px; line-height: 1.95; color: oklch(0.44 0.014 62)">هذه الصفحةُ وحدها هي المتغيّرة في الموقع. لا نعرض تقييمات ولا أسعاراً — فهي تَبلى بسرعة، وسعرٌ خاطئ أسوأ من لا سعر. الأسماء والمواعيد تُراجَع دورياً، وتاريخ آخر مراجعة مثبتٌ أعلاه.</span>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#9a5a34","options":["#9a5a34","#7a6a3a","#3f5d78","#8a3f3f"],"section":"Theme"}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      places: [
+        { name: 'نزل إحياء', kind: 'إقامة', note: 'بيوتٌ مرمَّمة داخل السور، ومطعمان. كان يُعرف باسم نزل نزوى التراثية.', hours: 'استقبال ٢٤ ساعة' },
+        { name: 'أنتيك إن', kind: 'إقامة', note: 'على حافة الحارة، فيه مسبح وحديقة. دقيقتان مشياً إلى القلعة.', hours: 'استقبال ٢٤ ساعة' },
+        { name: 'مطعم العقر', kind: 'مطعم', note: 'مأكولات عُمانية في بيتٍ قديم — خاتمة الجولة كما يقترح الكتاب.', hours: 'حتى ١١:٠٠م' },
+        { name: 'أناة كافيه', kind: 'مقهى', note: 'الأكثر ازدحاماً في الحارة.', hours: 'حتى ١١:٠٠م' },
+        { name: 'مقيل كافيه', kind: 'مقهى', note: 'عمارةٌ وأثاثٌ على الطراز العُماني القديم.', hours: 'حتى ١٠:٠٠م · الجمعة من ٨:٠٠ص' },
+        { name: 'براتا جبن العقر', kind: 'فطور', note: 'ريوقٌ خفيف قبل المشي على السور.', hours: 'حتى ١١:٣٠م' },
+        { name: 'سوار للمجوهرات', kind: 'متجر', note: 'صياغةٌ وفضّة.', hours: 'حتى ١٠:٠٠م · الجمعة من ٩:٠٠ص' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

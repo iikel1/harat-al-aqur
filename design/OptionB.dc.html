@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: oklch(0.48 0.13 32); text-decoration: none; }
+    a:hover { color: oklch(0.38 0.14 30); }
+  </style>
+</helmet>
+
+<div dir="rtl" style="width: 880px; background: oklch(0.945 0.020 86); font-family: Amiri, Georgia, serif; color: oklch(0.27 0.020 62); overflow: hidden; position: relative">
+
+  <!-- ruled ground -->
+  <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 33px, oklch(0.88 0.020 84) 33px, oklch(0.88 0.020 84) 34px); opacity: 0.5; pointer-events: none"></div>
+
+  <div style="position: relative">
+    <!-- running head -->
+    <div style="display: flex; justify-content: space-between; align-items: baseline; padding: 20px 56px 12px; font-size: 13px; letter-spacing: 0.14em; color: oklch(0.50 0.020 62)">
+      <span>ولايـة نـزوى — محافظـة الداخليـة</span>
+      <span style="border-bottom: 1px solid oklch(0.72 0.02 70); padding-bottom: 2px">English</span>
+    </div>
+
+    <!-- frontispiece -->
+    <div style="padding: 34px 56px 30px; border-block: 2px solid oklch(0.30 0.02 60); margin: 0 56px; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center">
+      <span style="font-size: 15px; letter-spacing: 0.30em; color: oklch(0.48 0.13 32)">حــاضــنــة الــعــلــمــاء</span>
+      <span style="font-size: 76px; line-height: 1.05; font-weight: 700">حارة العقر</span>
+      <span style="font-size: 19px; line-height: 2.0; max-width: 540px; color: oklch(0.36 0.018 60)">سورٌ متينٌ عليه خمسة عشر برجاً وأربعُ بوابات، وأكثرُ من ثلاثمئة بيت، وخمسةُ مساجد قديمة — وتاريخُ عُمان في أغلب الحقب الإسلامية.</span>
+    </div>
+
+    <!-- colophon rule -->
+    <div style="display: flex; justify-content: center; gap: 14px; align-items: center; padding: 16px 0 26px; font-size: 13.5px; color: oklch(0.50 0.020 62)">
+      <span>عن كتاب سليمان بن محمد السليماني</span>
+      <span style="color: oklch(0.48 0.13 32)">◆</span>
+      <span>١٤٤٢هـ / ٢٠٢١م</span>
+    </div>
+
+    <!-- the index, as a table of contents -->
+    <div style="padding: 0 56px 20px">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px">
+        <span style="font-size: 25px; font-weight: 700">الفهرس</span>
+        <span style="flex-grow: 1; height: 1px; background: oklch(0.78 0.02 72)"></span>
+        <span style="font-size: 13px; color: oklch(0.50 0.020 62)">٣١ مدخلاً</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 44px">
+        <sc-for list="{{toc}}" as="t" hint-placeholder-count="16">
+          <div style="display: flex; align-items: baseline; gap: 8px; padding: 7px 0; border-bottom: 1px dotted oklch(0.80 0.02 74)">
+            <span style="font-size: 12.5px; color: oklch(0.48 0.13 32); min-width: 22px">{{t.n}}</span>
+            <span style="font-size: 17px">{{t.title}}</span>
+            <span style="flex-grow: 1"></span>
+            <span style="font-size: 12.5px; color: oklch(0.55 0.020 62)">{{t.tag}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- the plan, drawn as a marginal figure -->
+    <div style="margin: 28px 56px 0; border: 1px solid oklch(0.72 0.02 70); background: oklch(0.955 0.016 84); padding: 22px 26px; display: flex; gap: 26px; align-items: center">
+      <svg width="230" height="176" viewBox="0 0 230 176">
+        <polygon points="24,58 70,20 152,14 206,44 214,104 176,156 92,164 34,132" fill="none" stroke="oklch(0.30 0.02 60)" stroke-width="2.4"></polygon>
+        <polygon points="24,58 70,20 152,14 206,44 214,104 176,156 92,164 34,132" fill="oklch(0.48 0.13 32)" opacity="0.06"></polygon>
+        <g fill="oklch(0.48 0.13 32)">
+          <circle cx="24" cy="58" r="4.4"></circle><circle cx="70" cy="20" r="4.4"></circle>
+          <circle cx="152" cy="14" r="4.4"></circle><circle cx="206" cy="44" r="4.4"></circle>
+          <circle cx="214" cy="104" r="4.4"></circle><circle cx="176" cy="156" r="4.4"></circle>
+          <circle cx="92" cy="164" r="4.4"></circle><circle cx="34" cy="132" r="4.4"></circle>
+          <circle cx="47" cy="39" r="3.4"></circle><circle cx="111" cy="17" r="3.4"></circle>
+          <circle cx="180" cy="29" r="3.4"></circle><circle cx="211" cy="74" r="3.4"></circle>
+          <circle cx="196" cy="131" r="3.4"></circle><circle cx="134" cy="160" r="3.4"></circle>
+          <circle cx="62" cy="149" r="3.4"></circle><circle cx="28" cy="95" r="3.4"></circle>
+        </g>
+        <g stroke="oklch(0.30 0.02 60)" stroke-width="2.2">
+          <path d="M86 16.5 L92 6"></path><path d="M212 76 L224 74"></path>
+          <path d="M110 163 L112 175"></path><path d="M26 76 L14 74"></path>
+        </g>
+      </svg>
+      <div style="display: flex; flex-direction: column; gap: 9px">
+        <span style="font-size: 21px; font-weight: 700">مخطط السور</span>
+        <span style="font-size: 15.5px; line-height: 1.95; color: oklch(0.38 0.018 60); max-width: 330px">ستة عشر برجاً بين كلٍّ منها ١٥٠ إلى ٢٠٠ متر، وأربعةُ صِباحات هي المنافذ الوحيدة لساكني الحارة.</span>
+        <span style="font-size: 13.5px; color: oklch(0.48 0.13 32); border-bottom: 1px solid oklch(0.48 0.13 32); align-self: flex-start; padding-bottom: 2px">افتح المخطط كاملاً</span>
+      </div>
+    </div>
+
+    <div style="padding: 26px 56px 30px; font-size: 13px; color: oklch(0.52 0.020 62); display: flex; justify-content: space-between">
+      <span>أوقاف عقر نزوى</span>
+      <span>٥</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"rubric":{"editor":"color","default":"#8a3a26","options":["#8a3a26","#2f4f3e","#3f4a6b","#6b5330"],"section":"Theme"}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      toc: [
+        { n: '٠١', title: 'حارة العقر', tag: 'تمهيد' },
+        { n: '٠٢', title: 'قلعة نزوى الشهباء', tag: 'تحصين' },
+        { n: '٠٣', title: 'حصن نزوى', tag: 'تحصين' },
+        { n: '٠٤', title: 'مسجد الشواذنة', tag: 'مسجد' },
+        { n: '٠٥', title: 'مسجد مزارعة', tag: 'مسجد' },
+        { n: '٠٦', title: 'جامع نزوى', tag: 'مسجد' },
+        { n: '٠٨', title: 'سور العقر', tag: 'تحصين' },
+        { n: '٠٩', title: 'البيت العماني', tag: 'عمارة' },
+        { n: '١٠', title: 'دولة اليعاربة', tag: 'تاريخ' },
+        { n: '١١', title: 'الأبواب والأسقف', tag: 'عمارة' },
+        { n: '١٣', title: 'المجالس والسبل', tag: 'حياة' },
+        { n: '١٧', title: 'قبر الشيخ الأصم', tag: 'أعلام' },
+        { n: '١٨', title: 'مقبرة الفرس', tag: 'تاريخ' },
+        { n: '٢٤', title: 'فلج ضوت', tag: 'ماء' },
+        { n: '٢٨', title: 'ساعة المدة', tag: 'ماء' },
+        { n: '٢٩', title: 'سوق نزوى', tag: 'سوق' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

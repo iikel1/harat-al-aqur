@@ -1,0 +1,233 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import EntryCard from '../../components/EntryCard.astro';
+import Mark from '../../components/Mark.astro';
+import { LANGS, href, ui, type Lang } from '../../lib/i18n';
+import Photo from '../../components/Photo.astro';
+import { excerpt } from '../../lib/excerpt';
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Lang;
+const t = ui[lang];
+
+const entries = (await getCollection(lang)).sort((a, b) => a.data.order - b.data.order);
+const FEATURED = ['al-aqur-wall', 'nizwa-fort', 'shawadhna-mosque', 'nizwa-souq', 'falaj-dawt', 'the-sablahs'];
+const featured = FEATURED.map((slug) => entries.find((e) => e.data.slug === slug)).filter(
+  (e): e is NonNullable<typeof e> => Boolean(e)
+);
+
+// The lead image is the widest the book gives us (1418px). It is scrimmed and
+// cropped rather than shown full-bleed at retina - see the resolution ceiling
+// in CLAUDE.md. A commissioned photograph should replace it before launch.
+const HERO = 'p05-1.jpeg';
+
+const copy = {
+  ar: {
+    eyebrow: 'مقـرّ الحكـم العُمانـي',
+    headline: ['ثلاثمئة بيت', 'داخل سور واحد'],
+    lead: 'من هنا سُنَّت الأوامر، وتحرّكت الجيوش، وانطلقت التوجيهات إلى الأساطيل العُمانية في الخليج والمحيط الهندي.',
+    ctaPrimary: 'تصفّح الحارة',
+    ctaSecondary: 'انظر المخطط',
+    doorsTitle: 'أربعة أبواب للدخول',
+    doorsLead: 'اقرأ الحارة، أو انظر مخططها، أو امشِ فيها، أو خطّط ليومك. كلٌّ من مدخله.',
+    doors: [
+      { url: 'discover', title: 'اكتشف', body: 'واحدٌ وثلاثون مدخلاً عن مساجد الحارة وأبراجها وأفلاجها وبيوتها، من الكتاب نفسه.' },
+      { url: 'map', title: 'الخريطة', body: 'مخطط السور: كل برج وكل صِباح، باسمه وموضعه وما يُعرف عنه.' },
+      { url: 'route', title: 'الجولة', body: 'تسع محطات تتبع الأرض لا ترتيب الكتاب: من الصِباح الذي يحمل المتحف إلى السوق.' },
+      { url: 'visit', title: 'خطّط زيارتك', body: 'أين تنزل وأين تأكل داخل الحارة وحولها، بأوقات العمل وموضع كل مكان على الخريطة.' }
+    ],
+    featuredTitle: 'مداخل مختارة',
+    featuredLead: 'ابدأ من هنا إن لم تكن تدري من أين تبدأ.',
+    allEntries: 'كل المداخل الواحد والثلاثين'
+  },
+  en: {
+    eyebrow: 'The seat of Omani rule',
+    headline: ['Three hundred houses', 'inside one wall'],
+    lead: 'From here the decrees were issued, the armies moved, and instructions went out to the Omani fleets in the Gulf and the Indian Ocean.',
+    ctaPrimary: 'Browse the quarter',
+    ctaSecondary: 'See the plan',
+    doorsTitle: 'Four ways in',
+    doorsLead: 'Read the quarter, see its plan, walk it, or plan a day in it. Each has its own door.',
+    doors: [
+      { url: 'discover', title: 'Discover', body: 'Thirty-one entries on the mosques, towers, aflaj and houses of the quarter, from the book itself.' },
+      { url: 'map', title: 'The wall map', body: 'The plan of the wall: every tower and every sabah, named, sited and described.' },
+      { url: 'route', title: 'The walk', body: 'Nine stops that follow the ground rather than the book’s order, from the gate that carries the museum to the souq.' },
+      { url: 'visit', title: 'Plan a visit', body: 'Where to stay and eat inside the quarter and around it, with opening hours and a map link for each.' }
+    ],
+    featuredTitle: 'Selected entries',
+    featuredLead: 'Start here if you are not sure where to start.',
+    allEntries: 'All thirty-one entries'
+  }
+}[lang];
+
+// The book's own figures stay in the book's voice. Anything that changed after
+// the restoration is labelled as such - never folded into a sentence the author
+// did not write. (CLAUDE.md: fifteen towers in the book, sixteen restored.)
+const figures = {
+  ar: [
+    { n: '٣٠٠+', label: 'بيت داخل السور', source: 'من الكتاب' },
+    { n: '١٦', label: 'برجاً بعد الترميم', source: 'الكتاب يذكر خمسة عشر' },
+    { n: '٥', label: 'مساجد قديمة', source: 'من الكتاب' },
+    { n: '٢ كم', label: 'محيط السور تقريباً', source: 'من الكتاب' }
+  ],
+  en: [
+    { n: '300+', label: 'houses inside the wall', source: 'from the book' },
+    { n: '16', label: 'towers after restoration', source: 'the book says fifteen' },
+    { n: '5', label: 'old mosques', source: 'from the book' },
+    { n: '2 km', label: 'of wall, approximately', source: 'from the book' }
+  ]
+}[lang];
+---
+
+<Base lang={lang} title={t.siteName} description={copy.lead} bleed>
+  <section class="hero">
+    <Photo
+      class="hero-img"
+      file={HERO}
+      alt=""
+      widths={[640, 960, 1280, 1920]}
+      sizes="100vw"
+      loading="eager"
+      fetchpriority="high"
+    />
+    <div class="scrim"></div>
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <span class="eyebrow hero-eyebrow">{copy.eyebrow}</span>
+        <h1>{copy.headline[0]}<br />{copy.headline[1]}</h1>
+        <p class="lead">{copy.lead}</p>
+        <div class="cta">
+          <a class="btn btn--solid" href={href(lang, 'discover')}>{copy.ctaPrimary}</a>
+          <a class="btn btn--ghost" href={href(lang, 'map')}>
+            <Mark size={18} />
+            {copy.ctaSecondary}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="figures" aria-label={t.figuresTitle}>
+    <div class="wrap figures-grid">
+      {
+        figures.map((f) => (
+          <div class="figure">
+            <span class="figure-n">{f.n}</span>
+            <span class="figure-label">{f.label}</span>
+            <span class="figure-source">{f.source}</span>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="wrap block">
+    <header class="block-head">
+      <h2>{copy.doorsTitle}</h2>
+      <p>{copy.doorsLead}</p>
+    </header>
+    <div class="doors">
+      {
+        copy.doors.map((d) => (
+          <a class="door" href={href(lang, d.url)}>
+            <h3>{d.title}</h3>
+            <p>{d.body}</p>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="wrap block">
+    <header class="block-head">
+      <h2>{copy.featuredTitle}</h2>
+      <p>{copy.featuredLead}</p>
+    </header>
+    <div class="grid">
+      {
+        featured.map((e) => (
+          <EntryCard
+            lang={lang}
+            slug={e.data.slug}
+            title={e.data.title}
+            order={e.data.order}
+            excerpt={excerpt(e.body ?? '')}
+          />
+        ))
+      }
+    </div>
+    <p class="all"><a href={href(lang, 'discover')}>{copy.allEntries} →</a></p>
+  </section>
+</Base>
+
+<style>
+  .hero { position: relative; min-height: clamp(24rem, 58vh, 34rem); display: flex; align-items: flex-end; overflow: hidden; }
+  /* <Photo> renders <picture><img class="hero-img">, so the wrapper has to get
+     out of the way before the image can fill the hero. */
+  .hero :global(picture) { display: contents; }
+  .hero :global(.hero-img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(to left, oklch(0.22 0.02 62 / .82) 0%, oklch(0.22 0.02 62 / .55) 30%, transparent 64%);
+  }
+  [dir='ltr'] .scrim {
+    background: linear-gradient(to right, oklch(0.22 0.02 62 / .82) 0%, oklch(0.22 0.02 62 / .55) 30%, transparent 64%);
+  }
+  .hero-inner { position: relative; width: 100%; padding-block: 3rem; }
+  .hero-copy { max-width: 30rem; display: flex; flex-direction: column; gap: .9rem; }
+  .hero-eyebrow { color: oklch(0.86 0.03 76); }
+  .hero h1 { font-size: clamp(2.1rem, 6vw, 3.4rem); line-height: 1.16; color: var(--ink-invert); }
+  .hero .lead { font-size: 1.02rem; line-height: 1.85; color: oklch(0.90 0.015 78); }
+
+  .cta { display: flex; flex-wrap: wrap; gap: .75rem; margin-block-start: .5rem; }
+  .btn { padding: .8rem 1.6rem; border-radius: var(--radius); font-family: var(--sans); font-size: .92rem; }
+  .btn--solid { background: var(--clay); color: var(--on-clay); }
+  .btn--solid:hover { background: var(--clay-deep); color: var(--on-clay); }
+  .btn--ghost {
+    border: 1px solid oklch(0.80 0.02 78 / .55); color: oklch(0.95 0.01 80);
+    display: inline-flex; align-items: center; gap: .55rem;
+  }
+  .btn--ghost:hover { border-color: var(--ink-invert); color: var(--ink-invert); }
+
+  .figures { border-block-end: 1px solid var(--rule); background: var(--surface); }
+  /* Four figures, same reasoning as the doors. */
+  .figures-grid { display: grid; grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: 50rem) { .figures-grid { grid-template-columns: repeat(4, 1fr); } }
+  .figure {
+    display: flex; flex-direction: column; gap: .2rem; align-items: center; text-align: center;
+    padding: 1.6rem 1rem; border-inline-start: 1px solid var(--rule-light);
+  }
+  .figure:first-child { border-inline-start: 0; }
+  .figure-n { font-family: var(--display); font-size: 2rem; color: var(--clay); line-height: 1.1; }
+  .figure-label { font-family: var(--sans); font-size: .85rem; color: var(--ink-muted); }
+  .figure-source { font-family: var(--sans); font-size: .7rem; color: var(--ink-faint); letter-spacing: .02em; }
+
+  .block { padding-block: clamp(2.5rem, 6vw, 4rem) 0; }
+  .block-head { display: flex; flex-direction: column; gap: .5rem; margin-block-end: 1.75rem; }
+  .block-head h2 { font-size: clamp(1.5rem, 3.4vw, 1.9rem); }
+  .block-head p { font-size: .95rem; color: var(--ink-muted); max-width: var(--measure); }
+
+  /* Explicit counts, not auto-fit: there are exactly four doors, and four
+     divides by 1, 2 and 4. auto-fit used to drop a lone card onto its own row. */
+  .doors { display: grid; gap: 1.1rem; grid-template-columns: 1fr; }
+  @media (min-width: 34rem) { .doors { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 72rem) { .doors { grid-template-columns: repeat(4, 1fr); } }
+  .door {
+    background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius);
+    padding: 1.4rem 1.35rem; color: var(--ink); display: flex; flex-direction: column; gap: .6rem;
+    transition: border-color .18s ease;
+  }
+  .door:hover { border-color: var(--clay); color: var(--ink); }
+  .door h3 { font-size: 1.25rem; }
+  .door p { font-size: .88rem; line-height: 1.8; color: var(--ink-muted); }
+
+  /* Six featured entries: 1, 2 or 3 across, all of which divide evenly. */
+  .grid { display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
+  @media (min-width: 34rem) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 60rem) { .grid { grid-template-columns: repeat(3, 1fr); } }
+  .all { margin-block-start: 1.75rem; font-family: var(--sans); font-size: .95rem; }
+</style>

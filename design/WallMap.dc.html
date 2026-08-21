@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: oklch(0.55 0.10 45); text-decoration: none; }
+    a:hover { color: oklch(0.44 0.11 42); }
+  </style>
+</helmet>
+
+<div dir="rtl" style="width: 900px; background: oklch(0.965 0.010 78); font-family: Tajawal, 'Segoe UI', sans-serif; color: oklch(0.26 0.014 62); overflow: hidden">
+
+  <div style="padding: 20px 36px; border-bottom: 1px solid oklch(0.86 0.014 76); display: flex; justify-content: space-between; align-items: baseline">
+    <span style="font-family: Amiri, Georgia, serif; font-size: 22px; font-weight: 700">مخطط سور العقر</span>
+    <span style="font-size: 12.5px; color: oklch(0.50 0.012 62)">عن مخطط د. الوليد بن زاهر السالمي</span>
+  </div>
+
+  <div style="display: flex">
+    <!-- the plan -->
+    <div style="flex-grow: 1; background: oklch(0.925 0.016 76); padding: 26px; position: relative">
+      <svg viewBox="0 0 560 560" style="width: 100%; display: block">
+        <path d="M40 470 C 150 440, 210 380, 320 366 S 500 320, 548 280" fill="none" stroke="oklch(0.62 0.06 235)" stroke-width="22" opacity="0.22" stroke-linecap="round"></path>
+        <text x="70" y="500" font-family="Tajawal, sans-serif" font-size="13" fill="oklch(0.52 0.05 235)">مجرى الوادي</text>
+
+        <polygon points="96,200 200,108 372,96 480,168 496,318 404,414 232,438 112,352"
+                 fill="oklch(0.55 0.10 45)" opacity="0.08"></polygon>
+        <polygon points="96,200 200,108 372,96 480,168 496,318 404,414 232,438 112,352"
+                 fill="none" stroke="oklch(0.45 0.05 55)" stroke-width="4"></polygon>
+
+        <g fill="oklch(0.965 0.010 78)" stroke="oklch(0.55 0.10 45)" stroke-width="3">
+          <circle cx="96" cy="200" r="10"></circle><circle cx="200" cy="108" r="10"></circle>
+          <circle cx="372" cy="96" r="10"></circle><circle cx="480" cy="168" r="10"></circle>
+          <circle cx="496" cy="318" r="10"></circle><circle cx="404" cy="414" r="10"></circle>
+          <circle cx="232" cy="438" r="10"></circle><circle cx="112" cy="352" r="10"></circle>
+          <circle cx="146" cy="150" r="8"></circle><circle cx="286" cy="98" r="8"></circle>
+          <circle cx="432" cy="126" r="8"></circle><circle cx="492" cy="242" r="8"></circle>
+          <circle cx="452" cy="368" r="8"></circle><circle cx="318" cy="428" r="8"></circle>
+          <circle cx="168" cy="398" r="8"></circle><circle cx="102" cy="276" r="8"></circle>
+        </g>
+
+        <!-- the four sabahs -->
+        <g fill="oklch(0.45 0.05 55)">
+          <rect x="279" y="91" width="16" height="16" transform="rotate(45 287 99)"></rect>
+          <rect x="484" y="234" width="16" height="16" transform="rotate(45 492 242)"></rect>
+          <rect x="310" y="420" width="16" height="16" transform="rotate(45 318 428)"></rect>
+          <rect x="94" y="268" width="16" height="16" transform="rotate(45 102 276)"></rect>
+        </g>
+
+        <!-- selected -->
+        <circle cx="96" cy="200" r="22" fill="none" stroke="oklch(0.55 0.10 45)" stroke-width="1.6" opacity="0.55"></circle>
+
+        <g font-family="Tajawal, sans-serif" font-size="12.5" fill="oklch(0.40 0.014 62)">
+          <text x="48" y="188" text-anchor="middle">المذبحة</text>
+          <text x="287" y="76" text-anchor="middle">صباح السوق</text>
+          <text x="524" y="240" text-anchor="middle">الصبخة</text>
+          <text x="318" y="456" text-anchor="middle">أبي المؤثر</text>
+          <text x="66" y="276" text-anchor="middle">الشجبي</text>
+        </g>
+        <g font-family="Tajawal, sans-serif" font-size="11" fill="oklch(0.55 0.012 62)">
+          <text x="530" y="330">قلعة نزوى</text>
+          <text x="386" y="70">سوق نزوى</text>
+        </g>
+      </svg>
+
+      <div style="display: flex; gap: 22px; padding-top: 14px; font-size: 12.5px; color: oklch(0.50 0.012 62); align-items: center">
+        <span style="display: inline-flex; align-items: center; gap: 7px"><span style="width: 11px; height: 11px; border-radius: 50%; border: 2.5px solid oklch(0.55 0.10 45); background: oklch(0.965 0.010 78)"></span>برج</span>
+        <span style="display: inline-flex; align-items: center; gap: 7px"><span style="width: 10px; height: 10px; background: oklch(0.45 0.05 55); transform: rotate(45deg)"></span>صِباح (بوابة)</span>
+        <span style="display: inline-flex; align-items: center; gap: 7px"><span style="width: 16px; height: 5px; border-radius: 3px; background: oklch(0.62 0.06 235); opacity: 0.4"></span>مجرى الوادي</span>
+      </div>
+    </div>
+
+    <!-- rail -->
+    <div style="width: 300px; border-inline-start: 1px solid oklch(0.86 0.014 76); display: flex; flex-direction: column">
+      <div style="padding: 20px 22px 16px; border-bottom: 1px solid oklch(0.86 0.014 76); display: flex; flex-direction: column; gap: 9px">
+        <span style="font-size: 11px; letter-spacing: 0.12em; color: oklch(0.55 0.10 45)">برج</span>
+        <span style="font-family: Amiri, Georgia, serif; font-size: 25px">برج المذبحة</span>
+        <span style="font-size: 13.5px; line-height: 1.9; color: oklch(0.45 0.014 62)">يقع في الزاوية الشمالية على الجانب الغربي من السور. أسطواني الشكل، قاعدته دائرية بقطر يتراوح بين أربعة وخمسة أمتار.</span>
+        <div style="display: flex; gap: 9px; padding-top: 6px">
+          <span style="background: oklch(0.55 0.10 45); color: oklch(0.98 0.008 80); padding: 9px 17px; font-size: 13px; border-radius: 2px">اقرأ المدخل</span>
+          <span style="border: 1px solid oklch(0.82 0.014 76); padding: 9px 17px; font-size: 13px; border-radius: 2px">الخرائط</span>
+        </div>
+      </div>
+      <div style="padding: 16px 22px 8px; font-size: 12px; letter-spacing: 0.10em; color: oklch(0.55 0.012 62)">كل الأبراج والصِباحات</div>
+      <div style="display: flex; flex-direction: column">
+        <sc-for list="{{towers}}" as="t" hint-placeholder-count="9">
+          <div style="display: flex; align-items: center; gap: 11px; padding: 10px 22px; border-bottom: 1px solid oklch(0.91 0.012 76)">
+            <span style="font-size: 11px; color: oklch(0.60 0.012 62); min-width: 20px">{{t.n}}</span>
+            <span style="font-size: 14px">{{t.name}}</span>
+            <span style="flex-grow: 1"></span>
+            <span style="font-size: 11px; color: oklch(0.58 0.012 62)">{{t.kind}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#9a5a34","options":["#9a5a34","#7a6a3a","#3f5d78","#8a3f3f"],"section":"Theme"}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      towers: [
+        { n: '٠١', name: 'برج المذبحة', kind: 'برج' },
+        { n: '٠٢', name: 'برج ميرزة (بستان قسام)', kind: 'برج' },
+        { n: '٠٣', name: 'برج بلج', kind: 'برج' },
+        { n: '٠٤', name: 'برج خريص بلج', kind: 'برج' },
+        { n: '٠٥', name: 'برج العلياء', kind: 'برج' },
+        { n: '٠٦', name: 'برج غوير', kind: 'برج' },
+        { n: '٠٧', name: 'برج الكوارج', kind: 'برج' },
+        { n: '٠٨', name: 'صباح أبي المؤثر', kind: 'صِباح' },
+        { n: '٠٩', name: 'صباح الشجبي', kind: 'صِباح' },
+        { n: '١٠', name: 'صباح السوق', kind: 'مهدوم' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

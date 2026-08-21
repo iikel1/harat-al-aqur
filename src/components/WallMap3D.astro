@@ -1,0 +1,1272 @@
+---
+import type { Lang } from '../lib/i18n';
+import { PLAN, PLAN_TOWERS, PLAN_GATES, PLAN_LANDMARKS } from '../lib/plan';
+import { TOWERS, GATES, TOWER_MATCHES, GATE_MATCHES } from '../lib/wall';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+
+// Names come from the same evidence the flat plan uses. Nothing is named here
+// that is not named there.
+const nameFor = (planId: string, kind: 'tower' | 'gate') => {
+  const matches = kind === 'tower' ? TOWER_MATCHES : GATE_MATCHES;
+  const list = kind === 'tower' ? TOWERS : GATES;
+  const match = matches.find((m) => m.plan === planId);
+  const feature = match && list.find((f) => f.id === match.feature);
+  return feature ? (lang === 'ar' ? feature.ar : feature.en) : null;
+};
+
+const t = {
+  ar: {
+    title: 'السور مجسَّماً',
+    lead: 'المخطط نفسه مرفوعاً إلى ثلاثة أبعاد، بمقاسات السور التي يذكرها الكتاب.',
+    load: 'اعرض المجسَّم',
+    loading: 'جارٍ التحميل…',
+    hint: 'اسحب للدوران، وحرّك العجلة للتقريب. اضغط على برج أو بوابة.',
+    opensOn: 'يبدأ العرض عند صباح الصبخة، وبرج الصبخة إلى جانبه.',
+    labels: 'الأسماء',
+    palms: 'النخيل',
+    houses: 'البيوت',
+    lamps: 'الإنارة',
+    night: 'ليلاً',
+    fortLabel: 'برج القلعة المدوّر',
+    reset: 'عُد إلى البوابة',
+    wide: 'الدائرة كاملة',
+    nothing: 'لم تختر شيئاً بعد',
+    tower: 'برج',
+    gate: 'بوابة',
+    failed: 'تعذّر تشغيل العرض ثلاثي الأبعاد على هذا الجهاز. المخطط المسطّح أعلاه يحمل المعلومات نفسها.',
+    dimsTitle: 'من أين جاءت المقاسات',
+    dims: [
+      ['ارتفاع السور', '٥ إلى ٦ أمتار', 'من الكتاب'],
+      ['سماكة السور', 'متر ونصف إلى مترين', 'من الكتاب'],
+      ['قطر قاعدة البرج', '٤ إلى ٥ أمتار، وأكثرها أسطواني', 'من الكتاب'],
+      ['محيط السور', 'نحو كيلومترين', 'من الكتاب'],
+      ['ارتفاع البرج', 'مترانِ فوق السور', 'ليس في الكتاب، اختيار هذا المجسَّم'],
+      ['برج القلعة المدوّر', 'موضعه من المخطط', 'المخطط ليس بمقياس للمباني'],
+      ['عدد البيوت', 'أكثر من ثلاثمئة بيت', 'من الكتاب'],
+      ['مساحة البيت', 'من ٦٠ إلى ٢٠٠ متر مربع', 'من الكتاب'],
+      ['حارات الحارة', 'خمس حارات، لكلٍّ سبلتها', 'من الكتاب'],
+      ['مواضع البيوت وارتفاعها', 'استئناسٌ لا أكثر', 'ليست في أي مصدر'],
+      ['النخيل', 'استئناسٌ لا أكثر', 'ليس في المخطط، لا يرسم شجراً'],
+      ['ممشى السور وحواجزه', 'السور بعد الترميم', 'من الصور، لا من الكتاب'],
+      ['الإنارة على الحاجز', 'السور بعد الترميم', 'من الصور، لا من الكتاب']
+    ],
+    caveat:
+      'هذا تصوّرٌ تخطيطي مبنيٌّ على مقاسات الكتاب ومخطط الدكتور السالمي، وليس مسحاً ولا نموذجاً مبنياً على تصوير الموقع. لا تقرأ منه أشكال الأبراج ولا تفاصيل البناء؛ المخطط يعطي مواضعها فقط. والبيوتُ عددُها ومساحاتُها وانقسامُها إلى خمس حارات من الكتاب، أما مواضعُها وارتفاعُها فمن هذا المجسَّم وحده. والنخيل موضوعٌ للاستئناس داخل السور وخارجه: المخطط لا يرسم شجراً ولا مزارع، والكتاب لا يحدّد مواضعها. وكلاهما يُخفى بضغطة. أما ممشى السور وحواجزه وإنارته فمن السور بعد الترميم كما تُظهره الصور، لا من الكتاب: الكتاب يصف سوراً للدفاع ولا يذكر ممشى ولا إنارة. والإنارة تُخفى بضغطة أيضاً. ومفتاح «ليلاً» يغيّر الإضاءة والسماء فحسب، ولا يغيّر شيئاً من الهندسة ولا يضيف دعوى جديدة؛ هو المشهد الذي تظهر فيه الإنارة على حقيقتها.'
+  },
+  en: {
+    title: 'The wall in three dimensions',
+    lead: 'The same plan lifted into three dimensions, at the wall measurements the book gives.',
+    load: 'Show the model',
+    loading: 'Loading…',
+    hint: 'Drag to orbit, scroll to zoom. Click a tower or a gate.',
+    opensOn: 'The view opens at Sabah Al Sabkha, with Al Sabkha Tower beside it.',
+    labels: 'Names',
+    palms: 'Palms',
+    houses: 'Houses',
+    lamps: 'Lamps',
+    night: 'Night',
+    fortLabel: 'The fort’s great round tower',
+    reset: 'Back to the gate',
+    wide: 'Whole circuit',
+    nothing: 'Nothing selected yet',
+    tower: 'Tower',
+    gate: 'Gate',
+    failed:
+      'The 3D view could not start on this device. The flat plan above carries the same information.',
+    dimsTitle: 'Where the measurements come from',
+    dims: [
+      ['Wall height', '5 to 6 metres', 'from the book'],
+      ['Wall thickness', '1.5 to 2 metres', 'from the book'],
+      ['Tower base', '4 to 5 metres across, most of them cylindrical', 'from the book'],
+      ['Wall length', 'about 2 kilometres', 'from the book'],
+      ['Tower height', 'two metres above the wall', 'NOT in the book, this model’s choice'],
+      ['The fort’s round tower', 'positioned from the plan', 'the plan is not to scale for buildings'],
+      ['Number of houses', 'more than three hundred', 'from the book'],
+      ['House footprint', '60 to 200 square metres', 'from the book'],
+      ['Sub-quarters', 'five, each with its own sablah', 'from the book'],
+      ['Where the houses stand, and their height', 'indicative only', 'in NO source'],
+      ['Palms', 'indicative only', 'NOT in the plan, it maps no trees'],
+      ['Walkway and parapets on the wall head', 'the wall as restored today', 'from photographs, NOT the book'],
+      ['Lamps along the parapet', 'the wall as restored today', 'from photographs, NOT the book']
+    ],
+    caveat:
+      'This is a schematic reconstruction from the book’s measurements and Dr Al Salmi’s plan. It is not a survey and not built from photography of the site. Do not read tower shapes or construction detail from it. the plan gives positions, nothing more. The houses take their number, their footprint sizes and their grouping into five sub-quarters from the book; where each one stands and how tall it is come from this model alone. The palms, inside the wall and out, are indicative in the same way: the plan draws no trees and no farms, and the book gives no positions. Both can be switched off. The walkway, its parapets and the lamps along them are the wall as RESTORED TODAY, taken from photographs of the site: the book describes a defensive wall and mentions neither a walk along it nor any lighting. The lamps switch off too. The Night switch changes only the sky and the lighting — no geometry moves and it asserts nothing further; it is simply the scene in which lit lamps can read as lit.'
+  }
+}[lang];
+
+// Names come from the plan's own legend now, with the prose-derived matches as
+// a fallback. `label` marks the few that get a floating tag in the scene:
+// all 21 at once is clutter, so the gates and the fort carry one and a tower
+// gives its name when you click it.
+const model = {
+  wall: PLAN.wall,
+  towers: PLAN_TOWERS.map((m) => ({
+    id: m.id,
+    x: m.x,
+    y: m.y,
+    name: (lang === 'ar' ? m.ar : m.en) ?? nameFor(m.id, 'tower'),
+    label: false
+  })),
+  gates: PLAN_GATES.map((m) => ({
+    id: m.id,
+    x: m.x,
+    y: m.y,
+    name: (lang === 'ar' ? m.ar : m.en) ?? nameFor(m.id, 'gate'),
+    label: true
+  })),
+  // The book: the wall runs to about two kilometres. That fixes the scale of
+  // everything else, so metres are derived from the traced perimeter rather
+  // than guessed.
+  wallLengthMetres: 2000,
+  wallHeight: 5.5,
+  wallThickness: 1.75,
+  towerRadius: 2.25,
+  towerRise: 2,
+  gateWidth: 4,
+  landmarks: PLAN_LANDMARKS,
+  // The view the model opens on — see the comment where it is used.
+  openingGate: 'g3',
+  labels: { tower: t.tower, gate: t.gate, fort: t.fortLabel }
+};
+---
+
+<section class="three" data-three>
+  <header class="head">
+    <h2>{t.title}</h2>
+    <p class="lead">{t.lead}</p>
+    <p class="opens">{t.opensOn}</p>
+  </header>
+
+  <div class="stage">
+    <div class="viewport" data-viewport>
+      <button type="button" class="load" data-load data-loading={t.loading}>{t.load}</button>
+      <p class="failed" data-failed hidden>{t.failed}</p>
+      <div class="labels" data-labels aria-hidden="true"></div>
+    </div>
+
+    <div class="bar">
+      <p class="readout" data-readout aria-live="polite">{t.nothing}</p>
+      <div class="actions">
+        <span class="hint" data-hint hidden>{t.hint}</span>
+        <label class="switch" data-switch hidden>
+          <input type="checkbox" data-toggle-labels checked />
+          {t.labels}
+        </label>
+        <label class="switch" data-switch hidden>
+          <input type="checkbox" data-toggle-houses checked />
+          {t.houses}
+        </label>
+        <label class="switch" data-switch hidden>
+          <input type="checkbox" data-toggle-palms checked />
+          {t.palms}
+        </label>
+        <label class="switch" data-switch hidden>
+          <input type="checkbox" data-toggle-lamps checked />
+          {t.lamps}
+        </label>
+        <label class="switch" data-switch hidden>
+          <input type="checkbox" data-toggle-night />
+          {t.night}
+        </label>
+        <button type="button" class="reset" data-wide hidden>{t.wide}</button>
+        <button type="button" class="reset" data-reset hidden>{t.reset}</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dims">
+    <p class="dims-title">{t.dimsTitle}</p>
+    <dl>
+      {
+        t.dims.map(([label, value, source]) => (
+          <div class:list={['dim', source.includes('NOT') || source.includes('ليس') ? 'dim--ours' : null]}>
+            <dt>{label}</dt>
+            <dd>
+              {value}
+              <span class="src">{source}</span>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+    <p class="caveat">{t.caveat}</p>
+  </div>
+
+  <script is:inline type="application/json" data-model set:html={JSON.stringify(model)} />
+</section>
+
+<script>
+  // three.js is ~150KB gzipped, so it is fetched only when someone asks for the
+  // model. Everything the model shows is also in the flat plan above, which is
+  // why this can stay opt-in.
+  document.querySelectorAll('[data-three]').forEach((root) => {
+    const viewport = root.querySelector('[data-viewport]') as HTMLElement | null;
+    const loadBtn = root.querySelector('[data-load]') as HTMLButtonElement | null;
+    const failed = root.querySelector('[data-failed]') as HTMLElement | null;
+    const readout = root.querySelector('[data-readout]') as HTMLElement | null;
+    const hint = root.querySelector('[data-hint]') as HTMLElement | null;
+    const resetBtn = root.querySelector('[data-reset]') as HTMLButtonElement | null;
+    const wideBtn = root.querySelector('[data-wide]') as HTMLButtonElement | null;
+    const labelLayer = root.querySelector('[data-labels]') as HTMLElement | null;
+    const switches = Array.from(root.querySelectorAll('[data-switch]'));
+    const modelEl = root.querySelector('[data-model]');
+    if (!viewport || !loadBtn || !modelEl || !readout) return;
+
+    const M = JSON.parse(modelEl.textContent || '{}');
+    let started = false;
+
+    loadBtn.addEventListener('click', async () => {
+      if (started) return;
+      started = true;
+      const loadingLabel = loadBtn.getAttribute('data-loading') || 'Loading…';
+      loadBtn.textContent = loadingLabel;
+      loadBtn.disabled = true;
+
+      try {
+        const THREE = await import('three');
+        const { OrbitControls } = await import('three/examples/jsm/controls/OrbitControls.js');
+        build(THREE, OrbitControls);
+        loadBtn.remove();
+        hint?.removeAttribute('hidden');
+        resetBtn?.removeAttribute('hidden');
+        wideBtn?.removeAttribute('hidden');
+        switches.forEach((el) => el.removeAttribute('hidden'));
+      } catch (err) {
+        console.error('[wall 3d]', err);
+        loadBtn.remove();
+        failed?.removeAttribute('hidden');
+      }
+    });
+
+    function readCssColour(el: Element, fallback: string) {
+      try {
+        const probe = document.createElement('canvas');
+        probe.width = probe.height = 1;
+        const ctx = probe.getContext('2d');
+        if (!ctx) return fallback;
+        ctx.fillStyle = getComputedStyle(el).backgroundColor;
+        ctx.fillRect(0, 0, 1, 1);
+        const [r, g, b, a] = ctx.getImageData(0, 0, 1, 1).data;
+        return a === 0 ? fallback : `rgb(${r}, ${g}, ${b})`;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function build(THREE: any, OrbitControls: any) {
+      // ---- scale -------------------------------------------------------
+      // The plan is a drawing in arbitrary units. The book's "about two
+      // kilometres" of wall converts it into metres.
+      const pts: [number, number][] = M.wall;
+      let perimeter = 0;
+      for (let i = 0; i < pts.length; i++) {
+        const a = pts[i];
+        const b = pts[(i + 1) % pts.length];
+        perimeter += Math.hypot(b[0] - a[0], b[1] - a[1]);
+      }
+      const S = M.wallLengthMetres / perimeter;
+      const cx = pts.reduce((s, p) => s + p[0], 0) / pts.length;
+      const cy = pts.reduce((s, p) => s + p[1], 0) / pts.length;
+      const toWorld = (p: [number, number]) =>
+        new THREE.Vector2((p[0] - cx) * S, (p[1] - cy) * S);
+
+      // Framing is computed from the model, not hand-picked: the quarter is
+      // roughly 470 x 540 m while the wall is only 5.5 m tall, so a guessed
+      // camera either clips the circuit or shrinks it to a thread.
+      const bounds = { minX: Infinity, maxX: -Infinity, minZ: Infinity, maxZ: -Infinity };
+      const HOME = new THREE.Vector3();
+      const FOCUS = new THREE.Vector3();
+
+      const world = pts.map(toWorld);
+      world.forEach((v: any) => {
+        bounds.minX = Math.min(bounds.minX, v.x);
+        bounds.maxX = Math.max(bounds.maxX, v.x);
+        bounds.minZ = Math.min(bounds.minZ, v.y);
+        bounds.maxZ = Math.max(bounds.maxZ, v.y);
+      });
+      // Distance from a point to the wall LINE, not to the nearest traced vertex.
+      // The difference matters: `world` is a simplified circuit, so on a long
+      // straight run a point can sit hard against the wall while still being far
+      // from either end of it. Everything placed inside or outside the circuit
+      // clears the wall by this measure.
+      const distToWall = (x: number, z: number) => {
+        let best = Infinity;
+        for (let i = 0, j = world.length - 1; i < world.length; j = i++) {
+          const ax = world[j].x, az = world[j].y;
+          const bx = world[i].x, bz = world[i].y;
+          const dx = bx - ax, dz = bz - az;
+          const len2 = dx * dx + dz * dz;
+          const t = len2 === 0 ? 0 : Math.max(0, Math.min(1, ((x - ax) * dx + (z - az) * dz) / len2));
+          const d = Math.hypot(x - (ax + t * dx), z - (az + t * dz));
+          if (d < best) best = d;
+        }
+        return best;
+      };
+      // Half the wall's own thickness: nothing may come closer than its face.
+      const WALL_HALF = M.wallThickness / 2;
+
+      const gates = M.gates.map((g: any) => ({ ...g, v: toWorld([g.x, g.y]) }));
+      const towers = M.towers.map((t: any) => ({ ...t, v: toWorld([t.x, t.y]) }));
+
+      // ---- scene -------------------------------------------------------
+      const scene = new THREE.Scene();
+      // Every colour token on this site is oklch(), which THREE.Color cannot
+      // parse - it warns and silently leaves the colour white. Letting the
+      // browser rasterise one pixel converts whatever CSS says into plain RGB,
+      // so the model keeps matching the page even if the token changes.
+      const paper = new THREE.Color(readCssColour(document.body, '#f5f2e9'));
+      scene.background = paper;
+      scene.fog = new THREE.Fog(paper, 1400, 3200);
+
+      // ---- the night sky ---------------------------------------------------
+      // A flat colour behind the model read as dead, so night gets a real dusk
+      // gradient. It is a sky DOME rather than a screen-space gradient: the
+      // banding has to stay anchored to the world horizon, otherwise the warm
+      // band slides around as you orbit and the illusion dies immediately.
+      // Radius 4000 sits well outside controls.maxDistance and inside the
+      // camera's far plane of 5000; `fog: false` keeps the dome itself out of
+      // the scene fog, and depthWrite off keeps it behind everything.
+      // Colours are read off the dusk photographs: peach at the horizon, through
+      // a lavender grey, into deep blue overhead.
+      const skyDome = new THREE.Mesh(
+        new THREE.SphereGeometry(4000, 32, 16),
+        new THREE.ShaderMaterial({
+          side: THREE.BackSide,
+          depthWrite: false,
+          fog: false,
+          uniforms: {
+            top: { value: new THREE.Color(0x2b3a63) },
+            horizon: { value: new THREE.Color(0x7d6f8c) },
+            glow: { value: new THREE.Color(0xd79a72) }
+          },
+          vertexShader: `
+            varying vec3 vWorld;
+            void main() {
+              vWorld = (modelMatrix * vec4(position, 1.0)).xyz;
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }`,
+          fragmentShader: `
+            uniform vec3 top;
+            uniform vec3 horizon;
+            uniform vec3 glow;
+            varying vec3 vWorld;
+            void main() {
+              float h = normalize(vWorld).y;          // -1 straight down .. 1 straight up
+              vec3 c = mix(horizon, top, pow(clamp(h, 0.0, 1.0), 0.55));
+              float band = exp(-abs(h) * 14.0);       // warm band hugging the horizon
+              c = mix(c, glow, band * 0.55);
+              c = mix(c, horizon * 0.32, clamp(-h * 2.2, 0.0, 1.0));  // haze below
+              gl_FragColor = vec4(c, 1.0);
+            }`
+        })
+      );
+      skyDome.renderOrder = -1;
+      skyDome.visible = false;
+      scene.add(skyDome);
+
+      const camera = new THREE.PerspectiveCamera(45, 16 / 10, 1, 5000);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+      renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+      viewport!.appendChild(renderer.domElement);
+
+      // Two framings. The whole circuit is the reference view, but at true scale
+      // a 5.5 m wall around a half-kilometre quarter is a thin ribbon, so the
+      // model OPENS on a gate instead: close enough that the wall, its opening
+      // and the tower beside it read as architecture.
+      const spanX = bounds.maxX - bounds.minX;
+      const spanZ = bounds.maxZ - bounds.minZ;
+      const radius = Math.max(spanX, spanZ) / 2;
+      const wideDist = (radius / Math.tan((camera.fov * Math.PI) / 180 / 2)) * 1.02;
+      const AZ = (35 * Math.PI) / 180;
+      const EL = (19 * Math.PI) / 180;
+
+      const centre = new THREE.Vector3(
+        (bounds.minX + bounds.maxX) / 2,
+        0,
+        (bounds.minZ + bounds.maxZ) / 2
+      );
+      const WIDE_POS = new THREE.Vector3(
+        centre.x + Math.sin(AZ) * Math.cos(EL) * wideDist,
+        Math.sin(EL) * wideDist,
+        centre.z + Math.cos(AZ) * Math.cos(EL) * wideDist
+      );
+
+      // Sabah Al Sabkha: standing, named on the strongest evidence in the book,
+      // and Al Sabkha Tower stands immediately beside it — so one frame holds a
+      // gate, a tower and a stretch of wall. Falls back to whichever gate exists.
+      const opener = gates.find((g: any) => g.id === M.openingGate) ?? gates[0];
+
+      // Look at the gate from outside the wall: take the nearest stretch of
+      // circuit, and step away from the quarter's centre along its normal.
+      let near = 0;
+      let bestD = Infinity;
+      for (let i = 0; i < world.length; i++) {
+        const d = Math.hypot(world[i].x - opener.v.x, world[i].y - opener.v.y);
+        if (d < bestD) { bestD = d; near = i; }
+      }
+      const a0 = world[near];
+      const a1 = world[(near + 1) % world.length];
+      const tan = new THREE.Vector2(a1.x - a0.x, a1.y - a0.y).normalize();
+      let nrm = new THREE.Vector2(-tan.y, tan.x);
+      if (nrm.dot(new THREE.Vector2(opener.v.x - centre.x, opener.v.y - centre.z)) < 0) {
+        nrm.multiplyScalar(-1); // make sure we stand outside, not in the courtyard
+      }
+
+      // Tuned by rendering the model offline: an eye above the wall top looks
+      // straight over it and the gateway disappears, so this stays below 5.5 m.
+      const STAND_OFF = 26;   // metres back from the gate
+      const EYE = 4;          // metres up — below the wall, so it reads as a barrier
+      const ALONG = -16;      // metres along the wall, so the tower beside the
+                              // gate frames the opening instead of blocking it
+      const GATE_POS = new THREE.Vector3(
+        opener.v.x + nrm.x * STAND_OFF + tan.x * ALONG,
+        EYE,
+        opener.v.y + nrm.y * STAND_OFF + tan.y * ALONG
+      );
+      const GATE_FOCUS = new THREE.Vector3(opener.v.x, M.wallHeight * 0.34, opener.v.y);
+
+      HOME.copy(GATE_POS);
+      FOCUS.copy(GATE_FOCUS);
+      camera.position.copy(HOME);
+      camera.lookAt(FOCUS);
+
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      controls.maxPolarAngle = Math.PI / 2.06; // never drop below the ground
+      controls.minDistance = 12;
+      controls.maxDistance = wideDist * 2.2;
+      controls.target.copy(FOCUS);
+
+      const sky = new THREE.HemisphereLight(0xffffff, 0xcbbfa6, 1.5);
+      scene.add(sky);
+      const sun = new THREE.DirectionalLight(0xfff2e0, 1.9);
+      sun.position.set(centre.x - 260, 420, centre.z + 300);
+      scene.add(sun);
+
+      const CLAY = 0xa8663f;
+      const CLAY_DEEP = 0x8a5030;
+      const SAND = 0xe3dbc9;
+
+      // ---- ground ---------------------------------------------------------
+      // Terrain outside the circuit as well as the courtyard inside it: without
+      // it the wall floats, and an opening cut through the wall shows nothing
+      // but page colour instead of ground.
+      const terrain = new THREE.Mesh(
+        new THREE.PlaneGeometry(6000, 6000),
+        new THREE.MeshLambertMaterial({ color: 0xdfd6c4 })
+      );
+      terrain.rotation.x = -Math.PI / 2;
+      terrain.position.y = -0.05;
+      scene.add(terrain);
+
+      const shape = new THREE.Shape(world);
+      const ground = new THREE.Mesh(
+        new THREE.ShapeGeometry(shape),
+        new THREE.MeshLambertMaterial({ color: SAND })
+      );
+      ground.rotation.x = -Math.PI / 2;
+      ground.position.y = 0.05;
+      scene.add(ground);
+
+      // ---- the wall ------------------------------------------------------
+      // Built as short blocks along the traced circuit. Blocks that fall in a
+      // gateway are skipped, so the gates read as openings rather than marks.
+      const PIECE = 3;
+      const halfGate = M.gateWidth / 2 + PIECE / 2;
+      const inGateway = (x: number, z: number) =>
+        gates.some((g: any) => Math.hypot(x - g.v.x, z - g.v.y) < halfGate);
+
+      const blocks: any[] = [];
+      for (let i = 0; i < world.length; i++) {
+        const a = world[i];
+        const b = world[(i + 1) % world.length];
+        const len = a.distanceTo(b);
+        const steps = Math.max(1, Math.round(len / PIECE));
+        const angle = Math.atan2(b.y - a.y, b.x - a.x);
+        for (let s = 0; s < steps; s++) {
+          const t0 = (s + 0.5) / steps;
+          const x = a.x + (b.x - a.x) * t0;
+          const z = a.y + (b.y - a.y) * t0;
+          if (inGateway(x, z)) continue;
+          blocks.push({ x, z, len: len / steps + 0.35, angle });
+        }
+      }
+
+      const wallMesh = new THREE.InstancedMesh(
+        new THREE.BoxGeometry(1, 1, 1),
+        new THREE.MeshLambertMaterial({ color: CLAY }),
+        blocks.length
+      );
+      const dummy = new THREE.Object3D();
+      blocks.forEach((blk, i) => {
+        dummy.position.set(blk.x, M.wallHeight / 2, blk.z);
+        dummy.rotation.set(0, -blk.angle, 0);
+        dummy.scale.set(blk.len, M.wallHeight, M.wallThickness);
+        dummy.updateMatrix();
+        wallMesh.setMatrixAt(i, dummy.matrix);
+      });
+      scene.add(wallMesh);
+
+      // ---- gates: a lintel over each opening ------------------------------
+      const gateGroup = new THREE.Group();
+      // Shared, and deliberately not per-gate: the night switch retunes these two
+      // and needs a handle on them. They are the darkest materials in the model
+      // (0x5c3420 against the wall's 0xa8663f), so they are the first thing to
+      // crush to black when the lights come down.
+      const JAMB_DAY = 0x5c3420;
+      const jambMat = new THREE.MeshLambertMaterial({ color: JAMB_DAY });
+      const lintelMat = new THREE.MeshLambertMaterial({ color: CLAY_DEEP });
+      gates.forEach((g: any) => {
+        // Which way does the wall run here? The jambs and the lintel have to sit
+        // square to it.
+        let near = 0;
+        let bestD = Infinity;
+        for (let i = 0; i < world.length; i++) {
+          const d = Math.hypot(world[i].x - g.v.x, world[i].y - g.v.y);
+          if (d < bestD) { bestD = d; near = i; }
+        }
+        const s0 = world[near];
+        const s1 = world[(near + 1) % world.length];
+        const runAngle = Math.atan2(s1.y - s0.y, s1.x - s0.x);
+
+        for (const sgn of [1, -1]) {
+          const jamb = new THREE.Mesh(
+            new THREE.BoxGeometry(0.6, M.wallHeight, M.wallThickness + 0.1),
+            jambMat
+          );
+          jamb.position.set(
+            g.v.x + Math.cos(runAngle) * (M.gateWidth / 2) * sgn,
+            M.wallHeight / 2,
+            g.v.y + Math.sin(runAngle) * (M.gateWidth / 2) * sgn
+          );
+          jamb.rotation.y = -runAngle;
+          gateGroup.add(jamb);
+        }
+
+        const lintel = new THREE.Mesh(
+          new THREE.BoxGeometry(M.gateWidth + 1.5, M.wallHeight - 3.2, M.wallThickness + 0.5),
+          lintelMat
+        );
+        lintel.position.set(g.v.x, M.wallHeight - (M.wallHeight - 3.2) / 2, g.v.y);
+        lintel.rotation.y = -runAngle;
+        lintel.userData = { id: g.id, name: g.name, kind: 'gate' };
+        gateGroup.add(lintel);
+      });
+      scene.add(gateGroup);
+
+      // ---- towers ---------------------------------------------------------
+      // The book: bases 4-5 m across, most of them cylindrical. It gives no
+      // height, so they stand two metres above the wall — the model's choice,
+      // stated as such on the page.
+      const towerH = M.wallHeight + M.towerRise;
+      const towerGroup = new THREE.Group();
+      towers.forEach((tw: any) => {
+        const mesh = new THREE.Mesh(
+          new THREE.CylinderGeometry(M.towerRadius * 0.9, M.towerRadius, towerH, 18),
+          // Every tower carries a legend name now, so colour no longer marks
+          // "named" — they all read the same, and the gates stay the darker tone.
+          new THREE.MeshLambertMaterial({ color: CLAY })
+        );
+        mesh.position.set(tw.v.x, towerH / 2, tw.v.y);
+        mesh.userData = { id: tw.id, name: tw.name, kind: 'tower' };
+        towerGroup.add(mesh);
+      });
+      scene.add(towerGroup);
+
+      // ---- crenellations -------------------------------------------------
+      // Merlons along the wall head and around the towers. Omani fortification
+      // is crenellated throughout - the plan draws it, and photographs of the
+      // fort and the restored wall show it plainly. Shape only: no source gives
+      // merlon sizes, so these are cut to look right at this scale.
+      const MERLON = { w: 0.55, h: 0.75, gap: 1.35 };
+      const merlonGeo = new THREE.BoxGeometry(1, 1, 1);
+      const merlonMat = new THREE.MeshLambertMaterial({ color: 0xb9814f });
+      const crenels: any[] = [];
+      for (let i = 0; i < world.length; i++) {
+        const a = world[i];
+        const b = world[(i + 1) % world.length];
+        const len = a.distanceTo(b);
+        const steps = Math.max(1, Math.round(len / MERLON.gap));
+        const angle = Math.atan2(b.y - a.y, b.x - a.x);
+        for (let s2 = 0; s2 < steps; s2++) {
+          const f = (s2 + 0.5) / steps;
+          const x = a.x + (b.x - a.x) * f;
+          const z = a.y + (b.y - a.y) * f;
+          if (inGateway(x, z)) continue;
+          crenels.push({ x, z, angle });
+        }
+      }
+      // ---- the wall head: walkway, parapets, lamps -------------------------
+      // THE RESTORED WALL AS IT STANDS TODAY, from photographs of the site - the
+      // book describes a defensive wall and says nothing about a public walk
+      // along it or about lighting. The merlons used to span nearly the whole
+      // 1.75 m thickness, which left no deck at all; they now sit on the OUTER
+      // edge, with a low plain parapet on the inner edge and the walk between.
+      // Depths are proportioned to the book's thickness, not measured on site.
+      const PARAPET = { outer: 0.42, inner: 0.30, innerH: 0.5 };
+      const DECK = M.wallThickness - PARAPET.outer - PARAPET.inner;
+      // Which side of the wall is "out"? Take it from the polygon's WINDING,
+      // which is exact for any simple polygon. Comparing each point against the
+      // centre instead looks reasonable and is wrong wherever the circuit turns
+      // concave — and this one is very irregular: that heuristic put the merlons
+      // on the INSIDE for 153 of 1484 crenels, better than one stretch in ten.
+      // Signed area gives the winding once; the outward normal of a→b is then
+      // (sin θ, −cos θ) times that sign, everywhere, with no per-point test.
+      const signedArea = world.reduce((acc: number, v: any, i: number) => {
+        const w = world[(i + 1) % world.length];
+        return acc + (v.x * w.y - w.x * v.y);
+      }, 0) / 2;
+      const WIND = signedArea > 0 ? 1 : -1;
+      const outwardSign = () => WIND;
+
+      const merlons = new THREE.InstancedMesh(merlonGeo, merlonMat, crenels.length);
+      const walkMat = new THREE.MeshLambertMaterial({ color: 0xc9a978 });
+      const walk = new THREE.InstancedMesh(merlonGeo, walkMat, crenels.length);
+      const rail = new THREE.InstancedMesh(merlonGeo, merlonMat, crenels.length);
+      crenels.forEach((c, i) => {
+        const sgn = outwardSign();
+        const nx = Math.sin(c.angle) * sgn, nz = -Math.cos(c.angle) * sgn;
+        const outOff = (M.wallThickness - PARAPET.outer) / 2;
+        const inOff = (M.wallThickness - PARAPET.inner) / 2;
+
+        // merlon, on the outer edge
+        dummy.position.set(c.x + nx * outOff, M.wallHeight + MERLON.h / 2, c.z + nz * outOff);
+        dummy.rotation.set(0, -c.angle, 0);
+        dummy.scale.set(MERLON.w, MERLON.h, PARAPET.outer);
+        dummy.updateMatrix();
+        merlons.setMatrixAt(i, dummy.matrix);
+
+        // the deck itself, a shade lighter so the walk reads from above
+        dummy.position.set(c.x, M.wallHeight + 0.04, c.z);
+        dummy.scale.set(MERLON.gap, 0.08, DECK);
+        dummy.updateMatrix();
+        walk.setMatrixAt(i, dummy.matrix);
+
+        // plain low parapet on the inner edge - no merlons on this side
+        dummy.position.set(c.x - nx * inOff, M.wallHeight + PARAPET.innerH / 2, c.z - nz * inOff);
+        dummy.scale.set(MERLON.gap, PARAPET.innerH, PARAPET.inner);
+        dummy.updateMatrix();
+        rail.setMatrixAt(i, dummy.matrix);
+      });
+      scene.add(merlons, walk, rail);
+
+      // Lamps along the inner parapet, one every few merlons. They are drawn
+      // with a MeshBasicMaterial so they read as lit without depending on the
+      // scene lighting, and there is no PointLight behind them: 300-odd real
+      // lights would cost more than the whole rest of the model.
+      const lampGroup = new THREE.Group();
+      let lampGlow: any = null;
+      {
+        // Every SECOND merlon, about 2.7 m apart. One per merlon read as a
+        // solid band of light rather than a row of lamps.
+        const LAMP_EVERY = 2;
+        const lampSpots = crenels.filter((_: any, i: number) => i % LAMP_EVERY === 0);
+
+        // No glow halo. The scene is bright daylight on an ivory ground
+        // (scene.background is the page colour), so a translucent orange blob
+        // cannot read as light — it just smears colour across the wall. What
+        // reads at this scale is the FIXTURE: a small dark lantern with a warm
+        // lens, standing on the inner parapet. The dusk glow of the photographs
+        // would need a night scene, which this model is not.
+        const box = new THREE.BoxGeometry(1, 1, 1);
+        const bodyMat = new THREE.MeshLambertMaterial({ color: 0x4f3826 });
+        const lensMat = new THREE.MeshBasicMaterial({ color: 0xffab4f });
+
+        const body = new THREE.InstancedMesh(box, bodyMat, lampSpots.length);
+        const lens = new THREE.InstancedMesh(box, lensMat, lampSpots.length);
+        const cap = new THREE.InstancedMesh(box, bodyMat, lampSpots.length);
+
+        const BODY = { w: 0.24, h: 0.3, d: 0.22 };
+        lampSpots.forEach((c: any, i: number) => {
+          const sgn = outwardSign();
+          const nx = Math.sin(c.angle) * sgn, nz = -Math.cos(c.angle) * sgn;
+          const off = (M.wallThickness - PARAPET.inner) / 2;
+          const x = c.x - nx * off, z = c.z - nz * off;
+          const base = M.wallHeight + PARAPET.innerH;   // stands ON the parapet
+          dummy.rotation.set(0, -c.angle, 0);
+
+          dummy.position.set(x, base + BODY.h / 2, z);
+          dummy.scale.set(BODY.w, BODY.h, BODY.d);
+          dummy.updateMatrix();
+          body.setMatrixAt(i, dummy.matrix);
+
+          // the lens, proud of the inner face so it catches the eye from inside
+          dummy.position.set(x - nx * 0.05, base + BODY.h * 0.54, z - nz * 0.05);
+          dummy.scale.set(BODY.w * 0.6, BODY.h * 0.48, BODY.d * 1.3);
+          dummy.updateMatrix();
+          lens.setMatrixAt(i, dummy.matrix);
+
+          // a small lid — what turns two boxes into something read as a lantern
+          dummy.position.set(x, base + BODY.h + 0.03, z);
+          dummy.scale.set(BODY.w * 1.55, 0.06, BODY.d * 1.55);
+          dummy.updateMatrix();
+          cap.setMatrixAt(i, dummy.matrix);
+        });
+        // The glow only exists at night. Additive blending is what makes it read
+        // as light rather than as orange plastic - and it only works on a dark
+        // ground, which is exactly why day mode leaves it switched off.
+        const glowGeo = new THREE.SphereGeometry(1, 8, 6);
+        const glowMat = new THREE.MeshBasicMaterial({
+          color: 0xff9a3d,
+          transparent: true,
+          opacity: 0.5,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false
+        });
+        lampGlow = new THREE.InstancedMesh(glowGeo, glowMat, lampSpots.length);
+        lampSpots.forEach((c: any, i: number) => {
+          const sgn = outwardSign();
+          const nx = Math.sin(c.angle) * sgn, nz = -Math.cos(c.angle) * sgn;
+          const off = (M.wallThickness - PARAPET.inner) / 2;
+          dummy.rotation.set(0, 0, 0);
+          dummy.position.set(
+            c.x - nx * (off + 0.05),
+            M.wallHeight + PARAPET.innerH + BODY.h * 0.54,
+            c.z - nz * (off + 0.05)
+          );
+          dummy.scale.set(0.62, 0.62, 0.62);
+          dummy.updateMatrix();
+          lampGlow.setMatrixAt(i, dummy.matrix);
+        });
+        lampGlow.visible = false;
+        lampGroup.add(body, lens, cap, lampGlow);
+      }
+      scene.add(lampGroup);
+
+      /** A ring of merlons round a circular top — towers and the fort drum. */
+      const crownRing = (cx2: number, cz: number, radius: number, top: number, group: any) => {
+        const count = Math.max(6, Math.round((2 * Math.PI * radius) / MERLON.gap));
+        const ring = new THREE.InstancedMesh(merlonGeo, merlonMat, count);
+        for (let i = 0; i < count; i++) {
+          const th = (i / count) * Math.PI * 2;
+          dummy.position.set(cx2 + Math.cos(th) * radius, top + MERLON.h / 2, cz + Math.sin(th) * radius);
+          dummy.rotation.set(0, -th, 0);
+          dummy.scale.set(MERLON.w * 0.9, MERLON.h, radius * 0.18);
+          dummy.updateMatrix();
+          ring.setMatrixAt(i, dummy.matrix);
+        }
+        group.add(ring);
+      };
+      towers.forEach((tw: any) => crownRing(tw.v.x, tw.v.y, M.towerRadius * 0.92, towerH, scene));
+
+      // ---- the fort's great round tower --------------------------------------
+      // The one building the plan draws as a true footprint rather than as a
+      // little picture, so its POSITION and its circle come from the plan. The
+      // plan is not to scale for buildings, so the circle runs about 64 m where
+      // the real tower is usually given as roughly 45 m.
+      //
+      // Its PROPORTIONS follow photographs of the fort: a drum a little under
+      // two-thirds as tall as it is wide, a crenellated head, and a band of
+      // small openings. Nothing here is measured, and the page says so.
+      const fortGroup = new THREE.Group();
+      (M.landmarks ?? []).forEach((l: any) => {
+        const c = toWorld([l.x, l.y]);
+        const rad = l.radius * S;
+        const height = rad * 2 * 0.62;   // height : diameter, read off photographs
+        const drum = new THREE.Mesh(
+          new THREE.CylinderGeometry(rad * 0.97, rad, height, 48),
+          new THREE.MeshLambertMaterial({ color: 0xc08a5a })
+        );
+        drum.position.set(c.x, height / 2, c.y);
+        drum.userData = { id: l.id, name: M.labels.fort, kind: 'fort' };
+        fortGroup.add(drum);
+
+        // the string course the parapet sits on
+        const band = new THREE.Mesh(
+          new THREE.CylinderGeometry(rad * 1.03, rad * 1.03, height * 0.035, 48),
+          new THREE.MeshLambertMaterial({ color: 0xa06a40 })
+        );
+        band.position.set(c.x, height, c.y);
+        fortGroup.add(band);
+        crownRing(c.x, c.y, rad * 0.99, height + height * 0.02, fortGroup);
+
+        // the band of small openings that rings the drum in every photograph
+        const holeMat = new THREE.MeshLambertMaterial({ color: 0x4a2c1a });
+        const holes = 26;
+        const holeMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), holeMat, holes * 2);
+        let hi = 0;
+        for (const level of [0.62, 0.82]) {
+          for (let i = 0; i < holes; i++) {
+            const th = (i / holes) * Math.PI * 2 + (level > 0.7 ? Math.PI / holes : 0);
+            dummy.position.set(c.x + Math.cos(th) * rad * 0.995, height * level, c.y + Math.sin(th) * rad * 0.995);
+            dummy.rotation.set(0, -th, 0);
+            dummy.scale.set(0.7, 1.1, 0.5);
+            dummy.updateMatrix();
+            holeMesh.setMatrixAt(hi++, dummy.matrix);
+          }
+        }
+        fortGroup.add(holeMesh);
+
+        // the flag that stands on it
+        const pole = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.18, 0.18, height * 0.16, 6),
+          new THREE.MeshLambertMaterial({ color: 0x6b5540 })
+        );
+        pole.position.set(c.x, height + height * 0.08 + MERLON.h, c.y);
+        fortGroup.add(pole);
+      });
+      scene.add(fortGroup);
+
+      // ---- the houses ---------------------------------------------------------
+      // Three of the four numbers here are the book's: it says the quarter held
+      // MORE THAN THREE HUNDRED houses, of 60 to 200 square metres, and that it
+      // divides internally into FIVE sub-quarters, each with its own sablah. So
+      // the count, the footprint sizes and the grouping into five are sourced.
+      // Only where each house stands, and how tall it is, are this model's.
+      const houseGroup = new THREE.Group();
+      {
+        const insidePoly = (x: number, z: number) => {
+          let hit = false;
+          for (let i = 0, j = world.length - 1; i < world.length; j = i++) {
+            const xi = world[i].x, zi = world[i].y, xj = world[j].x, zj = world[j].y;
+            if ((zi > z) !== (zj > z) && x < ((xj - xi) * (z - zi)) / (zj - zi + 1e-9) + xi) hit = !hit;
+          }
+          return hit;
+        };
+        const fort = (M.landmarks ?? [])[0];
+        const fortC = fort ? toWorld([fort.x, fort.y]) : null;
+        const fortR = fort ? fort.radius * S : 0;
+
+        // The gap left between the houses and the inside face of the wall. Like
+        // the positions themselves this is the model's, not a source - but the
+        // alternative is houses embedded in the wall, which contradicts the plan.
+        const HOUSE_LANE = 2.2;
+
+        let hseed = 71341;
+        const hr = () => ((hseed = (hseed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
+
+        // five sub-quarters, spread across the interior
+        const quarters: any[] = [];
+        for (let i = 0; i < 3000 && quarters.length < 5; i++) {
+          const x = bounds.minX + hr() * (bounds.maxX - bounds.minX);
+          const z = bounds.minZ + hr() * (bounds.maxZ - bounds.minZ);
+          if (!insidePoly(x, z)) continue;
+          if (fortC && Math.hypot(x - fortC.x, z - fortC.y) < fortR * 1.9) continue;
+          if (quarters.some((q) => Math.hypot(q.x - x, q.z - z) < 130)) continue;
+          quarters.push({ x, z });
+        }
+
+        const placed: any[] = [];
+        for (const q of quarters) {
+          // 4000, not 1400: once houses have to clear the wall, a good share
+          // of candidate spots are rejected, and at 1400 only 292 of the 300
+          // ever landed — which would have quietly contradicted the book's own
+          // "more than three hundred". The count is sourced; the attempts are not.
+          for (let i = 0; i < 4000 && placed.length < 300; i++) {
+            const ang = hr() * Math.PI * 2;
+            const rad = 8 + hr() * 95;
+            const x = q.x + Math.cos(ang) * rad;
+            const z = q.z + Math.sin(ang) * rad;
+            if (!insidePoly(x, z)) continue;
+            if (fortC && Math.hypot(x - fortC.x, z - fortC.y) < fortR * 1.5) continue;
+            // 60-200 m2, the book's range
+            const side = Math.sqrt(60 + hr() * 140);
+            // A house is up to ~14 m across, so testing its CENTRE against the
+            // circuit let the box straddle a 1.75 m wall - houses grew through
+            // the wall head and through the walkway on top of it. Clear the
+            // wall by the block's own half-diagonal (its worst case at any
+            // rotation), plus the wall's half-thickness, plus a lane.
+            const halfDiag = side * 1.2 * Math.SQRT1_2;
+            if (distToWall(x, z) < halfDiag + WALL_HALF + HOUSE_LANE) continue;
+            if (placed.some((h2) => Math.hypot(h2.x - x, h2.z - z) < (h2.side + side) * 0.62)) continue;
+            placed.push({ x, z, side, rot: hr() * Math.PI, h: 3.4 + hr() * 1.8 });
+            if (placed.length >= 60 * (quarters.indexOf(q) + 1)) break;
+          }
+        }
+
+        const houses = new THREE.InstancedMesh(
+          new THREE.BoxGeometry(1, 1, 1),
+          new THREE.MeshLambertMaterial({ color: 0xd8c3a2 }),
+          placed.length
+        );
+        const roofs = new THREE.InstancedMesh(
+          new THREE.BoxGeometry(1, 1, 1),
+          new THREE.MeshLambertMaterial({ color: 0xc4ab88 }),
+          placed.length
+        );
+        placed.forEach((h2, i) => {
+          dummy.position.set(h2.x, h2.h / 2, h2.z);
+          dummy.rotation.set(0, h2.rot, 0);
+          dummy.scale.set(h2.side, h2.h, h2.side * (0.8 + 0.4 * ((i % 5) / 5)));
+          dummy.updateMatrix();
+          houses.setMatrixAt(i, dummy.matrix);
+          // a thin parapet, which is what every roofline in the photographs has
+          dummy.position.set(h2.x, h2.h + 0.28, h2.z);
+          dummy.scale.set(h2.side * 1.04, 0.55, h2.side * (0.8 + 0.4 * ((i % 5) / 5)) * 1.04);
+          dummy.updateMatrix();
+          roofs.setMatrixAt(i, dummy.matrix);
+        });
+        houseGroup.add(houses, roofs);
+      }
+      scene.add(houseGroup);
+
+      // ---- indicative planting ------------------------------------------------
+      // NOT from the plan, which draws no trees, and not from the book, which
+      // gives no positions. Scattered inside the wall, clear of the fort, purely
+      // so the courtyard is not a bare floor. Switchable, and labelled as
+      // indicative wherever it is described.
+      const palmGroup = new THREE.Group();
+      {
+        // A frond cone is 3.1 m across; clear its radius off the wall face so no
+        // canopy overhangs the walkway.
+        const PALM_CLEAR = 3.4;
+
+        const trunkMat = new THREE.MeshLambertMaterial({ color: 0x8a6a45 });
+        const frondMat = new THREE.MeshLambertMaterial({ color: 0x6f7d4a });
+        const trunkGeo = new THREE.CylinderGeometry(0.28, 0.42, 6, 6);
+        const frondGeo = new THREE.ConeGeometry(3.1, 2.6, 7);
+
+        const insidePoly = (x: number, z: number) => {
+          let hit = false;
+          for (let i = 0, j = world.length - 1; i < world.length; j = i++) {
+            const xi = world[i].x, zi = world[i].y, xj = world[j].x, zj = world[j].y;
+            if ((zi > z) !== (zj > z) && x < ((xj - xi) * (z - zi)) / (zj - zi + 1e-9) + xi) hit = !hit;
+          }
+          return hit;
+        };
+        const fort = (M.landmarks ?? [])[0];
+        const fortC = fort ? toWorld([fort.x, fort.y]) : null;
+        const fortR = fort ? fort.radius * S : 0;
+
+        // A fixed pattern rather than Math.random, so the model looks the same
+        // on every visit and nobody reads movement into it.
+        let seed = 20210;
+        const rnd = () => ((seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
+        // Grouped into a few groves rather than spread evenly. An even sprinkle
+        // would read as "the quarter was a palm grove", and the book is explicit
+        // that it held more than three hundred houses and narrow lanes. The book
+        // does name orchards inside the wall - بستان العقر, and two towers are
+        // named after it - so clumps of planting belong; a blanket does not.
+        const groves: any[] = [];
+        for (let i = 0; i < 400 && groves.length < 4; i++) {
+          const x = bounds.minX + rnd() * (bounds.maxX - bounds.minX);
+          const z = bounds.minZ + rnd() * (bounds.maxZ - bounds.minZ);
+          if (!insidePoly(x, z)) continue;
+          if (fortC && Math.hypot(x - fortC.x, z - fortC.y) < fortR * 2.2) continue;
+          if (groves.some((g) => Math.hypot(g.x - x, g.z - z) < 150)) continue;
+          groves.push({ x, z });
+        }
+
+        const spots: any[] = [];
+
+        // Outside the wall too. Every photograph of the quarter shows it sitting
+        // in date gardens, and the book has aflaj and farm wells serving them —
+        // but no source puts a tree anywhere, so this is the same indicative
+        // planting as the groves inside, and switches off with them.
+        const ringOuter: any[] = [];
+        for (let i = 0; i < 6000 && ringOuter.length < 340; i++) {
+          const x = bounds.minX - 150 + rnd() * (bounds.maxX - bounds.minX + 300);
+          const z = bounds.minZ - 150 + rnd() * (bounds.maxZ - bounds.minZ + 300);
+          if (insidePoly(x, z)) continue;               // inside is handled below
+          const near = distToWall(x, z);
+          if (near > 145) continue;                      // keep it a belt, not a forest
+          if (near < WALL_HALF + PALM_CLEAR) continue;   // not growing out of the wall
+          if (ringOuter.some((p) => Math.hypot(p.x - x, p.z - z) < 11)) continue;
+          ringOuter.push({ x, z });
+        }
+        // NB: keep the inner groves in their own list. Pushing the outer belt
+        // into `spots` first made the per-grove cap true immediately, and no
+        // palm was ever placed inside the wall.
+        const inner: any[] = [];
+        for (const grove of groves) {
+          for (let i = 0; i < 90 && inner.length < (groves.indexOf(grove) + 1) * 14; i++) {
+            const ang = rnd() * Math.PI * 2;
+            const rad = 12 + rnd() * 46;
+            const x = grove.x + Math.cos(ang) * rad;
+            const z = grove.z + Math.sin(ang) * rad;
+            if (!insidePoly(x, z)) continue;
+            if (fortC && Math.hypot(x - fortC.x, z - fortC.y) < fortR * 1.6) continue;
+            // The inner groves had no wall clearance at all, so a frond could
+            // sit on the walkway. Same standoff as the outer belt.
+            if (distToWall(x, z) < WALL_HALF + PALM_CLEAR) continue;
+            if (inner.some((p) => Math.hypot(p.x - x, p.z - z) < 9)) continue;
+            inner.push({ x, z });
+          }
+        }
+        spots.push(...inner, ...ringOuter);
+        const trunks = new THREE.InstancedMesh(trunkGeo, trunkMat, spots.length);
+        const fronds = new THREE.InstancedMesh(frondGeo, frondMat, spots.length);
+        const d2 = new THREE.Object3D();
+        spots.forEach((p, i) => {
+          const h = 5.2 + rnd() * 2.6;
+          d2.position.set(p.x, h / 2, p.z);
+          d2.rotation.set(0, rnd() * Math.PI, 0);
+          d2.scale.set(1, h / 6, 1);
+          d2.updateMatrix();
+          trunks.setMatrixAt(i, d2.matrix);
+          d2.position.set(p.x, h + 0.6, p.z);
+          d2.scale.set(1, 1, 1);
+          d2.updateMatrix();
+          fronds.setMatrixAt(i, d2.matrix);
+        });
+        palmGroup.add(trunks, fronds);
+      }
+      scene.add(palmGroup);
+
+      // ---- picking ---------------------------------------------------------
+      const ray = new THREE.Raycaster();
+      const pointer = new THREE.Vector2();
+      const pickable = [
+        ...towerGroup.children,
+        ...gateGroup.children.filter((c: any) => c.userData.kind),
+        ...fortGroup.children.filter((c: any) => c.userData.kind)
+      ];
+      let picked: any = null;
+
+      const describe = (obj: any) => {
+        const d = obj.userData;
+        const kind = d.kind === 'gate' ? M.labels.gate : M.labels.tower;
+        return d.name ? `${d.name}` : `${kind} ${d.id}`;
+      };
+
+      const pick = (event: PointerEvent) => {
+        const rect = renderer.domElement.getBoundingClientRect();
+        pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+        ray.setFromCamera(pointer, camera);
+        const hit = ray.intersectObjects(pickable, false)[0];
+        if (picked) picked.material.emissive?.setHex(0x000000);
+        picked = hit ? hit.object : null;
+        if (picked) {
+          picked.material = picked.material.clone();
+          picked.material.emissive = new THREE.Color(0x000000);
+          picked.material.emissive.setHex(0x552200);
+          readout!.textContent = describe(picked);
+        }
+      };
+      renderer.domElement.addEventListener('pointerdown', pick);
+
+      // ---- resize + loop ----------------------------------------------------
+      const resize = () => {
+        const w = viewport!.clientWidth;
+        const h = Math.max(340, Math.round(w * 0.66));
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      };
+      resize();
+      new ResizeObserver(resize).observe(viewport!);
+
+      resetBtn?.addEventListener('click', () => {
+        camera.position.copy(HOME);
+        controls.target.copy(FOCUS);
+        controls.update();
+      });
+
+      wideBtn?.addEventListener('click', () => {
+        camera.position.copy(WIDE_POS);
+        controls.target.copy(centre);
+        controls.update();
+      });
+
+      // ---- labels ------------------------------------------------------------
+      // Drawn as HTML over the canvas rather than as textures: the Arabic names
+      // need real text shaping and a right-to-left run, which a sprite atlas
+      // would mangle. Only NAMED features get one — labelling all 17 towers
+      // "tower" would be clutter, and 15 of them have no name to give.
+      type Tag = { el: HTMLElement; pos: any };
+      const tags: Tag[] = [];
+      if (labelLayer) {
+        const add = (name: string, x: number, y: number, z: number, kind: string) => {
+          const el = document.createElement('span');
+          el.className = `tag tag--${kind}`;
+          el.textContent = name;
+          labelLayer.appendChild(el);
+          tags.push({ el, pos: new THREE.Vector3(x, y, z) });
+        };
+        towers.forEach((tw: any) => {
+          // Every tower is named by the legend now, but floating all 17 tags at
+          // once is unreadable, so a tower gives its name in the readout when
+          // clicked instead. `label` marks the few that carry a standing tag.
+          if (tw.name && tw.label) add(tw.name, tw.v.x, towerH + 7, tw.v.y, 'tower');
+        });
+        gates.forEach((g: any) => {
+          if (g.name) add(g.name, g.v.x, M.wallHeight + 2.5, g.v.y, 'gate');
+        });
+        (M.landmarks ?? []).forEach((l: any) => {
+          const c = toWorld([l.x, l.y]);
+          add(M.labels.fort, c.x, l.radius * S * 0.55 + 4, c.y, 'fort');
+        });
+      }
+
+      const scratch = new THREE.Vector3();
+      const updateTags = () => {
+        if (!labelLayer || !tags.length) return;
+        const w = renderer.domElement.clientWidth;
+        const h = renderer.domElement.clientHeight;
+        for (const tag of tags) {
+          scratch.copy(tag.pos).project(camera);
+          const behind = scratch.z > 1;
+          if (behind) {
+            tag.el.style.display = 'none';
+            continue;
+          }
+          tag.el.style.display = '';
+          tag.el.style.transform =
+            `translate(-50%, -100%) translate(${(scratch.x * 0.5 + 0.5) * w}px, ${(-scratch.y * 0.5 + 0.5) * h}px)`;
+        }
+      };
+
+      root.querySelector('[data-toggle-labels]')?.addEventListener('change', (e) => {
+        labelLayer!.style.display = (e.target as HTMLInputElement).checked ? '' : 'none';
+      });
+      root.querySelector('[data-toggle-palms]')?.addEventListener('change', (e) => {
+        palmGroup.visible = (e.target as HTMLInputElement).checked;
+      });
+      root.querySelector('[data-toggle-lamps]')?.addEventListener('change', (e) => {
+        lampGroup.visible = (e.target as HTMLInputElement).checked;
+      });
+
+      // ---- day / night ------------------------------------------------------
+      // A rendering mode, not a claim about the place. Night is what the lamps
+      // were built for: additive glow needs a dark ground to read as light, and
+      // on the daytime ivory it cannot. Nothing about the GEOMETRY changes here.
+      // Twilight, not midnight. 0x141a26 was near-black: everything read as a
+      // flat silhouette against a flat ground, which is the ugly version. This
+      // is the dusk blue of the reference photographs, and the lights below are
+      // lifted to match — a lighter sky with unlit geometry in front of it looks
+      // worse than a dark one, not better.
+      // Kept as the fog tone only - the sky itself is the gradient dome above.
+      const NIGHT_FOG = new THREE.Color(0x6a5f78);
+      const setNight = (on: boolean) => {
+        // The dome IS the night sky; scene.background is cleared so it shows.
+        // Fog takes the horizon tone so distant geometry melts into the band
+        // rather than ending on a hard line.
+        skyDome.visible = on;
+        scene.background = on ? null : paper;
+        (scene.fog as any).color = on ? NIGHT_FOG : paper;
+        sky.color.set(on ? 0x5c6d99 : 0xffffff);
+        // Lifted well off black: this is what fills the faces turned away from
+        // the moon. At 0x241d16 the shadowed side of the wall crushed to a
+        // luminance of 12 against a sky of 76 - a black band, which is most of
+        // what made the first night pass look harsh.
+        sky.groundColor.set(on ? 0x4a3b2c : 0xcbbfa6);
+        sky.intensity = on ? 0.85 : 1.5;
+        sun.color.set(on ? 0xaebfe4 : 0xfff2e0);
+        sun.intensity = on ? 0.55 : 1.9;
+        // The gateway, lifted off black. Two changes, both night-only: a lighter
+        // base so it is not starting from near-black, and a small warm emissive
+        // so it holds a floor value on the faces the moonlight never reaches.
+        // The emissive is what actually stops the crush — brightening the base
+        // alone does nothing to a face with no light on it.
+        jambMat.color.set(on ? 0x8a5a3c : JAMB_DAY);
+        jambMat.emissive.set(on ? 0x241209 : 0x000000);
+        lintelMat.color.set(on ? 0xb06c42 : CLAY_DEEP);
+        lintelMat.emissive.set(on ? 0x1f1008 : 0x000000);
+        if (lampGlow) lampGlow.visible = on;
+        labelLayer?.classList.toggle('is-night', on);
+        root.classList.toggle('is-night', on);
+      };
+      root.querySelector('[data-toggle-night]')?.addEventListener('change', (e) => {
+        setNight((e.target as HTMLInputElement).checked);
+      });
+      root.querySelector('[data-toggle-houses]')?.addEventListener('change', (e) => {
+        houseGroup.visible = (e.target as HTMLInputElement).checked;
+      });
+
+      renderer.setAnimationLoop(() => {
+        controls.update();
+        renderer.render(scene, camera);
+        updateTags();
+      });
+    }
+  });
+</script>
+
+<style>
+  .three { margin-block-start: 3.5rem; }
+  .head { max-width: var(--measure); margin-block-end: 1.25rem; }
+  .head h2 { font-size: 1.6rem; margin-block-end: .4rem; }
+  .lead { font-family: var(--sans); font-size: .9rem; line-height: 1.85; color: var(--ink-muted); }
+  .opens { font-family: var(--sans); font-size: .8rem; color: var(--ink-faint); margin-block-start: .4rem; }
+
+  .stage { border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+  .viewport {
+    position: relative; min-height: 20rem;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface-sunk);
+  }
+  .viewport :global(canvas) { display: block; width: 100% !important; height: auto !important; }
+
+  /* Labels sit over the canvas as real text so Arabic shapes and runs correctly. */
+  .labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .labels :global(.tag) {
+    position: absolute; top: 0; left: 0;
+    white-space: nowrap;
+    font-family: var(--sans);
+    font-size: .72rem;
+    line-height: 1.2;
+    padding: .2rem .45rem;
+    border-radius: var(--radius);
+    /* Follows the theme. Hardcoded near-white here put near-white --ink text on
+       a near-white chip the moment dark mode existed. */
+    background: color-mix(in oklab, var(--surface) 88%, transparent);
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    box-shadow: 0 1px 3px oklch(0.22 0.02 62 / .12);
+  }
+
+  /* At night the chips must NOT follow the page theme: in page dark mode they
+     would be a dark chip on a dark sky. Fixed dark-on-warm here instead, which
+     reads over the night scene whichever theme the page itself is in. */
+  .labels.is-night :global(.tag) {
+    background: oklch(0.20 0.02 62 / .82);
+    color: oklch(0.95 0.01 80);
+    border-color: oklch(0.45 0.05 55);
+    box-shadow: 0 1px 6px oklch(0.10 0.02 62 / .5);
+  }
+  .labels :global(.tag--gate) { border-color: var(--clay); color: var(--clay-deep); }
+  .labels :global(.tag--fort) { font-family: var(--display); font-size: .82rem; font-weight: 700; }
+
+  .switch {
+    display: inline-flex; align-items: center; gap: .35rem;
+    font-family: var(--sans); font-size: .78rem; color: var(--ink-muted);
+    cursor: pointer;
+  }
+  .switch input { accent-color: var(--clay); cursor: pointer; }
+
+  .load {
+    font-family: var(--sans); font-size: .9rem;
+    background: var(--clay); color: var(--on-clay);
+    border: 0; border-radius: var(--radius);
+    padding: .85rem 1.7rem; cursor: pointer;
+  }
+  .load:hover { background: var(--clay-deep); }
+  .load:disabled { opacity: .7; cursor: default; }
+  .failed { padding: 2rem; max-width: 28rem; text-align: center; font-family: var(--sans); font-size: .87rem; color: var(--ink-muted); }
+
+  .bar {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: .5rem 1rem; padding: .8rem 1rem;
+    border-block-start: 1px solid var(--rule); font-family: var(--sans);
+  }
+  .readout { font-size: .9rem; color: var(--ink); }
+  .actions { display: flex; align-items: center; gap: .9rem; }
+  .hint { font-size: .75rem; color: var(--ink-faint); }
+  .reset {
+    font-family: var(--sans); font-size: .78rem; color: var(--ink-muted);
+    background: transparent; border: 1px solid var(--rule-strong); border-radius: var(--radius);
+    padding: .35rem .8rem; cursor: pointer;
+  }
+  .reset:hover { border-color: var(--clay); color: var(--clay); }
+
+  .dims {
+    margin-block-start: 1.25rem; border: 1px solid var(--rule);
+    border-inline-start: 3px solid var(--clay);
+    border-radius: var(--radius); background: var(--surface-sunk);
+    padding: 1.15rem 1.3rem; font-family: var(--sans);
+  }
+  .dims-title { font-family: var(--display); font-size: 1.05rem; font-weight: 700; margin-block-end: .8rem; }
+  .dims dl { margin: 0; display: grid; gap: .6rem; }
+  .dim { display: flex; flex-wrap: wrap; gap: .3rem .8rem; align-items: baseline; }
+  .dim dt { font-size: .8rem; color: var(--ink-faint); min-width: 11rem; }
+  .dim dd { margin: 0; font-size: .87rem; color: var(--ink); display: flex; flex-wrap: wrap; gap: .5rem; align-items: baseline; }
+  .src { font-size: .72rem; color: var(--ink-faint); }
+  .dim--ours dd { color: var(--clay-deep); }
+  .dim--ours .src { color: var(--clay-deep); }
+  .caveat { margin-block-start: 1rem; padding-block-start: .8rem; border-block-start: 1px solid var(--rule); font-size: .82rem; line-height: 1.85; color: var(--ink-muted); }
+</style>

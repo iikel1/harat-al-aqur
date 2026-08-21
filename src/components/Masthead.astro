@@ -1,0 +1,147 @@
+---
+import { href, otherLang, ui, type Lang } from '../lib/i18n';
+import Mark from './Mark.astro';
+
+interface Props { lang: Lang; altHref: string }
+const { lang, altHref } = Astro.props;
+const t = ui[lang];
+const alt = otherLang(lang);
+const path = Astro.url.pathname;
+const links = [
+  { url: href(lang, 'discover'), label: t.nav.discover },
+  { url: href(lang, 'map'), label: t.nav.map },
+  { url: href(lang, 'route'), label: t.nav.route },
+  { url: href(lang, 'visit'), label: t.nav.visit },
+  { url: href(lang, 'credits'), label: t.nav.credits }
+];
+const menuLabel = lang === 'ar' ? 'المداخل' : 'Menu';
+---
+<header class="masthead">
+  <div class="wrap bar">
+    <a class="brand" href={href(lang)}>
+      <span class="brand-mark"><Mark size={30} /></span>
+      <span class="brand-text">
+        <span class="brand-name">{t.siteName}</span>
+        <span class="brand-qualifier">{t.siteQualifier}</span>
+      </span>
+    </a>
+
+    {/* A disclosure below 46rem, a plain row above it. Five links plus the
+        language toggle used to wrap into three rows on a phone: 156px of
+        masthead before any content.
+
+        It ships OPEN and one line of script closes it on small viewports. That
+        is deliberate. Forcing a closed <details> back open with CSS is not
+        reliable across browsers, and this way the no-JavaScript fallback is an
+        expanded nav - every link reachable, exactly today's behaviour - rather
+        than a menu that cannot be opened. */}
+    <details class="menu" open>
+      <summary aria-label={menuLabel}>
+        <span class="menu-text">{menuLabel}</span>
+        <span class="menu-glyph" aria-hidden="true"></span>
+      </summary>
+      <nav aria-label={menuLabel}>
+        <ul>
+          {links.map((l) => (
+            <li>
+              <a href={l.url} aria-current={path.startsWith(l.url) ? 'page' : undefined}>{l.label}</a>
+            </li>
+          ))}
+          <li>
+            <a class="toggle" href={altHref} lang={alt} hreflang={alt} title={t.toggleTitle}>{t.toggleLabel}</a>
+          </li>
+        </ul>
+      </nav>
+    </details>
+    <script is:inline>
+      // Collapse the disclosure on phones, expand it above the breakpoint. This
+      // TRACKS the media query rather than sampling it once: the summary is
+      // display:none on desktop, so a window that starts narrow and is then
+      // widened would otherwise be left with a closed menu and no way to open
+      // it. Crossing the breakpoint is the only thing that overrides a manual
+      // toggle, so opening the menu on a phone stays open while you read it.
+      (function () {
+        var d = document.currentScript.previousElementSibling;
+        var mq = window.matchMedia('(max-width: 46rem)');
+        var sync = function () { d.open = !mq.matches; };
+        sync();
+        mq.addEventListener('change', sync);
+      })();
+    </script>
+  </div>
+</header>
+
+<style>
+  .masthead { border-block-end: 1px solid var(--rule); background: var(--bg); }
+  .bar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; padding-block: 1.05rem;
+  }
+  /* The mark sits centred against the whole lockup; the name and its qualifier
+     stay on a shared baseline inside .brand-text. */
+  .brand { display: flex; align-items: center; gap: .7rem; color: var(--ink); }
+  .brand:hover { color: var(--ink); }
+  .brand-mark { display: flex; color: var(--clay); flex: none; }
+  .brand:hover .brand-mark { color: var(--clay-deep); }
+  .brand-text { display: flex; align-items: baseline; gap: .6rem; }
+  .brand-name { font-family: var(--display); font-size: 1.55rem; font-weight: 700; letter-spacing: -.01em; }
+  .brand-qualifier { font-family: var(--sans); font-size: .75rem; letter-spacing: .1em; color: var(--ink-muted); }
+
+  nav ul { display: flex; align-items: center; gap: clamp(.9rem, 2.4vw, 1.65rem); list-style: none; margin: 0; padding: 0; }
+  nav a { font-family: var(--sans); font-size: .9rem; color: var(--ink); }
+  nav a:hover { color: var(--clay); }
+  nav a[aria-current='page'] { color: var(--clay); }
+
+  .toggle {
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+    padding: .35rem .7rem;
+    font-size: .8rem;
+    letter-spacing: .04em;
+    color: var(--ink-muted);
+  }
+  .toggle:hover { border-color: var(--clay); color: var(--clay); }
+
+  summary {
+    display: flex; align-items: center; gap: .5rem;
+    min-height: 44px; padding-inline: .2rem;
+    font-family: var(--sans); font-size: .85rem; color: var(--ink);
+    cursor: pointer; list-style: none;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary:focus-visible { outline: 2px solid var(--clay); outline-offset: 3px; }
+  /* Two bars that become a cross when the panel is open. */
+  .menu-glyph, .menu-glyph::before, .menu-glyph::after {
+    display: block; width: 1.1rem; height: 1px; background: var(--ink);
+    transition: transform .18s ease, opacity .18s ease;
+  }
+  .menu-glyph { position: relative; background: transparent; }
+  .menu-glyph::before, .menu-glyph::after { content: ''; position: absolute; inset-inline-start: 0; }
+  .menu-glyph::before { transform: translateY(-4px); }
+  .menu-glyph::after { transform: translateY(4px); }
+  .menu[open] .menu-glyph::before { transform: rotate(45deg); }
+  .menu[open] .menu-glyph::after { transform: rotate(-45deg); }
+
+  @media (max-width: 46rem) {
+    .menu[open] nav {
+      position: absolute; inset-inline: 0; z-index: 20;
+      margin-block-start: 1.05rem;
+      background: var(--bg); border-block: 1px solid var(--rule);
+    }
+    .menu[open] nav ul {
+      flex-direction: column; align-items: stretch;
+      gap: 0; padding: .5rem var(--gutter) 1rem;
+      max-width: var(--page-max); margin-inline: auto;
+    }
+    .menu[open] nav li + li { border-block-start: 1px solid var(--rule-light); }
+    .menu[open] nav a { display: block; padding-block: .85rem; font-size: 1rem; }
+    .menu[open] .toggle { display: inline-block; margin-block-start: .85rem; width: fit-content; }
+    .masthead { position: relative; }
+  }
+
+  /* Above the breakpoint there is no disclosure at all: the summary goes away
+     and the details is left in its default open state. */
+  @media (min-width: 46.0625rem) {
+    summary { display: none; }
+  }
+</style>

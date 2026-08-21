@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: oklch(0.55 0.10 45); text-decoration: none; }
+    a:hover { color: oklch(0.44 0.11 42); }
+  </style>
+</helmet>
+
+<div dir="rtl" style="width: 840px; background: oklch(0.965 0.010 78); font-family: Tajawal, 'Segoe UI', sans-serif; color: oklch(0.26 0.014 62); overflow: hidden">
+
+  <div style="padding: 16px 40px; border-bottom: 1px solid oklch(0.86 0.014 76); font-size: 12.5px; color: oklch(0.52 0.012 62); display: flex; gap: 8px">
+    <span>حارة العقر</span><span>›</span><span>المساجد</span><span>›</span><span style="color: oklch(0.30 0.014 62)">مسجد الشواذنة</span>
+  </div>
+
+  <div style="display: flex; gap: 34px; padding: 34px 40px 30px">
+    <!-- body -->
+    <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 18px; max-width: 470px">
+      <div style="display: flex; flex-direction: column; gap: 9px">
+        <span style="font-size: 11.5px; letter-spacing: 0.14em; color: oklch(0.55 0.10 45)">مسجد · القرن الأول الهجري</span>
+        <span style="font-family: Amiri, Georgia, serif; font-size: 42px; line-height: 1.2">مسجد الشواذنة</span>
+      </div>
+      <span style="font-size: 17px; line-height: 2.0; color: oklch(0.34 0.014 62); border-inline-start: 3px solid oklch(0.55 0.10 45); padding-inline-start: 16px">ثاني مسجد بُني في عُمان، بُني في السنة التاسعة للهجرة — ويدلّ قِدَمُه على أن حارة العقر كانت آنذاك من أهم مناطق عُمان.</span>
+      <span style="font-size: 15px; line-height: 2.05; color: oklch(0.32 0.014 62)">ويتميّز المسجد بمحرابٍ جميل جداً أبدع فيه الناحت ليكون مثالاً للنقوش الإسلامية العُمانية، وكان صنعه سنة ٩٣٦ هجرية. وكعادة العُمانيين فقد وثّق اسمه على النقوش بخطٍّ جميل.</span>
+      <img src="mosque.jpg" style="width: 100%; height: 260px; object-fit: cover; display: block; border-radius: 2px">
+      <span style="font-size: 12px; color: oklch(0.55 0.012 62); margin-top: -8px">محراب المسجد — تصوير سامي بن سالم الهنائي</span>
+      <span style="font-size: 15px; line-height: 2.05; color: oklch(0.32 0.014 62)">وقد خضع المسجد للكثير من عمليات الترميم منذ بنائه الأول، إلى ترميمه الأخير عام ٢٠٠٣ الذي قامت به وزارة التراث. وقد تخرّج منه الكثير من العلماء، وكان بعضهم يُرابط فيه بين صلاتَي العشاء والفجر للعلم والمذاكرة.</span>
+
+      <!-- provenance + the disagreement, stated openly -->
+      <div style="background: oklch(0.925 0.016 76); border: 1px solid oklch(0.87 0.014 76); padding: 18px 20px; display: flex; flex-direction: column; gap: 8px; border-radius: 2px">
+        <span style="font-size: 12px; letter-spacing: 0.10em; color: oklch(0.50 0.012 62)">في المصادر خلاف</span>
+        <span style="font-size: 13.5px; line-height: 1.95; color: oklch(0.36 0.014 62)">يذكر الكتاب أن المسجد بُني في السنة التاسعة للهجرة، بينما تذكر مصادر أخرى السنة السابعة، وثالثةٌ الثامنة. وتتفق المصادر جميعها على تاريخ المحراب (٩٣٦هـ) وعلى ترميم ٢٠٠٣.</span>
+      </div>
+    </div>
+
+    <!-- facts rail -->
+    <div style="width: 250px; display: flex; flex-direction: column; gap: 0; border: 1px solid oklch(0.87 0.014 76); background: oklch(0.98 0.006 80); align-self: flex-start; border-radius: 2px">
+      <div style="padding: 16px 18px 12px; border-bottom: 1px solid oklch(0.90 0.012 76)">
+        <span style="font-size: 12px; letter-spacing: 0.10em; color: oklch(0.50 0.012 62)">بطاقة المدخل</span>
+      </div>
+      <sc-for list="{{facts}}" as="f" hint-placeholder-count="5">
+        <div style="padding: 12px 18px; border-bottom: 1px solid oklch(0.92 0.012 76); display: flex; flex-direction: column; gap: 3px">
+          <span style="font-size: 11.5px; color: oklch(0.56 0.012 62)">{{f.k}}</span>
+          <span style="font-size: 14.5px">{{f.v}}</span>
+        </div>
+      </sc-for>
+      <div style="padding: 16px 18px; display: flex; flex-direction: column; gap: 9px">
+        <span style="display: flex; align-items: center; justify-content: center; gap: 8px; background: oklch(0.55 0.10 45); color: oklch(0.98 0.008 80); padding: 11px; font-size: 13.5px; border-radius: 2px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-5.7 7-11a7 7 0 1 0-14 0c0 5.3 7 11 7 11Z"></path><circle cx="12" cy="10" r="2.4"></circle></svg>
+          افتح في خرائط Google
+        </span>
+        <span style="text-align: center; border: 1px solid oklch(0.84 0.014 76); padding: 11px; font-size: 13.5px; border-radius: 2px">موضعه على مخطط السور</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- related -->
+  <div style="background: oklch(0.925 0.016 76); border-top: 1px solid oklch(0.87 0.014 76); padding: 28px 40px 34px; display: flex; flex-direction: column; gap: 16px">
+    <span style="font-family: Amiri, Georgia, serif; font-size: 22px">قريبٌ منه</span>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px">
+      <sc-for list="{{related}}" as="r" hint-placeholder-count="3">
+        <div style="background: oklch(0.98 0.006 80); border: 1px solid oklch(0.88 0.014 76); padding: 16px 17px; display: flex; flex-direction: column; gap: 6px; border-radius: 2px">
+          <span style="font-size: 11px; letter-spacing: 0.10em; color: oklch(0.55 0.10 45)">{{r.kind}}</span>
+          <span style="font-family: Amiri, Georgia, serif; font-size: 17px">{{r.title}}</span>
+          <span style="font-size: 12.5px; color: oklch(0.52 0.012 62)">{{r.meta}}</span>
+        </div>
+      </sc-for>
+    </div>
+    <span style="font-size: 12px; color: oklch(0.54 0.012 62); padding-top: 6px">نصّ المدخل من كتاب «حارة العقر» لسليمان بن محمد السليماني، ١٤٤٢هـ / ٢٠٢١م.</span>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#9a5a34","options":["#9a5a34","#7a6a3a","#3f5d78","#8a3f3f"],"section":"Theme"}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      facts: [
+        { k: 'سنة البناء', v: '٩هـ (على رواية الكتاب)' },
+        { k: 'المحراب', v: '٩٣٦هـ / ١٥٢٩م' },
+        { k: 'آخر ترميم', v: '٢٠٠٣ — وزارة التراث' },
+        { k: 'الموضع', v: 'داخل السور، غرب مدرسة الجليلين' },
+        { k: 'الحال اليوم', v: 'عامرٌ بالمصلّين' },
+      ],
+      related: [
+        { kind: 'قبر', title: 'قبر الشيخ الأصم', meta: 'خلف المسجد مباشرة' },
+        { kind: 'مدرسة', title: 'مدرسة الجليلين', meta: 'شرق المسجد' },
+        { kind: 'ماء', title: 'ساعة المدة', meta: 'أمام مدرسة الجلجلان — مندثرة' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Mark from '../../components/Mark.astro';
+import { LANGS, href, ui, type Lang } from '../../lib/i18n';
+import { ROUTE, START_PLAN, planName } from '../../lib/route';
+import { excerpt } from '../../lib/excerpt';
+import { leadPhoto } from '../../lib/photos';
+import Photo from '../../components/Photo.astro';
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Lang;
+const t = ui[lang];
+
+// Every stop IS an entry. The route contributes the ordering and nothing else -
+// the words below are the book's, pulled from the same collection the entry
+// pages render, so there is no second copy of the prose to drift.
+const entries = await getCollection(lang);
+const bySlug = new Map(entries.map((e) => [e.data.slug, e]));
+
+const stops = ROUTE.map((s) => {
+  const entry = bySlug.get(s.slug);
+  const also = s.also ? bySlug.get(s.also) : undefined;
+  return {
+    ...s,
+    title: entry?.data.title ?? s.slug,
+    text: excerpt(entry?.body ?? '', 240),
+    alsoTitle: also?.data.title,
+    alsoSlug: s.also,
+    photo: leadPhoto(s.slug),
+    mark: s.plan ? planName(s.plan, lang) : undefined
+  };
+});
+
+const missing = stops.filter((s) => !bySlug.has(s.slug)).map((s) => s.slug);
+if (missing.length) throw new Error(`route.json names entries that do not exist: ${missing.join(', ')}`);
+
+const startName = planName(START_PLAN, lang);
+const digits = (n: number) =>
+  lang === 'ar' ? n.toLocaleString('ar-EG') : String(n);
+---
+
+<Base lang={lang} title={t.routeTitle} description={t.routeLead}>
+  <header class="head">
+    <span class="eyebrow">{lang === 'ar' ? `${digits(stops.length)} محطات` : `${stops.length} stops`}</span>
+    <h1>{t.routeTitle}</h1>
+    <p class="lead">{t.routeLead}</p>
+    {startName && (
+      <p class="start">
+        <Mark size={16} />
+        <span>{t.routeStart} <strong>{startName}</strong></span>
+      </p>
+    )}
+  </header>
+
+  {/* The mockup carried "about two hours" and per-stop minutes. Nobody measured
+      either, so the page says that out loud instead of quietly dropping them. */}
+  <aside class="nomeasure" aria-label={t.routeNoTimes}>
+    <h2>{t.routeNoTimes}</h2>
+    <p>{t.routeNoTimesBody}</p>
+  </aside>
+
+  <ol class="stops">
+    {stops.map((s) => (
+      <li class="stop">
+        <div class="num" aria-hidden="true">{digits(s.n)}</div>
+        <div class="body">
+          <div class="titles">
+            <h2>
+              <a href={href(lang, s.slug)}>{s.title}</a>
+            </h2>
+            {s.mark && <span class="tag">{s.mark} · {t.routeOnPlan}</span>}
+            {s.gone && <span class="tag tag--gone">{t.routeGone}</span>}
+          </div>
+          <p class="text">{s.text}</p>
+          <p class="links">
+            <a href={href(lang, s.slug)}>{t.routeReadEntry}</a>
+            {s.alsoTitle && s.alsoSlug && (
+              <a href={href(lang, s.alsoSlug)}>{s.alsoTitle}</a>
+            )}
+          </p>
+        </div>
+        {s.photo && (
+          <a class="thumb" href={href(lang, s.slug)} tabindex="-1" aria-hidden="true">
+            <Photo file={s.photo.file} alt="" widths={[280, 420, 560, 1024]} sizes="(max-width: 46rem) 100vw, 8.5rem" />
+          </a>
+        )}
+      </li>
+    ))}
+  </ol>
+
+  <p class="ordernote">{t.routeOrderNote}</p>
+</Base>
+
+<style>
+  .head { max-width: var(--measure); display: flex; flex-direction: column; gap: .6rem; }
+  .head h1 { font-size: clamp(2rem, 5vw, 2.9rem); }
+  .head .lead { font-size: 1.05rem; line-height: 1.9; color: var(--ink-muted); }
+  .start {
+    display: flex; align-items: center; gap: .55rem;
+    margin-block-start: .4rem; font-family: var(--sans); font-size: .9rem; color: var(--ink-muted);
+  }
+  .start :global(svg) { color: var(--clay); flex: none; }
+  .start strong { color: var(--ink); font-weight: 500; }
+
+  /* The absent-facts box. Same register as SourceNote: the page states a limit
+     rather than papering over it. */
+  .nomeasure {
+    margin-block: 2.5rem 3rem;
+    max-width: var(--measure);
+    border-inline-start: 2px solid var(--clay);
+    background: var(--clay-wash);
+    padding: 1.1rem 1.25rem;
+  }
+  .nomeasure h2 {
+    font-family: var(--display); font-size: 1.1rem; font-weight: 700;
+    margin-block-end: .35rem;
+  }
+  .nomeasure p { font-family: var(--sans); font-size: .87rem; line-height: 1.85; color: var(--ink-muted); }
+
+  .stops { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+
+  .stop {
+    display: grid;
+    grid-template-columns: 2.6rem minmax(0, 1fr) auto;
+    gap: 0 1.25rem;
+    padding-block: 1.6rem;
+    border-block-start: 1px solid var(--rule-light);
+    align-items: start;
+  }
+  .stop:first-child { border-block-start: 0; }
+
+  .num {
+    font-family: var(--display); font-size: 1.15rem; font-weight: 700;
+    color: var(--clay);
+    width: 2.6rem; height: 2.6rem;
+    display: grid; place-items: center;
+    border: 1px solid var(--clay);
+    border-radius: 50%;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .body { display: flex; flex-direction: column; gap: .5rem; min-width: 0; }
+  .titles { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem .75rem; }
+  .titles h2 { font-family: var(--display); font-size: 1.4rem; font-weight: 700; }
+  .titles h2 a { color: var(--ink); }
+  .titles h2 a:hover { color: var(--clay); }
+
+  .tag {
+    font-family: var(--sans); font-size: .72rem; letter-spacing: .02em;
+    color: var(--ink-muted); border: 1px solid var(--rule); border-radius: var(--radius);
+    padding: .12rem .5rem;
+  }
+  .tag--gone { color: var(--clay-deep); border-color: var(--clay); background: var(--clay-wash); }
+
+  .text { font-size: .95rem; line-height: 1.9; color: var(--ink-muted); max-width: var(--measure); }
+  .links { display: flex; flex-wrap: wrap; gap: 1.1rem; font-family: var(--sans); font-size: .85rem; }
+
+  .thumb { display: block; width: 8.5rem; flex: none; }
+  /* display: contents so the <picture> wrapper does not become the flex item. */
+  .thumb :global(picture) { display: contents; }
+  .thumb :global(img) {
+    width: 100%; height: 6rem; object-fit: cover;
+    border: 1px solid var(--rule); border-radius: var(--radius);
+  }
+
+  .ordernote {
+    margin-block-start: 2.5rem; padding-block-start: 1.25rem;
+    border-block-start: 1px solid var(--rule);
+    max-width: var(--measure);
+    font-family: var(--sans); font-size: .85rem; line-height: 1.85; color: var(--ink-faint);
+  }
+
+  /* The walk is the page most likely to be read on a phone, standing in front
+     of the building. Hiding all seven photographs here was backwards, so the
+     thumbnail moves above the text rather than disappearing. */
+  @media (max-width: 46rem) {
+    .stop { grid-template-columns: 2.2rem minmax(0, 1fr); }
+    .num { width: 2.2rem; height: 2.2rem; font-size: 1rem; }
+    .thumb { grid-column: 1 / -1; grid-row: 1; width: 100%; margin-block-end: 1rem; }
+    .thumb :global(img) { height: 11rem; }
+    .body { grid-column: 2; }
+  }
+</style>

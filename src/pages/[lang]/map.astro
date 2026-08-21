@@ -1,0 +1,188 @@
+---
+import Base from '../../layouts/Base.astro';
+import WallMap from '../../components/WallMap.astro';
+import WallMap3D from '../../components/WallMap3D.astro';
+import { LANGS, href, type Lang } from '../../lib/i18n';
+import { TOWERS, GATES, SIDE_LABELS } from '../../lib/wall';
+import { PLAN_TOWERS, PLAN_GATES } from '../../lib/plan';
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Lang;
+const sides = SIDE_LABELS[lang];
+
+// The plan is traced from the book: work/trace_wall_plan.py reads
+// assets/photos/p23-1.jpeg and writes content/data/wall-plan.json. The positions
+// are the drawing's, not the earth's - the page says so rather than implying a
+// survey exists.
+const planTowers = PLAN_TOWERS.length;
+const planGates = PLAN_GATES.length;
+const num = (n: number) => (lang === 'ar' ? new Intl.NumberFormat('ar-EG').format(n) : String(n));
+
+const copy = {
+  ar: {
+    title: 'مخطط السور',
+    lead: 'سورٌ يحيط بالحارة، عليه أبراجه وبواباته التي تُعرف بـ«الصِّباح». هذا المخطط متتبَّعٌ من رسم الدكتور الوليد بن زاهر السالمي المنشور في الكتاب.',
+    provenanceTitle: 'من أين جاء هذا المخطط',
+    provenanceBody: `متتبَّعٌ من مخطط سور العقر الذي أعده الدكتور الوليد بن زاهر السالمي، كما طُبع في الكتاب. يرسم المخطط ${'‏'}${'١٧'} برجاً وأربع بوابات؛ وقد استُخرجت مواضعها من الصورة نفسها لا بالتقدير.`,
+    cautionTitle: 'ما ليس هذا المخطط',
+    cautionBody:
+      'ليس مسحاً ولا خريطةً بمقياس، ولا يحمل إحداثيات. تُتُبِّع من رسمٍ في كتاب عرضه ٧٥٣ بكسل، فهو يكفي للإشارة إلى برجٍ على المخطط، ولا يصلح للاسترشاد به على الأرض.',
+    countTitle: 'العدد نفسه مختلَف فيه',
+    countBody:
+      'يقول نصّ الكتاب إن على السور «خمسة عشر» برجاً، ويسمّي في مدخل السور أربعة عشر. أما المخطط المطبوع في الكتاب نفسه، ومفتاحه، فيعطي سبعة عشر برجاً وأربع بوابات. وتذكر التغطية الرسمية الحديثة ستة عشر برجاً بعد الترميم، وذكرت جريدة عُمان سنة ٢٠٢١م سبعة عشر. فالكتاب يخالف نفسه: نصّه يقول خمسة عشر ومخططه يرسم سبعة عشر. لم نرجّح رواية على أخرى.',
+    namingTitle: 'الأسماء من مفتاح المخطط نفسه',
+    namingBody:
+      'إلى جانب المخطط في الكتاب مفتاحٌ يسمّي كل علامة عليه، بالعربية والإنجليزية، وعليه توقيع مُعِدِّه. وهو يسمّي أربعة عشر برجاً، وثلاثةً منها يشترك كلٌّ مع بوابة، وبوابةً رابعة وحدها: سبعة عشر برجاً وأربع بوابات، وهو عين ما يرسمه المخطط. وقد وُضع كل اسم على أقرب علامة إليه في الصفحة نفسها.',
+    towersTitle: 'الأبراج كما يسمّيها الكتاب',
+    towersNote:
+      'هذه أسماء الأبراج الأربعة عشر التي ذكرها الكتاب نصاً، والجهة حيثما ذكرها. القائمة كاملة سواء وُضع البرج على المخطط أو لم يوضع.',
+    gatesTitle: 'المداخل، أو الصِّباح',
+    gatesNote: 'أربعة مداخل، وهي المنافذ الوحيدة لساكني الحارة، وعلى كل بوابة حارس.',
+    demolished: 'مهدوم',
+    noSide: 'لم يذكر الكتاب جهته',
+    readWall: 'اقرأ مدخل سور العقر'
+  },
+  en: {
+    title: 'The plan of the wall',
+    lead: 'A wall rings the quarter, carrying its towers and the gates known as sabah. This plan is traced from the drawing by Dr Al Walid bin Zahir Al Salmi printed in the book.',
+    provenanceTitle: 'Where this plan comes from',
+    provenanceBody:
+      'Traced from the plan of the Al Aqur Wall prepared by Dr Al Walid bin Zahir Al Salmi, as printed in the book. That drawing shows 17 towers and four gates, and their positions were read off the image itself rather than estimated.',
+    cautionTitle: 'What this plan is not',
+    cautionBody:
+      'It is not a survey, it is not to scale, and it carries no coordinates. It was traced from a drawing 753 pixels wide in a book: enough to point at a tower on the plan, not enough to navigate by on the ground.',
+    countTitle: 'Even the count is disputed',
+    countBody:
+      'The book’s text says the wall carries “fifteen” towers, and its wall entry names fourteen. The plan printed in the same book, and the legend beside it, give seventeen towers and four gates. Recent official coverage gives sixteen after restoration, and a 2021 Oman Daily piece said seventeen. So the book disagrees with itself: its text says fifteen while its own plan draws seventeen. Nothing here picks a winner.',
+    namingTitle: 'The names come from the plan’s own legend',
+    namingBody:
+      'Printed beside the plan in the book is a key naming every mark on it, in Arabic and English, signed by the man who drew it. It names fourteen towers outright, three more that each share a gate, and one gate on its own: seventeen towers and four gates, exactly what the drawing shows. Each name was matched to the nearest mark on the same page.',
+    towersTitle: 'The towers, as the book names them',
+    towersNote:
+      'The fourteen towers the book names in its text, with the side where it gives one. The list is complete whether or not the tower could be placed on the plan.',
+    gatesTitle: 'The gates, or sabah',
+    gatesNote: 'Four entrances, the only ways in and out for the people of the quarter, each with a keeper.',
+    demolished: 'demolished',
+    noSide: 'the book gives no side',
+    readWall: 'Read the entry on the Al Aqur Wall'
+  }
+}[lang];
+---
+
+<Base lang={lang} title={copy.title} description={copy.lead}>
+  <header class="head">
+    <h1>{copy.title}</h1>
+    <p class="lead">{copy.lead}</p>
+  </header>
+
+  <WallMap lang={lang} />
+
+  <WallMap3D lang={lang} />
+
+  <section class="notes">
+    <div class="note-card">
+      <p class="note-title">{copy.provenanceTitle}</p>
+      <p>
+        {
+          lang === 'ar'
+            ? `متتبَّعٌ من مخطط سور العقر الذي أعده الدكتور الوليد بن زاهر السالمي، كما طُبع في الكتاب. يرسم المخطط ${num(planTowers)} برجاً و${num(planGates)} بوابات، واستُخرجت مواضعها من الصورة نفسها لا بالتقدير.`
+            : copy.provenanceBody
+        }
+      </p>
+    </div>
+    <div class="note-card note-card--caution">
+      <p class="note-title">{copy.cautionTitle}</p>
+      <p>{copy.cautionBody}</p>
+    </div>
+  </section>
+
+  <section class="notes">
+    <div class="note-card note-card--dispute">
+      <p class="note-title">{copy.countTitle}</p>
+      <p>{copy.countBody}</p>
+    </div>
+    <div class="note-card">
+      <p class="note-title">{copy.namingTitle}</p>
+      <p>{copy.namingBody}</p>
+    </div>
+  </section>
+
+  <section class="list-block">
+    <h2>{copy.gatesTitle}</h2>
+    <p class="note">{copy.gatesNote}</p>
+    <ul class="features">
+      {
+        GATES.map((g) => (
+          <li class="feature">
+            <div class="feature-head">
+              <span class="feature-name">{lang === 'ar' ? g.ar : g.en}</span>
+              <span class="feature-side">{g.side ? sides[g.side] : copy.noSide}</span>
+              {g.standing === false && <span class="tag">{copy.demolished}</span>}
+            </div>
+            {(lang === 'ar' ? g.ar_note : g.en_note) && (
+              <p class="feature-note">{lang === 'ar' ? g.ar_note : g.en_note}</p>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="list-block">
+    <h2>{copy.towersTitle}</h2>
+    <p class="note">{copy.towersNote}</p>
+    <ul class="features features--grid">
+      {
+        TOWERS.map((tower) => (
+          <li class="feature">
+            <div class="feature-head">
+              <span class="feature-name">{lang === 'ar' ? tower.ar : tower.en}</span>
+              <span class="feature-side">{tower.side ? sides[tower.side] : copy.noSide}</span>
+            </div>
+            {(lang === 'ar' ? tower.ar_note : tower.en_note) && (
+              <p class="feature-note">{lang === 'ar' ? tower.ar_note : tower.en_note}</p>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+    <p class="back"><a href={href(lang, 'al-aqur-wall')}>{copy.readWall} →</a></p>
+  </section>
+</Base>
+
+<style>
+  .head { display: flex; flex-direction: column; gap: .6rem; margin-block-end: 2rem; max-width: var(--measure); }
+  .head h1 { font-size: clamp(1.9rem, 5vw, 2.6rem); }
+  .lead { color: var(--ink-muted); }
+
+  .notes {
+    display: grid; gap: 1.1rem; margin-block-start: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  }
+  .note-card {
+    border: 1px solid var(--rule); border-radius: var(--radius);
+    background: var(--surface); padding: 1.15rem 1.3rem; font-family: var(--sans);
+  }
+  .note-card--caution { border-inline-start: 3px solid var(--ink-faint); background: var(--surface-sunk); }
+  .note-card--dispute { border-inline-start: 3px solid var(--clay); background: var(--surface-sunk); }
+  .note-title { font-family: var(--display); font-size: 1.05rem; font-weight: 700; margin-block-end: .5rem; }
+  .note-card p { font-size: .87rem; line-height: 1.85; color: var(--ink-muted); }
+
+  .list-block { margin-block-start: 3.5rem; }
+  .list-block h2 { font-size: 1.6rem; margin-block-end: .5rem; }
+  .note { font-family: var(--sans); font-size: .88rem; line-height: 1.85; color: var(--ink-muted); max-width: var(--measure); margin-block-end: 1.5rem; }
+
+  .features { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; }
+  .features--grid { grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); }
+  .feature { border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); padding: .95rem 1.1rem; font-family: var(--sans); }
+  .feature-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem .7rem; }
+  .feature-name { font-family: var(--display); font-size: 1.1rem; font-weight: 700; }
+  .feature-side { font-size: .75rem; color: var(--ink-faint); letter-spacing: .04em; }
+  .tag { font-size: .68rem; letter-spacing: .1em; color: var(--clay-deep); border: 1px solid var(--clay); border-radius: var(--radius); padding: .1rem .45rem; }
+  .feature-note { margin-block-start: .5rem; font-size: .84rem; line-height: 1.8; color: var(--ink-muted); }
+
+  .back { margin-block-start: 2rem; font-family: var(--sans); font-size: .95rem; }
+</style>

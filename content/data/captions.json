@@ -1,0 +1,255 @@
+{
+  "checked": "2026-08-21",
+  "source": "Arabic: assets/photos/catalogue.json (page_captions, from the book). English: reviewed translation held in work/build_captions.py. A small number of uncaptioned figures are identified in that file too.",
+  "policy": "A caption is bound to a single photograph only where scope is 'photo' - its page holds exactly one photograph and one caption. Where scope is 'group' the caption labels every photograph on that page, because the book prints several to a page under one caption and the extraction does not record which photograph a caption sits beneath. Do not narrow a group caption to one file by guessing.",
+  "pages": {
+    "12": {
+      "scope": "group",
+      "photos": [
+        "p12-1.jpeg",
+        "p12-2.jpeg",
+        "p12-3.jpeg",
+        "p12-4.jpeg"
+      ],
+      "captions": [
+        {
+          "ar": "قلعة نزوى 1902م",
+          "en": "Nizwa Fort, 1902"
+        }
+      ]
+    },
+    "19": {
+      "scope": "photo",
+      "photos": [
+        "p19-1.jpeg"
+      ],
+      "captions": [
+        {
+          "ar": "صورة قديمة لجامع نزوى",
+          "en": "An old photograph of the Friday Mosque of Nizwa"
+        }
+      ]
+    },
+    "21": {
+      "scope": "group",
+      "photos": [
+        "p21-1.jpeg",
+        "p21-2.jpeg",
+        "p21-3.jpeg"
+      ],
+      "captions": [
+        {
+          "ar": "نزل نزوى التراثية",
+          "en": "Nizwa Heritage Inn"
+        }
+      ]
+    },
+    "22": {
+      "scope": "group",
+      "photos": [
+        "p22-1.jpeg",
+        "p22-2.jpeg",
+        "p22-3.jpeg"
+      ],
+      "captions": [
+        {
+          "ar": "صور قديمة لمكتب نزل نزوى التراثية",
+          "en": "Old photographs of the Nizwa Heritage Inn office"
+        }
+      ]
+    },
+    "24": {
+      "scope": "group",
+      "photos": [
+        "p24-1.jpeg",
+        "p24-2.jpeg"
+      ],
+      "captions": [
+        {
+          "ar": "صباح أبي المؤثر",
+          "en": "Sabah Abi Al Mu'thir"
+        }
+      ]
+    },
+    "25": {
+      "scope": "group",
+      "photos": [
+        "p25-1.jpeg",
+        "p25-2.jpeg"
+      ],
+      "captions": [
+        {
+          "ar": "صباح السوق",
+          "en": "Sabah Al Souq"
+        }
+      ]
+    },
+    "26": {
+      "scope": "group",
+      "photos": [
+        "p26-1.jpeg",
+        "p26-2.jpeg",
+        "p26-3.jpeg"
+      ],
+      "captions": [
+        {
+          "ar": "صباح وبرج الشجبي",
+          "en": "Sabah and the Al Shajbi Tower"
+        }
+      ]
+    },
+    "27": {
+      "scope": "group",
+      "photos": [
+        "p27-1.jpeg",
+        "p27-2.jpeg",
+        "p27-3.jpeg",
+        "p27-4.jpeg"
+      ],
+      "captions": [
+        {
+          "ar": "صباح وبرج الصبخة من الشرق والغرب",
+          "en": "Sabah and the Al Sabkha Tower, from east and west"
+        },
+        {
+          "ar": "واجهة سوق نزوى ويظهر سور العقر ببنائه الحديث",
+          "en": "The frontage of Nizwa Souq, with the Al Aqur Wall in its modern rebuilding"
+        },
+        {
+          "ar": "صورة للسور من برج المذبحة ويظهر في الصورة فلج ضوت",
+          "en": "The wall seen from Al Mathbaha Tower, with Falaj Dawt visible"
+        }
+      ]
+    },
+    "33": {
+      "scope": "photo",
+      "photos": [
+        "p33-1.jpeg"
+      ],
+      "captions": [
+        {
+          "ar": "مدرسة الجليلين",
+          "en": "Al Jalilain School"
+        }
+      ]
+    },
+    "34": {
+      "scope": "group",
+      "photos": [
+        "p34-1.jpeg",
+        "p34-2.jpeg"
+      ],
+      "captions": [
+        {
+          "ar": "سبلة النيري",
+          "en": "Sablat Al Nairi"
+        },
+        {
+          "ar": "سبلة الكوارج",
+          "en": "Sablat Al Kawarij"
+        }
+      ]
+    },
+    "37": {
+      "scope": "group",
+      "photos": [
+        "p37-1.jpeg",
+        "p37-2.jpeg",
+        "p37-3.jpeg"
+      ],
+      "captions": [
+        {
+          "ar": "نموذج لعملية دفن الشواء",
+          "en": "The burial of the shuwa"
+        }
+      ]
+    },
+    "47": {
+      "scope": "group",
+      "photos": [
+        "p47-1.jpeg",
+        "p47-2.jpeg",
+        "p47-3.jpeg",
+        "p47-4.jpeg"
+      ],
+      "captions": [
+        {
+          "ar": "صورة قديمة من منطقة سعال لجرفة 82 التاريخية",
+          "en": "An old photograph from the Sa'al area, of the historic Jurfa 82"
+        },
+        {
+          "ar": "قبر الإمام الوارث بن كعب الخروصي",
+          "en": "The grave of Imam Al Warith bin Ka'b Al Kharusi"
+        }
+      ]
+    },
+    "48": {
+      "scope": "group",
+      "photos": [
+        "p48-1.jpeg",
+        "p48-2.jpeg"
+      ],
+      "captions": [
+        {
+          "ar": "فلج دارس",
+          "en": "Falaj Daris"
+        },
+        {
+          "ar": "فلج ضوت",
+          "en": "Falaj Dawt"
+        }
+      ]
+    },
+    "49": {
+      "scope": "group",
+      "photos": [
+        "p49-1.jpeg",
+        "p49-2.jpeg"
+      ],
+      "captions": [
+        {
+          "ar": "نموذج للأبار: الأولى موجودة بداخل إحدى البيوت دائرية الشكل يصل قطرها إلى متر واحد، والأخرى إحدى آبار المزارع مربعية الشكل يصل قطرها 4.5 متر ويظهر جليا الصف العجيب في الحجارة والتي يصل وزن الحجر الواحد منها أكثر من 40 كيلو جرام.",
+          "en": "Two well types: the first, inside one of the houses, is circular and about one metre across; the other, a farm well, is squared and about 4.5 metres across. The remarkable coursing of the stone is clearly visible — single stones weighing more than 40 kilograms."
+        }
+      ]
+    },
+    "53": {
+      "scope": "group",
+      "photos": [
+        "p53-1.jpeg",
+        "p53-2.jpeg"
+      ],
+      "captions": [
+        {
+          "ar": "صورة ليلية لسوق نزوى",
+          "en": "Nizwa Souq at night"
+        }
+      ]
+    },
+    "54": {
+      "scope": "group",
+      "photos": [
+        "p54-1.jpeg",
+        "p54-2.jpeg"
+      ],
+      "captions": [
+        {
+          "ar": "صورة قديمة لسوق الصنصرة من الباب الغربي",
+          "en": "An old photograph of the Al Sansara souq from the western door"
+        }
+      ]
+    },
+    "23": {
+      "scope": "photo",
+      "photos": [
+        "p23-1.jpeg"
+      ],
+      "captions": [
+        {
+          "ar": "مخطط سور العقر — إعداد الدكتور الوليد بن زاهر السالمي",
+          "en": "The plan of the Al Aqur Wall — prepared by Dr Al Walid bin Zahir Al Salmi"
+        }
+      ]
+    }
+  }
+}

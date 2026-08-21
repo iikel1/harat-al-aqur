@@ -1,0 +1,188 @@
+[
+  {
+    "slug": "foreword",
+    "order": 0,
+    "ar": "المقدمة",
+    "en": "Foreword"
+  },
+  {
+    "slug": "harat-al-aqur",
+    "order": 1,
+    "ar": "حارة العقر",
+    "en": "Harat Al Aqur"
+  },
+  {
+    "slug": "nizwa-fort",
+    "order": 2,
+    "ar": "قلعة نزوى الشهباء",
+    "en": "Nizwa Fort — Al Qal'a Al Shahba"
+  },
+  {
+    "slug": "nizwa-castle",
+    "order": 3,
+    "ar": "حصن نزوى",
+    "en": "Nizwa Castle"
+  },
+  {
+    "slug": "shawadhna-mosque",
+    "order": 4,
+    "ar": "مسجد الشواذنة",
+    "en": "Al Shawadhna Mosque"
+  },
+  {
+    "slug": "mazaraa-mosque",
+    "order": 5,
+    "ar": "مسجد مزارعة",
+    "en": "Mazara'a Mosque"
+  },
+  {
+    "slug": "nizwa-friday-mosque",
+    "order": 6,
+    "ar": "جامع نزوى ومركز التعريف بالإسلام",
+    "en": "The Friday Mosque of Nizwa and the Islam Information Centre"
+  },
+  {
+    "slug": "nizwa-heritage-inn",
+    "order": 7,
+    "ar": "نزل نزوى التراثية",
+    "en": "Nizwa Heritage Inn"
+  },
+  {
+    "slug": "al-aqur-wall",
+    "order": 8,
+    "ar": "سور العقر",
+    "en": "The Al Aqur Wall"
+  },
+  {
+    "slug": "the-omani-house",
+    "order": 9,
+    "ar": "البيت العماني في حارة العقر",
+    "en": "The Omani house in Harat Al Aqur"
+  },
+  {
+    "slug": "under-the-yaariba",
+    "order": 10,
+    "ar": "حارة العقر في حكم دولة اليعاربة",
+    "en": "Harat Al Aqur under the Ya'ariba"
+  },
+  {
+    "slug": "doors-and-ceilings",
+    "order": 11,
+    "ar": "الأبواب والأسقف",
+    "en": "Doors and ceilings"
+  },
+  {
+    "slug": "quran-schools",
+    "order": 12,
+    "ar": "مدارس تعليم القران الكريم",
+    "en": "Qur'an schools"
+  },
+  {
+    "slug": "the-sablahs",
+    "order": 13,
+    "ar": "المجالس",
+    "en": "The sablahs"
+  },
+  {
+    "slug": "bait-al-sarooj",
+    "order": 14,
+    "ar": "بيت الصاروج",
+    "en": "Bait Al Sarooj"
+  },
+  {
+    "slug": "capital-of-islamic-culture",
+    "order": 15,
+    "ar": "شعار نزوى عاصمة الثقافة الإسلامية",
+    "en": "The emblem of Nizwa, Capital of Islamic Culture"
+  },
+  {
+    "slug": "mazaraa-oven",
+    "order": 16,
+    "ar": "تنور مزارعة",
+    "en": "The Mazara'a oven"
+  },
+  {
+    "slug": "sheikh-al-asamm",
+    "order": 17,
+    "ar": "قبر الشيخ الأصم",
+    "en": "The grave of Sheikh Al Asamm"
+  },
+  {
+    "slug": "persians-graveyard",
+    "order": 18,
+    "ar": "مقبرة الفرس",
+    "en": "The Persians' graveyard"
+  },
+  {
+    "slug": "thoms-hospital",
+    "order": 19,
+    "ar": "مستشفى الطبيب تومس",
+    "en": "Dr Thoms's hospital"
+  },
+  {
+    "slug": "drainage-channels",
+    "order": 20,
+    "ar": "قنوات تصريف المياه",
+    "en": "The water drainage channels"
+  },
+  {
+    "slug": "tourist-buggies",
+    "order": 21,
+    "ar": "السيارات السياحية",
+    "en": "The tourist buggies"
+  },
+  {
+    "slug": "the-awqaf",
+    "order": 22,
+    "ar": "الأوقاف",
+    "en": "The endowments (awqaf)"
+  },
+  {
+    "slug": "the-wadis",
+    "order": 23,
+    "ar": "مجرى الأودية",
+    "en": "The wadi courses"
+  },
+  {
+    "slug": "falaj-dawt",
+    "order": 24,
+    "ar": "فلج ضوت",
+    "en": "Falaj Dawt"
+  },
+  {
+    "slug": "the-wells",
+    "order": 25,
+    "ar": "الآبار",
+    "en": "The wells"
+  },
+  {
+    "slug": "the-two-eids",
+    "order": 26,
+    "ar": "احتفالات عيدي الفطر والأضحى",
+    "en": "The Eid al-Fitr and Eid al-Adha celebrations"
+  },
+  {
+    "slug": "abu-al-muthir-museum",
+    "order": 27,
+    "ar": "متحف أبي المؤثر",
+    "en": "Abu Al Mu'thir Museum"
+  },
+  {
+    "slug": "saat-al-mudda",
+    "order": 28,
+    "ar": "ساعة المدة",
+    "en": "The sa'at al-mudda — the time clock"
+  },
+  {
+    "slug": "nizwa-souq",
+    "order": 29,
+    "ar": "سوق نزوى",
+    "en": "Nizwa Souq"
+  },
+  {
+    "slug": "al-aqur-restaurant",
+    "order": 30,
+    "ar": "مطعم العقر التراثي",
+    "en": "Al Aqur Heritage Restaurant"
+  }
+]

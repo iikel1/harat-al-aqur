@@ -1,0 +1,75 @@
+---
+import { href, ui, type Lang } from '../lib/i18n';
+import { AUTHOR, BOOK } from '../lib/credits';
+import Mark from './Mark.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang];
+
+const credit = {
+  ar: {
+    text: 'نصوص هذا الموقع وصوره من كتاب «حارة العقر»، تأليف',
+    translation: 'النسخة الإنجليزية ترجمة عن الأصل العربي، أُعدَّت لهذا الموقع.',
+    caution:
+      'تنبيه في التوثيق: الكتاب والصحافة العُمانية وقنوات الوقف تعود في الغالب إلى مصدر واحد لا إلى ثلاثة، فاتفاقها ليس تعزيزاً مستقلاً.',
+    rights: 'حقوق النص محفوظة لمؤلفه.'
+  },
+  en: {
+    text: 'The text and the photographs on this site come from the book Harat Al Aqur, by',
+    translation: 'The English is a translation of the Arabic original, made for this site.',
+    caution:
+      'A note on sourcing: the book, the Omani press and the endowment’s own channels are largely one voice rather than three. Agreement between them is not independent corroboration.',
+    rights: 'Text rights remain with the author.'
+  }
+}[lang];
+---
+<footer>
+  <div class="wrap inner">
+    <div class="col">
+      <span class="lockup">
+        <span class="brand-mark"><Mark size={26} /></span>
+        <span class="brand">{t.siteName}</span>
+      </span>
+      <p class="tagline">{t.tagline}</p>
+    </div>
+    <div class="col credit">
+      <p class="attribution">
+        {credit.text}
+        <a href={href(lang, 'credits')} class="author">{lang === 'ar' ? AUTHOR.ar : AUTHOR.en}</a>{lang === 'ar' ? '، ' : ', '}{BOOK[lang].year}.
+      </p>
+      <p>{credit.translation}</p>
+      <p class="caution">{credit.caution}</p>
+      <p class="rights">{credit.rights}</p>
+    </div>
+    <nav class="col links" aria-label={t.nav.discover}>
+      <a href={href(lang, 'discover')}>{t.nav.discover}</a>
+      <a href={href(lang, 'map')}>{t.nav.map}</a>
+      <a href={href(lang, 'route')}>{t.nav.route}</a>
+      <a href={href(lang, 'visit')}>{t.nav.visit}</a>
+      <a href={href(lang, 'credits')}>{t.nav.credits}</a>
+    </nav>
+  </div>
+
+</footer>
+
+<style>
+  footer { border-block-start: 1px solid var(--rule); background: var(--surface-sunk); margin-block-start: 4rem; }
+  .inner {
+    display: grid; gap: 2rem 3rem; padding-block: 2.75rem 3.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  }
+  .col { display: flex; flex-direction: column; gap: .55rem; }
+  .lockup { display: flex; align-items: center; gap: .6rem; }
+  .brand-mark { display: flex; color: var(--clay); flex: none; }
+  .brand { font-family: var(--display); font-size: 1.35rem; font-weight: 700; }
+  .tagline, .credit p { font-size: .85rem; line-height: 1.8; color: var(--ink-muted); }
+  .attribution { color: var(--ink); }
+  .author { font-weight: 500; }
+  .caution { border-inline-start: 2px solid var(--clay); padding-inline-start: .8rem; }
+  .rights { color: var(--ink-faint); }
+  .links { gap: .5rem; }
+  .links a { font-size: .9rem; color: var(--ink); }
+  .links a:hover { color: var(--clay); }
+
+</style>

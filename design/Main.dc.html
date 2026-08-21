@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: oklch(0.55 0.10 45); text-decoration: none; }
+    a:hover { color: oklch(0.44 0.11 42); }
+  </style>
+</helmet>
+
+<div dir="rtl" style="width: 880px; background: oklch(0.965 0.010 78); font-family: Tajawal, 'Segoe UI', sans-serif; color: oklch(0.26 0.014 62); overflow: hidden">
+
+  <!-- masthead -->
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; border-bottom: 1px solid oklch(0.86 0.014 76)">
+    <div style="display: flex; align-items: baseline; gap: 10px">
+      <span style="font-family: Amiri, Georgia, serif; font-size: 26px; font-weight: 700; letter-spacing: -0.01em">حارة العقر</span>
+      <span style="font-size: 12px; color: oklch(0.50 0.012 62); letter-spacing: 0.08em">نــزوى</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 26px; font-size: 14px">
+      <span>اكتشف</span>
+      <span>الخريطة</span>
+      <span>الجولة</span>
+      <span>أكل وإقامة</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; border: 1px solid oklch(0.80 0.014 76); border-radius: 2px; padding: 5px 11px; font-size: 12.5px; letter-spacing: 0.04em">EN</span>
+    </div>
+  </div>
+
+  <!-- hero -->
+  <div style="position: relative; height: 470px; overflow: hidden">
+    <img src="rooftops.jpg" style="width: 100%; height: 100%; object-fit: cover; display: block">
+    <div style="position: absolute; inset: 0; background: linear-gradient(to left, oklch(0.22 0.02 62 / 0.80) 0%, oklch(0.22 0.02 62 / 0.42) 46%, transparent 78%)"></div>
+    <div style="position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 44px 44px; gap: 16px">
+      <div style="max-width: 440px; display: flex; flex-direction: column; gap: 14px">
+        <span style="font-size: 12px; letter-spacing: 0.18em; color: oklch(0.86 0.03 76)">مقـرّ الحكـم العُمانـي</span>
+        <span style="font-family: Amiri, Georgia, serif; font-size: 54px; line-height: 1.15; color: oklch(0.98 0.008 80); text-wrap: pretty">ثلاثمئة بيت<br>داخل سور واحد</span>
+        <span style="font-size: 15.5px; line-height: 1.85; color: oklch(0.90 0.015 78)">من هنا سُنَّت الأوامر، وتحرّكت الجيوش، وانطلقت التوجيهات إلى الأساطيل العُمانية في المحيط الهندي.</span>
+        <div style="display: flex; gap: 12px; margin-top: 6px">
+          <span style="background: oklch(0.55 0.10 45); color: oklch(0.98 0.008 80); padding: 13px 26px; font-size: 14.5px; border-radius: 2px">ابدأ الجولة</span>
+          <span style="border: 1px solid oklch(0.80 0.02 78 / 0.6); color: oklch(0.95 0.01 80); padding: 13px 26px; font-size: 14.5px; border-radius: 2px">تصفّح الحارة</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- the quarter in figures -->
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-bottom: 1px solid oklch(0.86 0.014 76)">
+    <sc-for list="{{figures}}" as="f" hint-placeholder-count="4">
+      <div style="padding: 24px 20px; text-align: center; border-inline-start: 1px solid oklch(0.90 0.012 76); display: flex; flex-direction: column; gap: 5px">
+        <span style="font-family: Amiri, Georgia, serif; font-size: 32px; color: oklch(0.55 0.10 45)">{{f.n}}</span>
+        <span style="font-size: 12.5px; color: oklch(0.50 0.012 62); letter-spacing: 0.04em">{{f.label}}</span>
+      </div>
+    </sc-for>
+  </div>
+
+  <!-- three doors -->
+  <div style="padding: 46px 40px 8px; display: flex; flex-direction: column; gap: 8px">
+    <span style="font-family: Amiri, Georgia, serif; font-size: 27px">ثلاثة أبواب للدخول</span>
+    <span style="font-size: 14px; color: oklch(0.50 0.012 62); line-height: 1.8">اقرأ الحارة، أو امشِ فيها، أو خطّط ليومك — كلٌّ من مدخله.</span>
+  </div>
+  <div style="padding: 24px 40px 44px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px">
+    <div style="border: 1px solid oklch(0.86 0.014 76); background: oklch(0.98 0.006 80); padding: 24px 22px; display: flex; flex-direction: column; gap: 11px; border-radius: 2px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="oklch(0.55 0.10 45)" stroke-width="1.4"><path d="M4 4.5h6.5a2 2 0 0 1 2 2V20a1.7 1.7 0 0 0-1.7-1.7H4Z"></path><path d="M20 4.5h-6.5a2 2 0 0 0-2 2V20a1.7 1.7 0 0 1 1.7-1.7H20Z"></path></svg>
+      <span style="font-family: Amiri, Georgia, serif; font-size: 20px">اكتشف</span>
+      <span style="font-size: 13.5px; line-height: 1.85; color: oklch(0.50 0.012 62)">واحدٌ وثلاثون مدخلاً عن مساجد الحارة وأبراجها وأفلاجها وبيوتها، من الكتاب نفسه.</span>
+    </div>
+    <div style="border: 1px solid oklch(0.86 0.014 76); background: oklch(0.98 0.006 80); padding: 24px 22px; display: flex; flex-direction: column; gap: 11px; border-radius: 2px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="oklch(0.55 0.10 45)" stroke-width="1.4"><path d="M12 21s7-5.7 7-11a7 7 0 1 0-14 0c0 5.3 7 11 7 11Z"></path><circle cx="12" cy="10" r="2.4"></circle></svg>
+      <span style="font-family: Amiri, Georgia, serif; font-size: 20px">الخريطة</span>
+      <span style="font-size: 13.5px; line-height: 1.85; color: oklch(0.50 0.012 62)">مخطط السور كاملاً: كل برج وكل صِباح، باسمه وموضعه وما يُعرف عنه.</span>
+    </div>
+    <div style="border: 1px solid oklch(0.86 0.014 76); background: oklch(0.98 0.006 80); padding: 24px 22px; display: flex; flex-direction: column; gap: 11px; border-radius: 2px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="oklch(0.55 0.10 45)" stroke-width="1.4"><circle cx="6" cy="6" r="2.4"></circle><circle cx="18" cy="18" r="2.4"></circle><path d="M6 8.4v4.1a3.5 3.5 0 0 0 3.5 3.5h5"></path></svg>
+      <span style="font-family: Amiri, Georgia, serif; font-size: 20px">خطّط زيارتك</span>
+      <span style="font-size: 13.5px; line-height: 1.85; color: oklch(0.50 0.012 62)">جولة سيراً على السور والسوق، ونزلٌ ومقاهٍ داخل الحارة مع مواقعها.</span>
+    </div>
+  </div>
+
+  <!-- featured entries -->
+  <div style="background: oklch(0.925 0.016 76); padding: 44px 40px; display: flex; flex-direction: column; gap: 22px">
+    <div style="display: flex; align-items: baseline; justify-content: space-between">
+      <span style="font-family: Amiri, Georgia, serif; font-size: 27px">من المداخل</span>
+      <span style="font-size: 13px; color: oklch(0.55 0.10 45)">كل المداخل الـ٣١ ←</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px">
+      <div style="background: oklch(0.98 0.006 80); border: 1px solid oklch(0.88 0.014 76); border-radius: 2px; overflow: hidden; display: flex; flex-direction: column">
+        <img src="mosque.jpg" style="width: 100%; height: 150px; object-fit: cover; display: block">
+        <div style="padding: 16px 18px 20px; display: flex; flex-direction: column; gap: 7px">
+          <span style="font-size: 11px; letter-spacing: 0.12em; color: oklch(0.55 0.10 45)">مسجد</span>
+          <span style="font-family: Amiri, Georgia, serif; font-size: 19px">مسجد الشواذنة</span>
+          <span style="font-size: 13px; line-height: 1.8; color: oklch(0.50 0.012 62)">محرابه من سنة ٩٣٦هـ، وثّق الناحت اسمه عليه بخط جميل.</span>
+        </div>
+      </div>
+      <div style="background: oklch(0.98 0.006 80); border: 1px solid oklch(0.88 0.014 76); border-radius: 2px; overflow: hidden; display: flex; flex-direction: column">
+        <img src="wall.jpg" style="width: 100%; height: 150px; object-fit: cover; display: block">
+        <div style="padding: 16px 18px 20px; display: flex; flex-direction: column; gap: 7px">
+          <span style="font-size: 11px; letter-spacing: 0.12em; color: oklch(0.55 0.10 45)">تحصين</span>
+          <span style="font-family: Amiri, Georgia, serif; font-size: 19px">سور العقر</span>
+          <span style="font-size: 13px; line-height: 1.8; color: oklch(0.50 0.012 62)">أسّسه الإمام سلطان بن سيف اليعربي، وبُني في سبع سنوات.</span>
+        </div>
+      </div>
+      <div style="background: oklch(0.98 0.006 80); border: 1px solid oklch(0.88 0.014 76); border-radius: 2px; overflow: hidden; display: flex; flex-direction: column">
+        <img src="door.jpg" style="width: 100%; height: 150px; object-fit: cover; display: block">
+        <div style="padding: 16px 18px 20px; display: flex; flex-direction: column; gap: 7px">
+          <span style="font-size: 11px; letter-spacing: 0.12em; color: oklch(0.55 0.10 45)">عمارة</span>
+          <span style="font-family: Amiri, Georgia, serif; font-size: 19px">الأبواب والأسقف</span>
+          <span style="font-size: 13px; line-height: 1.8; color: oklch(0.50 0.012 62)">أخشاب هندية ونقوش تحمل تاريخ العمل واسم الصانع والإمام.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding: 26px 40px; display: flex; justify-content: space-between; font-size: 12px; color: oklch(0.55 0.012 62); border-top: 1px solid oklch(0.86 0.014 76)">
+    <span>عن كتاب «حارة العقر» لسليمان بن محمد السليماني</span>
+    <span>أوقاف عقر نزوى</span>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#9a5a34","options":["#9a5a34","#7a6a3a","#3f5d78","#8a3f3f"],"section":"Theme"}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      figures: [
+        { n: '١٦', label: 'برجاً على السور بعد الترميم' },
+        { n: '٤', label: 'صِباحات، هُدم أحدها' },
+        { n: '٣٠٠+', label: 'بيت داخل السور' },
+        { n: '٢ كم', label: 'طول السور' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

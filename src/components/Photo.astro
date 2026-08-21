@@ -1,0 +1,45 @@
+---
+import { Picture } from 'astro:assets';
+import { imageFor, widthsFor } from '../lib/images';
+
+/**
+ * One of the book's photographs, sized for the slot it is going into.
+ *
+ * Every image on the site goes through here so that no slot is ever handed a
+ * file bigger than it can show. `sizes` is what the browser picks from, so it
+ * has to describe the slot's real CSS width - get it wrong and the ramp is
+ * wasted. `widths` is only a request: widthsFor() drops any wider than the
+ * source, which most of these photographs hit (see the resolution ceiling in
+ * CLAUDE.md).
+ *
+ * WebP with a JPEG fallback. AVIF is left out on purpose: it is a further ~20%
+ * on top of WebP but roughly ten times the encode time, and this is a static
+ * site rebuilt from cold on the host.
+ */
+interface Props {
+  /** Catalogue filename, e.g. `p05-1.jpeg`. */
+  file: string;
+  alt: string;
+  /** The slot's rendered width, as a CSS sizes attribute. Required - see above. */
+  sizes: string;
+  widths: number[];
+  loading?: 'lazy' | 'eager';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  class?: string;
+}
+
+const { file, alt, sizes, widths, loading = 'lazy', fetchpriority, class: className } = Astro.props;
+const meta = imageFor(file);
+---
+<Picture
+  src={meta}
+  widths={widthsFor(meta, widths)}
+  sizes={sizes}
+  formats={['webp']}
+  fallbackFormat="jpeg"
+  alt={alt}
+  loading={loading}
+  fetchpriority={fetchpriority}
+  decoding="async"
+  class={className}
+/>

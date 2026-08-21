@@ -1,0 +1,19 @@
+{
+  "_note": "AUTHORED, not generated - unlike wall-plan.json and captions.json, no script writes this file. It is an ordered reading of the quarter: nine stops that follow the ground rather than the book's own order. Each stop IS an existing entry, so every word a visitor reads on the route page comes from the book via that entry. Nothing here is a practical fact.",
+  "_no_practical_facts": "There are deliberately NO walking times, NO distances and NO durations in this file. Nobody has measured them. The design canvas mockup (design/Route.dc.html) shows '~2 hours' and per-stop minutes - those were placeholder content and must not be shipped. See CLAUDE.md, 'Do not invent practical facts'.",
+  "_order": "The sequence is editorial: it starts at the gate that carries the museum, walks the restored wall, then works inward through the quarter and ends at the souq. The order is a suggestion, not a claim about the ground.",
+
+  "start": { "plan": "g4" },
+
+  "stops": [
+    { "n": 1, "slug": "abu-al-muthir-museum", "plan": "g4" },
+    { "n": 2, "slug": "al-aqur-wall", "plan": "g3" },
+    { "n": 3, "slug": "persians-graveyard" },
+    { "n": 4, "slug": "shawadhna-mosque" },
+    { "n": 5, "slug": "sheikh-al-asamm" },
+    { "n": 6, "slug": "saat-al-mudda", "gone": true },
+    { "n": 7, "slug": "falaj-dawt" },
+    { "n": 8, "slug": "mazaraa-mosque", "also": "mazaraa-oven" },
+    { "n": 9, "slug": "nizwa-souq", "plan": "g1" }
+  ]
+}

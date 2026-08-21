@@ -1,0 +1,60 @@
+---
+import { href, ui, type Lang } from '../lib/i18n';
+import { leadPhoto } from '../lib/photos';
+import Photo from './Photo.astro';
+
+interface Props { lang: Lang; slug: string; title: string; excerpt?: string; order: number }
+const { lang, slug, title, excerpt, order } = Astro.props;
+const t = ui[lang];
+const photo = leadPhoto(slug);
+// The card grid is auto-fill minmax(16rem, 1fr) inside a 76rem page, so the
+// thumbnail is the full viewport on a phone, about half a tablet, and never
+// much more than 20rem on a desktop. Keep this in step with .grid in
+// discover.astro and .featured-grid on the home page.
+const THUMB_SIZES = '(max-width: 34rem) 100vw, (max-width: 60rem) 50vw, 20rem';
+const num = lang === 'ar' ? new Intl.NumberFormat('ar-EG').format(order + 1) : String(order + 1).padStart(2, '0');
+---
+<a class="card" href={href(lang, slug)}>
+  <div class="thumb">
+    {
+      photo ? (
+        <Photo file={photo.file} alt="" widths={[320, 480, 640, 1024]} sizes={THUMB_SIZES} />
+      ) : (
+        <span class="thumb-empty" aria-hidden="true">{num}</span>
+      )
+    }
+  </div>
+  <div class="body">
+    <span class="num">{num}</span>
+    <h3>{title}</h3>
+    {excerpt && <p class="excerpt">{excerpt}</p>}
+    <span class="more">{t.readMore}</span>
+  </div>
+</a>
+
+<style>
+  .card {
+    display: flex; flex-direction: column;
+    background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius);
+    color: var(--ink); overflow: hidden;
+    transition: border-color .18s ease, transform .18s ease;
+  }
+  .card:hover { border-color: var(--clay); color: var(--ink); transform: translateY(-2px); }
+
+  .thumb { aspect-ratio: 4 / 3; background: var(--surface-sunk); display: grid; place-items: center; overflow: hidden; }
+  /* <Photo> renders a <picture>, so the grid/flex child would be that wrapper
+     rather than the image. display: contents hands the box back to the <img>.
+     :global because the <img> is the child component's element, not this one's. */
+  .thumb :global(picture) { display: contents; }
+  .thumb :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .thumb-empty { font-family: var(--display); font-size: 2.5rem; color: var(--rule); }
+
+  .body { display: flex; flex-direction: column; gap: .5rem; padding: 1.15rem 1.25rem 1.35rem; flex: 1; }
+  .num { font-family: var(--sans); font-size: .72rem; letter-spacing: .14em; color: var(--ink-faint); }
+  h3 { font-size: 1.2rem; }
+  .excerpt {
+    font-size: .88rem; line-height: 1.8; color: var(--ink-muted);
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .more { margin-block-start: auto; padding-block-start: .5rem; font-family: var(--sans); font-size: .82rem; color: var(--clay); }
+</style>

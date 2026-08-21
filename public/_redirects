@@ -1,0 +1,4 @@
+# Arabic is the primary language: the bare root hands off to /ar.
+# Astro also emits a meta-refresh index.html for this, which stays as the
+# fallback if the host serves the static file ahead of this rule.
+/  /ar  302

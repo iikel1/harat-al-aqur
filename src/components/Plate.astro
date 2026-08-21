@@ -1,0 +1,152 @@
+---
+import { ui, type Lang } from '../lib/i18n';
+import { type Photo } from '../lib/photos';
+import PhotoImage from './Photo.astro';
+import { captionsForPage, captionText } from '../lib/captions';
+
+interface Props {
+  /** One book page's worth of photographs. */
+  photos: Photo[];
+  page: number;
+  lang: Lang;
+  subject: string;
+  /** The opening plate of an entry: its first image is shown large. */
+  variant?: 'lead' | 'gallery';
+}
+const { photos, page, lang, subject, variant = 'gallery' } = Astro.props;
+const t = ui[lang];
+const entry = captionsForPage(page);
+const captions = entry?.captions.map((c) => captionText(c, lang)) ?? [];
+
+// A single caption on a page with a single photograph describes that image, and
+// can be its alt text. A caption shared across several photographs describes the
+// set, so it must not be pushed into any one image's alt text as though it named
+// that image.
+const isExact = entry?.scope === 'photo' && photos.length === 1;
+
+// How wide each image is actually painted, so the browser can pick a file that
+// size instead of the largest one going. Three slots, in descending order:
+// the lead image spans the entry's whole text column (~46rem); the images that
+// follow it sit in an auto-fit minmax(9rem) row; a gallery plate is one cell of
+// the .gallery grid in [slug].astro, halved again when the page carries two.
+// Keep these in step with the CSS below and with that grid.
+const LEAD = { widths: [480, 768, 1024, 1440], sizes: '(max-width: 60rem) 100vw, 46rem' };
+const LEAD_REST = { widths: [240, 360, 480, 720], sizes: '(max-width: 60rem) 33vw, 15rem' };
+const GALLERY_ONE = { widths: [320, 480, 640, 1024], sizes: '(max-width: 46rem) 100vw, 22rem' };
+const GALLERY_MANY = { widths: [240, 360, 480, 720], sizes: '(max-width: 46rem) 50vw, 11rem' };
+
+const slot = (i: number) =>
+  variant === 'lead'
+    ? i === 0
+      ? LEAD
+      : LEAD_REST
+    : photos.length === 1
+      ? GALLERY_ONE
+      : GALLERY_MANY;
+const pageLabel = lang === 'ar' ? `ص ${page}` : `p. ${page}`;
+---
+<figure class:list={['plate', variant === 'lead' && 'plate--lead']}>
+  <div class="images" data-count={photos.length}>
+    {
+      photos.map((p, i) => (
+        <PhotoImage
+          file={p.file}
+          alt={isExact ? captions[0] : `${subject}, ${t.photoCredit}`}
+          widths={slot(i).widths}
+          sizes={slot(i).sizes}
+          loading={variant === 'lead' && i === 0 ? 'eager' : 'lazy'}
+          fetchpriority={variant === 'lead' && i === 0 ? 'high' : undefined}
+        />
+      ))
+    }
+  </div>
+
+  <figcaption>
+    {
+      captions.length > 0 && (
+        <div class="captions">
+          {captions.map((c) => (
+            <p class="caption">{c}</p>
+          ))}
+          {!isExact && photos.length > 1 && (
+            <p class="scope-note">
+              {lang === 'ar'
+                ? 'من صور هذه الصفحة في الكتاب، دون تحديد أيّها.'
+                : 'From this page of the book, without saying which image is which.'}
+            </p>
+          )}
+        </div>
+      )
+    }
+    <span class="credit">{t.photoCredit}, {pageLabel}</span>
+  </figcaption>
+</figure>
+
+<style>
+  .plate { margin: 0; }
+  .images { display: grid; gap: .5rem; }
+  .images[data-count='2'] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .images[data-count='3'],
+  .images[data-count='4'] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (max-width: 34rem) {
+    .images[data-count='3'],
+    .images[data-count='4'] { grid-template-columns: minmax(0, 1fr); }
+  }
+  /* <Photo> wraps each image in a <picture>, which would otherwise become the
+     grid item. display: contents hands the box back to the <img>. :global
+     because the <img> belongs to that component's template, not this one's. */
+  .images :global(picture) { display: contents; }
+  .images :global(img) {
+    width: 100%;
+    /* Explicit, not inherited: a grid item at height:auto is stretched to the
+       row, and an unloaded image would be stretched to its full attribute
+       height rather than the height its own ratio asks for. */
+    height: auto;
+    border-radius: var(--radius);
+    background: var(--surface-sunk);
+  }
+
+  /* A page that printed several photographs shows them as a uniform 4/3 strip,
+     cropped to fit. Everything else keeps the photograph's own proportions.
+
+     The ratio is only ever ADDED, never overridden back to `auto` on the images
+     that should keep their own: an author `aspect-ratio: auto` replaces the
+     whole UA shorthand, including the `auto W/H` the browser derives from the
+     width and height attributes, so the image reserves NO height until it loads
+     and the page jumps when it does. Hence the :not()s rather than an override.
+     `revert` does not bring it back either - that ratio is not a UA stylesheet
+     rule. */
+  .plate:not(.plate--lead) .images:not([data-count='1']) :global(img),
+  .plate--lead .images :global(picture:not(:first-child) img) {
+    height: 100%;
+    object-fit: cover;
+    aspect-ratio: 4 / 3;
+  }
+
+  /* The opening plate: the best image the book has for this entry leads at its
+     own proportions, and any others printed on the same page follow beneath it
+     at a smaller size. */
+  .plate--lead { margin-block-end: 2.5rem; }
+  .plate--lead .images { grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); }
+  .plate--lead .images :global(picture:first-child img) {
+    grid-column: 1 / -1;
+    max-height: 32rem;
+    object-fit: cover;
+  }
+
+  figcaption {
+    margin-block-start: .7rem;
+    font-family: var(--sans);
+    font-size: .84rem;
+    line-height: 1.75;
+    color: var(--ink-muted);
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+  }
+  .captions { display: flex; flex-direction: column; gap: .2rem; }
+  .caption { color: var(--ink); }
+  .caption + .caption::before { content: '· '; color: var(--ink-faint); }
+  .scope-note { font-size: .75rem; color: var(--ink-faint); }
+  .credit { font-size: .75rem; color: var(--ink-faint); }
+</style>

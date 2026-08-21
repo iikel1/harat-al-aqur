@@ -1,0 +1,48 @@
+# Netlify deploy config. Cloudflare Pages reads public/_headers and
+# public/_redirects instead — the two say the same thing and are kept in step
+# by hand. Both hosts are configured so either one is a click away.
+
+[build]
+  # `npm run build` builds 74 static pages, resizes the book's photographs into
+  # WebP + JPEG variants under /_astro/, then drops the unreferenced originals
+  # Astro emits alongside them. Nothing here needs a server runtime.
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Arabic is the primary language: the bare root hands off to /ar. Astro emits a
+# meta-refresh index.html for this too; `force` makes the real 302 win over it.
+[[redirects]]
+  from = "/"
+  to = "/ar"
+  status = 302
+  force = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
+    Permissions-Policy = "geolocation=(), camera=(), microphone=()"
+
+# Astro hashes these filenames, so they can never go stale. The book's
+# photographs live here too now, as WebP and JPEG variants named by content
+# hash — which is what lets them be cached forever rather than for a week.
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Subset faces from work/fetch_fonts.py — unhashed names, but they only change
+# when that script is re-run against an upstream font revision.
+[[headers]]
+  for = "/fonts/*.woff2"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# There is no /fonts/fonts.css any more: the @font-face rules are bundled into
+# the page's own stylesheet, which is hashed and covered by the rule above.
+# Nor is there /photos/* — the photographs are served from /_astro/.

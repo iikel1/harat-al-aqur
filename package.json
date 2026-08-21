@@ -1,0 +1,24 @@
+{
+  "name": "harat-al-aqur",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "dev:share": "node work/dev_share.mjs",
+    "build": "astro build && node work/prune_assets.mjs",
+    "preview": "astro preview",
+    "check": "astro check",
+    "check:links": "node work/check_links.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^5.14.1",
+    "three": "^0.185.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/three": "^0.185.4",
+    "typescript": "^5.9.3"
+  }
+}

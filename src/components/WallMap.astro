@@ -1,0 +1,528 @@
+---
+import type { Lang } from '../lib/i18n';
+import { WALL_PATH, PLAN_TOWERS, PLAN_GATES, PLAN_VIEWBOX } from '../lib/plan';
+import { TOWERS, GATES, TOWER_MATCHES, GATE_MATCHES, SIDE_LABELS } from '../lib/wall';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const sides = SIDE_LABELS[lang];
+
+// Every mark carries the name the plan's OWN LEGEND gives it — the key printed
+// around the plan on the same page of the book, signed by the man who drew it.
+// That legend names 14 towers outright plus 3 more that share a gate, and one
+// gate alone: 17 towers and 4 gates, exactly what the drawing shows.
+//
+// TOWER_MATCHES / GATE_MATCHES still hold the six placements that were worked
+// out from the book's prose before the legend was found. Every one of them
+// agrees with the legend, so they are kept as corroboration.
+const named = (planId: string, kind: 'tower' | 'gate') => {
+  const matches = kind === 'tower' ? TOWER_MATCHES : GATE_MATCHES;
+  const list = kind === 'tower' ? TOWERS : GATES;
+  const match = matches.find((m) => m.plan === planId);
+  if (!match) return null;
+  const feature = list.find((f) => f.id === match.feature);
+  return feature ? { feature, basis: match[lang] } : null;
+};
+
+const unnamedLabel = lang === 'ar' ? 'برج بلا اسم في المخطط' : 'Tower unnamed on the plan';
+const num = (n: number) => (lang === 'ar' ? new Intl.NumberFormat('ar-EG').format(n) : String(n));
+
+const towers = PLAN_TOWERS.map((m, i) => {
+  const hit = named(m.id, 'tower');
+  const legend = lang === 'ar' ? m.ar : m.en;
+  return {
+    ...m,
+    n: i + 1,
+    kind: 'tower' as const,
+    label: legend ?? (hit ? (lang === 'ar' ? hit.feature.ar : hit.feature.en) : unnamedLabel),
+    note: hit ? (lang === 'ar' ? hit.feature.ar_note : hit.feature.en_note) : undefined,
+    basis: hit?.basis,
+    standing: hit?.feature.standing !== false,
+    isNamed: Boolean(legend ?? hit),
+    fromLegend: Boolean(legend),
+    // A named feature shows the side the BOOK gives it. The traced sector is an
+    // eight-way reading of a drawing, so showing "south-east" for a gate the
+    // book calls "east" would look like an error rather than a distinction.
+    bookSide: hit?.feature.side ?? null
+  };
+});
+
+const gates = PLAN_GATES.map((m, i) => {
+  const hit = named(m.id, 'gate');
+  const legend = lang === 'ar' ? m.ar : m.en;
+  return {
+    ...m,
+    n: i + 1,
+    kind: 'gate' as const,
+    label: legend ?? (hit ? (lang === 'ar' ? hit.feature.ar : hit.feature.en) : (lang === 'ar' ? 'بوابة' : 'Gate')),
+    note: hit ? (lang === 'ar' ? hit.feature.ar_note : hit.feature.en_note) : undefined,
+    basis: hit?.basis,
+    standing: hit?.feature.standing !== false,
+    isNamed: Boolean(legend ?? hit),
+    fromLegend: Boolean(legend),
+    bookSide: hit?.feature.side ?? null
+  };
+});
+
+// Gates are drawn first so that a tower standing beside one - which the plan
+// shows at Al Sabkha, and the book confirms - is not buried under it.
+const marks = [...gates, ...towers];
+
+const t = {
+  ar: {
+    title: 'مخطط السور',
+    hint: 'اختر برجاً أو بوابة.',
+    empty: 'اختر علامة على المخطط لتقرأ ما يُعرف عنها.',
+    pickHint: 'مرّ بالمؤشر لتستعرض، واضغط لتثبّت الاختيار.',
+    pinned: 'مثبَّت',
+    previewing: 'استعراض',
+    clear: 'ألغِ التثبيت',
+    tower: 'برج',
+    gate: 'بوابة (صِباح)',
+    side: 'الجهة كما يذكرها الكتاب',
+    onPlan: 'موضعه في المخطط',
+    basis: 'لماذا وُضع هنا',
+    unnamedBody:
+      'يرسم المخطط هذا البرج ولا يسميه، ولا يذكر الكتاب ما يكفي لتسميته. تركناه بلا اسم بدل أن نخمّن.',
+    fromLegend: 'الاسم من مفتاح المخطط المطبوع معه في الكتاب.',
+    gone: 'مهدوم',
+    goneNote: 'يرسمه المخطط، والكتاب يذكر أنه هُدم.',
+    keyTower: 'برج',
+    keyGate: 'بوابة',
+    keyNamed: 'مسمّى',
+    north: 'ش'
+  },
+  en: {
+    title: 'The plan of the wall',
+    hint: 'Choose a tower or a gate.',
+    empty: 'Pick a mark on the plan to read what is known about it.',
+    pickHint: 'Hover to preview, click to pin it.',
+    pinned: 'Pinned',
+    previewing: 'Previewing',
+    clear: 'Unpin',
+    tower: 'Tower',
+    gate: 'Gate (sabah)',
+    side: 'Side, as the book gives it',
+    onPlan: 'Where it sits on the plan',
+    basis: 'Why it is placed here',
+    unnamedBody:
+      'The plan draws this tower but does not name it, and the book does not say enough to name it. It is left unnamed rather than guessed at.',
+    fromLegend: 'Named by the plan’s own legend, printed beside it in the book.',
+    gone: 'Demolished',
+    goneNote: 'The plan draws it; the book records that it was demolished.',
+    keyTower: 'Tower',
+    keyGate: 'Gate',
+    keyNamed: 'named',
+    north: 'N'
+  }
+}[lang];
+---
+
+<div class="map" data-wallmap>
+  <div class="canvas">
+    <svg class="plan" viewBox={PLAN_VIEWBOX} role="img" aria-label={t.title} preserveAspectRatio="xMidYMid meet">
+      <path class="wall" d={WALL_PATH} />
+
+      <g class="compass" aria-hidden="true">
+        <line x1="60" y1="96" x2="60" y2="42" />
+        <polygon points="60,32 55,48 65,48" />
+        <text x="60" y="118">{t.north}</text>
+      </g>
+
+      {
+        marks.map((m) => (
+          <g
+            class:list={['mark', `mark--${m.kind}`, m.isNamed && 'is-named', !m.standing && 'is-gone']}
+            data-mark={m.id}
+          >
+            <circle class="hit" cx={m.x} cy={m.y} r="16" />
+            <circle class="halo" cx={m.x} cy={m.y} r="9" aria-hidden="true" />
+            {m.kind === 'gate' ? (
+              <rect x={m.x - 9} y={m.y - 9} width="18" height="18" rx="2" class="glyph" />
+            ) : (
+              <circle cx={m.x} cy={m.y} r="9" class="glyph" />
+            )}
+          </g>
+        ))
+      }
+    </svg>
+
+    <ol class="chips">
+      {
+        marks.map((m) => (
+          <li>
+            <button type="button" class:list={['chip', `chip--${m.kind}`]} data-chip={m.id}>
+              {m.isNamed ? m.label : m.kind === 'gate' ? t.gate : `${t.tower} ${num(m.n)}`}
+            </button>
+          </li>
+        ))
+      }
+    </ol>
+
+    <ul class="key" aria-hidden="true">
+      <li><span class="swatch swatch--tower"></span>{t.keyTower}</li>
+      <li><span class="swatch swatch--named"></span>{t.keyNamed}</li>
+      <li><span class="swatch swatch--gate"></span>{t.keyGate}</li>
+    </ul>
+  </div>
+
+  <div class="panel" data-panel aria-live="polite" data-t-pinned={t.pinned} data-t-previewing={t.previewing}>
+    <p class="empty" data-empty>
+      {t.empty}
+      <span class="empty-hint">{t.pickHint}</span>
+    </p>
+
+    {/* Says whether what you are reading is a passing preview or the mark you
+        actually picked - the panel used to look identical either way. */}
+    <div class="state" data-state hidden>
+      <span class="state-dot" aria-hidden="true"></span>
+      <span data-state-label></span>
+      <button type="button" class="clear" data-clear hidden>{t.clear}</button>
+    </div>
+
+    {
+      marks.map((m) => (
+        <article class="detail" data-detail={m.id} hidden>
+          <span class="kind">
+            <span class="kind-glyph" aria-hidden="true">
+              <svg viewBox="0 0 24 24" class:list={[`kind-glyph--${m.kind}`, m.isNamed && 'is-named']}>
+                {m.kind === 'gate' ? (
+                  <rect x="4.5" y="4.5" width="15" height="15" rx="2" />
+                ) : (
+                  <circle cx="12" cy="12" r="7.5" />
+                )}
+              </svg>
+            </span>
+            {m.kind === 'gate' ? t.gate : t.tower}
+          </span>
+          <h3>{m.label}</h3>
+          <p class="side">
+            {m.bookSide
+              ? `${t.side}: ${sides[m.bookSide as keyof typeof sides]}`
+              : `${t.onPlan}: ${sides[m.side as keyof typeof sides] ?? m.side}`}
+            {!m.standing && <span class="tag">{t.gone}</span>}
+          </p>
+          {m.note && <p class="note">{m.note}</p>}
+          {m.fromLegend && <p class="note note--muted">{t.fromLegend}</p>}
+          {!m.isNamed && <p class="note note--muted">{t.unnamedBody}</p>}
+          {!m.standing && <p class="note note--muted">{t.goneNote}</p>}
+          {m.basis && (
+            <p class="basis">
+              <span class="basis-label">{t.basis}</span>
+              {m.basis}
+            </p>
+          )}
+        </article>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  // Progressive enhancement: without JS the plan still draws, and the full named
+  // inventory below the map remains the complete, readable record.
+  document.querySelectorAll('[data-wallmap]').forEach((root) => {
+    const panel = root.querySelector('[data-panel]');
+    const empty = root.querySelector('[data-empty]');
+    if (!panel || !empty) return;
+
+    const marks = Array.from(root.querySelectorAll('[data-mark]'));
+    const chips = Array.from(root.querySelectorAll('[data-chip]'));
+    const details = new Map(
+      Array.from(panel.querySelectorAll('[data-detail]')).map((d) => [d.getAttribute('data-detail'), d])
+    );
+
+    // Hover and click used to be the same action: mouseenter selected, and
+    // leaving the map cleared it, so a chosen mark never stayed chosen and
+    // there was no way to tell "I am pointing at this" from "I picked this".
+    // They are now two states. `pinned` survives the mouse leaving; `hovered`
+    // only previews the panel.
+    const plan = root.querySelector('svg.plan');
+    let pinned: string | null = null;
+    let hovered: string | null = null;
+
+    const stateRow = root.querySelector('[data-state]');
+    const stateLabel = root.querySelector('[data-state-label]');
+    const clearBtn = root.querySelector('[data-clear]');
+    const T = {
+      pinned: panel.getAttribute('data-t-pinned') ?? '',
+      previewing: panel.getAttribute('data-t-previewing') ?? ''
+    };
+
+    const render = () => {
+      const shown = hovered ?? pinned;
+      // Preview and pin used to look identical in the panel. Now it says which.
+      const isPin = shown !== null && shown === pinned && hovered === null;
+      if (stateRow) (stateRow as HTMLElement).hidden = shown === null;
+      if (stateLabel) stateLabel.textContent = isPin ? T.pinned : T.previewing;
+      (stateRow as HTMLElement)?.classList.toggle('is-pinned', isPin);
+      if (clearBtn) (clearBtn as HTMLElement).hidden = pinned === null;
+      panel.classList.toggle('has-pin', pinned !== null);
+      marks.forEach((m) => {
+        const id = m.getAttribute('data-mark');
+        m.classList.toggle('is-pinned', id !== null && id === pinned);
+        m.classList.toggle('is-hover', id !== null && id === hovered);
+        m.setAttribute('aria-pressed', String(id !== null && id === pinned));
+      });
+      chips.forEach((c) => {
+        const on = c.getAttribute('data-chip') === pinned;
+        c.classList.toggle('is-active', on);
+        c.setAttribute('aria-pressed', String(on));
+      });
+      // Dims every unpicked mark, so the chosen one is legible on a busy plan.
+      plan?.classList.toggle('has-pin', pinned !== null);
+      details.forEach((d, key) => {
+        (d as HTMLElement).hidden = key !== shown;
+      });
+      (empty as HTMLElement).hidden = shown !== null;
+    };
+
+    const pin = (id: string | null) => {
+      pinned = id !== null && id === pinned ? null : id;   // clicking it again lets go
+      render();
+    };
+    const preview = (id: string | null) => {
+      hovered = id;
+      render();
+    };
+
+    marks.forEach((mark) => {
+      const id = mark.getAttribute('data-mark');
+      mark.setAttribute('tabindex', '0');
+      mark.setAttribute('role', 'button');
+      const detail = details.get(id);
+      const name = detail?.querySelector('h3')?.textContent ?? '';
+      mark.setAttribute('aria-label', name);
+
+      mark.addEventListener('click', () => pin(id));
+      mark.addEventListener('mouseenter', () => preview(id));
+      mark.addEventListener('mouseleave', () => preview(null));
+      // Tabbing through previews; Enter or Space is what actually picks.
+      mark.addEventListener('focus', () => preview(id));
+      mark.addEventListener('blur', () => preview(null));
+      mark.addEventListener('keydown', (e) => {
+        const key = (e as KeyboardEvent).key;
+        if (key === 'Enter' || key === ' ') {
+          e.preventDefault();
+          pin(id);
+        }
+      });
+    });
+
+    // The glyphs are ~10px across on a phone, far below a usable tap target and
+    // too close together to enlarge. The chips are the touch and keyboard route
+    // to the same marks.
+    clearBtn?.addEventListener('click', () => {
+      pinned = null;
+      hovered = null;
+      render();
+    });
+
+    chips.forEach((chip) => {
+      chip.setAttribute('aria-pressed', 'false');
+      chip.addEventListener('click', () => pin(chip.getAttribute('data-chip')));
+    });
+
+    // Leaving the map drops the preview only. A pinned mark stays pinned -
+    // that is the whole point of pinning it.
+    root.addEventListener('mouseleave', () => preview(null));
+    // Escape lets go of it without hunting for the mark again.
+    root.addEventListener('keydown', (e) => {
+      if ((e as KeyboardEvent).key === 'Escape' && pinned !== null) {
+        pinned = null;
+        render();
+      }
+    });
+  });
+</script>
+
+<style>
+  .map { display: grid; gap: 1.5rem; align-items: start; }
+  @media (min-width: 60rem) {
+    .map { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 2.5rem; }
+    .panel { position: sticky; top: 2rem; }
+  }
+
+  .canvas {
+    position: relative;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: var(--surface);
+    padding: 1rem;
+  }
+  svg { width: 100%; height: auto; display: block; touch-action: manipulation; }
+
+  .wall {
+    fill: var(--surface-sunk);
+    stroke: var(--clay);
+    stroke-width: 3.5;
+    stroke-linejoin: round;
+  }
+
+  .compass line, .compass polygon { stroke: var(--ink-faint); fill: var(--ink-faint); stroke-width: 2; }
+  .compass text {
+    fill: var(--ink-faint); font-family: var(--sans); font-size: 26px; text-anchor: middle;
+  }
+
+  .mark { cursor: pointer; }
+  .mark:focus { outline: none; }
+  .hit { fill: transparent; }
+  .glyph {
+    fill: var(--surface);
+    stroke: var(--clay);
+    stroke-width: 3;
+    /* keeps a mark readable where it overlaps its neighbour */
+    paint-order: stroke fill;
+    transition: fill .15s ease, stroke-width .15s ease;
+  }
+  .mark--tower .glyph { stroke: var(--clay); }
+  .mark--gate .glyph { stroke: var(--clay-deep); fill: var(--clay-deep); }
+  .mark--tower.is-named .glyph { fill: var(--clay); }
+  .is-gone .glyph { stroke-dasharray: 4 3; fill: var(--surface); }
+  /* a tower sitting on top of a gate needs a rim of page colour around it */
+  .mark--tower .glyph { stroke-linejoin: round; }
+
+  /* Pointing at a mark. Deliberately lighter than picking one. */
+  .mark:hover .glyph,
+  .mark.is-hover .glyph {
+    fill: var(--clay-deep);
+    stroke: var(--clay-deep);
+    stroke-width: 5;
+  }
+
+  /* The halo is what actually answers "which one did I pick?". It sits behind
+     the glyph and only appears when a mark is pinned. */
+  .halo {
+    fill: none;
+    stroke: var(--clay-deep);
+    stroke-width: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease, stroke-width .18s ease, r .18s ease;
+  }
+  .mark.is-pinned .halo {
+    opacity: 1;
+    stroke-width: 3;
+    r: 21;
+  }
+  .mark.is-pinned .glyph {
+    fill: var(--clay-deep);
+    stroke: var(--ink);
+    stroke-width: 5;
+  }
+
+  /* With something pinned, everything else steps back. On a plan carrying 21
+     marks this is what makes the chosen one findable at a glance. */
+  .plan.has-pin .mark:not(.is-pinned) .glyph { opacity: .28; }
+  .plan.has-pin .mark:not(.is-pinned):hover .glyph,
+  .plan.has-pin .mark:not(.is-pinned).is-hover .glyph { opacity: 1; }
+  .plan.has-pin .wall { opacity: .55; }
+  .glyph, .wall { transition: opacity .18s ease, fill .15s ease, stroke-width .15s ease; }
+
+  .mark:focus-visible .glyph { stroke: var(--ink); stroke-width: 5; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .halo, .glyph, .wall { transition: none; }
+  }
+
+  .chips {
+    display: flex; flex-wrap: wrap; gap: .4rem;
+    list-style: none; margin: 1rem 0 0; padding: 0;
+  }
+  .chip {
+    min-height: 44px; padding: .35rem .75rem;
+    font-family: var(--sans); font-size: .78rem; line-height: 1.3;
+    color: var(--ink); background: var(--surface);
+    border: 1px solid var(--rule-strong); border-radius: var(--radius);
+    cursor: pointer;
+  }
+  .chip--gate { border-color: var(--clay); }
+  .chip:hover { border-color: var(--clay); color: var(--clay-deep); }
+  .chip.is-active { background: var(--clay); border-color: var(--clay); color: var(--on-clay); }
+  .chip:focus-visible { outline: 2px solid var(--clay); outline-offset: 2px; }
+
+  .key {
+    display: flex; flex-wrap: wrap; gap: .35rem 1rem; list-style: none;
+    margin: .9rem 0 0; padding: 0;
+    font-family: var(--sans); font-size: .75rem; color: var(--ink-muted);
+  }
+  .key li { display: flex; align-items: center; gap: .4rem; }
+  .swatch { width: .7rem; height: .7rem; border: 2px solid var(--clay); border-radius: 50%; }
+  .swatch--named { background: var(--clay); }
+  .swatch--gate { border-radius: 2px; border-color: var(--clay-deep); }
+
+  .panel {
+    border: 1px solid var(--rule);
+    border-inline-start: 3px solid var(--clay);
+    border-radius: var(--radius);
+    background: var(--surface-sunk);
+    padding: 1.25rem 1.35rem;
+    min-height: 11rem;
+    font-family: var(--sans);
+  }
+  /* Pinned, the panel stops being a passive readout and takes the accent. */
+  .panel.has-pin {
+    border-inline-start-color: var(--clay-deep);
+    border-inline-start-width: 5px;
+    background: var(--surface);
+    box-shadow: 0 1px 0 var(--rule-light);
+  }
+
+  .empty { font-size: .88rem; line-height: 1.85; color: var(--ink-muted); }
+  .empty-hint {
+    display: block; margin-block-start: .5rem;
+    font-size: .78rem; color: var(--ink-faint);
+  }
+
+  /* Says whether this is a preview or the mark you picked. */
+  .state {
+    display: flex; align-items: center; gap: .5rem;
+    margin-block-end: .85rem; padding-block-end: .7rem;
+    border-block-end: 1px solid var(--rule-light);
+    font-size: .7rem; letter-spacing: .12em; color: var(--ink-faint);
+  }
+  [dir='ltr'] .state { text-transform: uppercase; }
+  .state-dot {
+    width: .5rem; height: .5rem; border-radius: 50%;
+    border: 1.5px solid var(--ink-faint); flex: none;
+  }
+  .state.is-pinned { color: var(--clay-deep); }
+  .state.is-pinned .state-dot { background: var(--clay-deep); border-color: var(--clay-deep); }
+  .clear {
+    margin-inline-start: auto;
+    font-family: var(--sans); font-size: .7rem; letter-spacing: .06em;
+    color: var(--ink-muted); background: none;
+    border: 1px solid var(--rule-strong); border-radius: var(--radius);
+    padding: .25rem .6rem; cursor: pointer;
+  }
+  [dir='ltr'] .clear { text-transform: none; }
+  .clear:hover { border-color: var(--clay); color: var(--clay-deep); }
+  .clear:focus-visible { outline: 2px solid var(--clay); outline-offset: 2px; }
+
+  /* The same glyph the plan uses, so the panel is visibly about THAT mark. */
+  .kind {
+    display: flex; align-items: center; gap: .45rem;
+    font-size: .7rem; letter-spacing: .14em; color: var(--ink-muted);
+  }
+  [dir='ltr'] .kind { text-transform: uppercase; }
+  .kind-glyph { display: flex; flex: none; }
+  .kind-glyph svg { width: .95rem; height: .95rem; }
+  .kind-glyph svg * { fill: var(--surface); stroke: var(--clay); stroke-width: 2.6; }
+  .kind-glyph svg.is-named * { fill: var(--clay); }
+  .kind-glyph svg.kind-glyph--gate * { stroke: var(--clay-deep); fill: var(--clay-deep); }
+  .detail h3 { font-family: var(--display); font-size: 1.35rem; margin-block: .35rem .5rem; }
+  .side { font-size: .8rem; color: var(--ink-faint); display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+  .tag {
+    font-size: .68rem; letter-spacing: .08em; color: var(--clay-deep);
+    border: 1px solid var(--clay); border-radius: var(--radius); padding: .05rem .4rem;
+  }
+  .note { margin-block-start: .8rem; font-size: .87rem; line-height: 1.85; color: var(--ink-muted); }
+  .note--muted { color: var(--ink-faint); }
+  .basis {
+    margin-block-start: 1rem; padding-block-start: .8rem;
+    border-block-start: 1px solid var(--rule);
+    font-size: .8rem; line-height: 1.8; color: var(--ink-muted);
+  }
+  .basis-label { display: block; font-size: .68rem; letter-spacing: .12em; color: var(--ink-faint); margin-block-end: .3rem; }
+  [dir='ltr'] .basis-label { text-transform: uppercase; }
+</style>

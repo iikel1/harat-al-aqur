@@ -1,0 +1,147 @@
+---
+import type { Lang } from '../lib/i18n';
+import { placeName, type Place } from '../lib/places';
+
+interface Props { place: Place; lang: Lang }
+const { place, lang } = Astro.props;
+
+// Name, type, hours, phone and the maps link. Never a rating, a review count or
+// a price - places.ts drops those fields before they ever reach a template.
+const secondary = lang === 'ar' ? place.name_en : place.name_ar;
+const otherLang = lang === 'ar' ? 'en' : 'ar';
+const otherDir = lang === 'ar' ? 'ltr' : 'rtl';
+
+// The listings are sparse and unevenly so: not one of the eleven places to stay
+// carries opening hours, and not one of the fifteen places to eat carries a
+// phone number. The old card printed a fixed <dl> of hours / phone / Plus Code
+// regardless, so most of them rendered as a name above an empty skeleton. Build
+// the facts list from what is actually present instead.
+const facts: { label: string; value: string; href?: string; ltr?: boolean }[] = [];
+
+if (place.hours) {
+  // The data stores hours as fragments like "to 23:00" or
+  // "to 22:00; opens 09:00 Fri". Rendered raw under a "Hours" label that reads
+  // as a typo, so give the common case its preposition back.
+  const parts = place.hours.split(';').map((s) => s.trim()).filter(Boolean);
+  const value = parts
+    .map((part) =>
+      /^to\s/i.test(part)
+        ? (lang === 'ar' ? 'حتى ' : 'Until ') + part.replace(/^to\s+/i, '')
+        : part
+    )
+    .join(lang === 'ar' ? '، ' : ', ');
+  facts.push({ label: lang === 'ar' ? 'أوقات العمل' : 'Hours', value, ltr: true });
+}
+
+if (place.phone) {
+  facts.push({
+    label: lang === 'ar' ? 'الهاتف' : 'Phone',
+    value: place.phone,
+    href: `tel:${place.phone.replace(/\s+/g, '')}`,
+    ltr: true
+  });
+}
+
+if (place.plus_code) {
+  facts.push({ label: lang === 'ar' ? 'رمز الموقع' : 'Plus Code', value: place.plus_code, ltr: true });
+}
+
+// The notes in places.json are written in English (a handful carry an Arabic
+// name inside them). Rendering them unmarked inside an RTL page mis-orders the
+// punctuation, so a note with no Arabic in it is tagged as the English it is.
+const note = place.note?.trim();
+const noteIsLatin = note ? !/[؀-ۿ]/.test(note) : false;
+// They are semicolon-delimited fragments rather than sentences.
+const noteText = note ? note.split(';').map((s) => s.trim()).filter(Boolean).join(', ') : undefined;
+
+const mapsLabel = lang === 'ar' ? 'افتح في خرائط جوجل' : 'Open in Google Maps';
+---
+<li class="place">
+  <div class="body">
+    <div class="head">
+      <h3>{placeName(place, lang)}</h3>
+      <span class="alt" lang={otherLang} dir={otherDir}>{secondary}</span>
+    </div>
+
+  {
+    noteText && (
+      <p class="note" lang={noteIsLatin ? 'en' : undefined} dir={noteIsLatin && lang === 'ar' ? 'ltr' : undefined}>
+        {noteText}
+      </p>
+    )
+  }
+
+  {
+    facts.length > 0 && (
+      <dl class="facts">
+        {facts.map((f) => (
+          <div>
+            <dt>{f.label}</dt>
+            <dd dir={f.ltr ? 'ltr' : undefined}>
+              {f.href ? <a href={f.href}>{f.value}</a> : f.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    )
+  }
+  </div>
+
+  <a class="maps" href={place.maps_url} rel="noopener noreferrer" target="_blank">
+    <span>{mapsLabel}</span>
+    <span class="arrow" aria-hidden="true">↗</span>
+  </a>
+</li>
+
+<style>
+  /* This page is the practical one, and it is the only page on the site that
+     goes stale. Its cards are deliberately NOT the archive cards: no photograph,
+     a clay rail down the leading edge, and a real action bar along the bottom,
+     so a visitor scanning for somewhere to eat is not reading the same object
+     they read for a fourteenth-century tower. */
+  .place {
+    display: flex; flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-inline-start: 3px solid var(--clay);
+    border-radius: var(--radius);
+    font-family: var(--sans);
+    transition: border-color .18s ease, transform .18s ease;
+  }
+  .place:hover { border-color: var(--clay); transform: translateY(-2px); }
+
+  /* .body takes the slack so the action bar sits on the floor of the card
+     without a second margin fighting the first. */
+  .body { flex: 1; padding-block-end: 1.1rem; }
+  .head { display: flex; flex-direction: column; gap: .1rem; padding: 1.1rem 1.2rem 0; }
+  h3 { font-family: var(--display); font-size: 1.25rem; font-weight: 700; line-height: 1.25; }
+  .alt { font-size: .8rem; color: var(--ink-faint); }
+
+  .note {
+    padding: .7rem 1.2rem 0;
+    font-size: .85rem; line-height: 1.75; color: var(--ink-muted);
+  }
+
+  .facts {
+    margin: 0; padding: .9rem 1.2rem 0;
+    display: flex; flex-wrap: wrap; gap: .7rem 1.6rem;
+  }
+  .facts > div { display: flex; flex-direction: column; gap: .05rem; }
+  dt { font-size: .68rem; letter-spacing: .08em; color: var(--ink-faint); }
+  dd { margin: 0; font-size: .88rem; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  /* The one thing a visitor actually wants from this card, given its own bar at
+     the foot rather than buried as the last line of a paragraph. */
+  .maps {
+    display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+    min-height: 44px; padding: .7rem 1.2rem;
+    border-block-start: 1px solid var(--rule-light);
+    font-size: .85rem;
+  }
+  .maps:hover { background: var(--clay-wash); }
+  .arrow { font-size: .95em; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .place, .place:hover { transition: none; transform: none; }
+  }
+</style>

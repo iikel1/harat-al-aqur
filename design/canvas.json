@@ -1,0 +1,136 @@
+{
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "title": "أ — الطين والظل",
+      "x": 0,
+      "y": 0,
+      "w": 880,
+      "h": 1180
+    },
+    {
+      "file": "OptionB.dc.html",
+      "title": "ب — المخطوطة",
+      "x": 960,
+      "y": 0,
+      "w": 880,
+      "h": 1120
+    },
+    {
+      "file": "OptionC.dc.html",
+      "title": "ج — الخريطة أولاً",
+      "x": 1920,
+      "y": 0,
+      "w": 880,
+      "h": 1180
+    },
+    {
+      "file": "WallMap.dc.html",
+      "title": "مخطط السور",
+      "x": 0,
+      "y": 1400,
+      "w": 900,
+      "h": 880
+    },
+    {
+      "file": "Entry.dc.html",
+      "title": "مدخل من الموسوعة",
+      "x": 980,
+      "y": 1400,
+      "w": 840,
+      "h": 1220
+    },
+    {
+      "file": "EatStay.dc.html",
+      "title": "أكل وإقامة",
+      "x": 1900,
+      "y": 1400,
+      "w": 840,
+      "h": 950
+    },
+    {
+      "file": "Route.dc.html",
+      "title": "الجولة",
+      "x": 2820,
+      "y": 1400,
+      "w": 840,
+      "h": 1240
+    },
+    {
+      "file": "Brand.dc.html",
+      "title": "الهوية",
+      "x": 0,
+      "y": 2800,
+      "w": 880,
+      "h": 1160
+    }
+  ],
+  "annotations": [
+    {
+      "id": "read-me",
+      "x": -420,
+      "y": 0,
+      "w": 340,
+      "text": "الصف الأول: ثلاثة اتجاهات للصفحة الرئيسة — اختر واحداً.\nالصف الثاني: بنية الموقع، مرسومة بلباس الاتجاه (أ).\n\nRow 1 = three home-page directions, pick one.\nRow 2 = the site structure, drawn in direction A's clothing. The structure works under any of the three."
+    },
+    {
+      "id": "note-a",
+      "x": 0,
+      "y": -200,
+      "w": 380,
+      "text": "أ — الطين والظل / Clay & Shadow\nEditorial and photographic. Big imagery, warm clay palette, Amiri for display.\n\nWhy: reads as a place worth travelling to; the strongest pull for a tourist deciding where to go.\nCost: it leans on photography we do not have at hero resolution yet. The book's images top out at 1658px wide."
+    },
+    {
+      "id": "note-b",
+      "x": 960,
+      "y": -200,
+      "w": 380,
+      "text": "ب — المخطوطة / The Manuscript\nArchival and typographic. Paper ground, ruled lines, rubricated headings, the plan as a marginal figure.\n\nWhy: it looks like what it is — a scholarly book put online. Almost no photography needed, which suits the assets we actually have.\nCost: colder to a casual visitor. Sells the reading, not the trip."
+    },
+    {
+      "id": "note-c",
+      "x": 1920,
+      "y": -200,
+      "w": 380,
+      "text": "ج — الخريطة أولاً / Map First\nThe plan of the wall IS the home page. Dark, high contrast, tool-like. Everything is a pin.\n\nWhy: best for someone standing in the quarter with a phone. The 16 towers become the navigation.\nCost: subordinates the book's scholarship to wayfinding — the history becomes a panel you tap, not the point."
+    },
+    {
+      "id": "note-map",
+      "x": 0,
+      "y": 1290,
+      "w": 400,
+      "text": "The signature surface. No other Nizwa page has this: every tower and sabah named, sited and clickable, from Dr Al Salmi's plan in the book.\n\nThe geometry is now traced, not schematic — work/trace_wall_plan.py recovers the circuit from the plan by colour, and the plan's own legend names all 21 marks. The drawing gives 17 towers where the book's text says 15; the page states every figure and picks none."
+    },
+    {
+      "id": "note-entry",
+      "x": 980,
+      "y": 1290,
+      "w": 400,
+      "text": "The wiki template, one of 31. Note the grey box: where sources disagree the page says so out loud instead of picking a winner — three sources give three different founding dates for this mosque."
+    },
+    {
+      "id": "note-eatstay",
+      "x": 1900,
+      "y": 1290,
+      "w": 400,
+      "text": "The only page that goes stale, kept deliberately apart from the history. Names, hours and a maps link — no ratings, no prices — with a visible last-checked date. One data file to refresh."
+    },
+    {
+      "id": "note-route",
+      "x": 2820,
+      "y": 1290,
+      "w": 400,
+      "text": "The guided tour: 9 stops, ~2 hours, drawn from the book's own geography. Stop 6 is the sundial that no longer exists — the page says so rather than sending people to look for it."
+    },
+    {
+      "id": "note-brand",
+      "x": 0,
+      "y": 2690,
+      "w": 400,
+      "text": "الهوية / The identity sheet. The mark is not a drawn symbol — it is the quarter's own wall circuit, traced from Dr Al Salmi's plan and reduced to 25 vertices, with its four gates left as gaps in the stroke.\n\nThis row is the system the two rows above are already drawn in: the tokens here are the ones in src/styles/global.css, not a second palette."
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

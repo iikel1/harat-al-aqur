@@ -1,0 +1,47 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import EntryCard from '../../components/EntryCard.astro';
+import { LANGS, ui, type Lang } from '../../lib/i18n';
+import { excerpt } from '../../lib/excerpt';
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Lang;
+const t = ui[lang];
+
+// The book's own order is the reading order. It is not alphabetical and should
+// not be re-sorted: the author moves outward from the quarter to its parts.
+const entries = (await getCollection(lang)).sort((a, b) => a.data.order - b.data.order);
+---
+
+<Base lang={lang} title={t.entriesTitle} description={t.entriesLead}>
+  <header class="head">
+    <span class="eyebrow">{lang === 'ar' ? `${entries.length} مدخلاً` : `${entries.length} entries`}</span>
+    <h1>{t.entriesTitle}</h1>
+    <p class="lead">{t.entriesLead}</p>
+  </header>
+
+  <div class="grid">
+    {
+      entries.map((e) => (
+        <EntryCard
+          lang={lang}
+          slug={e.data.slug}
+          title={e.data.title}
+          order={e.data.order}
+          excerpt={excerpt(e.body ?? '')}
+        />
+      ))
+    }
+  </div>
+</Base>
+
+<style>
+  .head { display: flex; flex-direction: column; gap: .6rem; margin-block-end: 2.5rem; max-width: var(--measure); }
+  .head h1 { font-size: clamp(1.9rem, 5vw, 2.6rem); }
+  .lead { font-size: 1rem; color: var(--ink-muted); }
+  .grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); }
+</style>

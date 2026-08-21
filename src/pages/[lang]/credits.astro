@@ -1,0 +1,207 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { LANGS, href, ui, type Lang } from '../../lib/i18n';
+import { AUTHOR, CONTRIBUTORS, BOOK, BACK_MATTER_EN, type BackMatterKey } from '../../lib/credits';
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Lang;
+const t = ui[lang];
+const book = BOOK[lang];
+
+// The Arabic of the author's closing pages comes from the book itself, through
+// the extraction pipeline. The English is the translation in src/lib/credits.ts.
+const backMatter = await getCollection('backMatter');
+const ORDER: BackMatterKey[] = ['acknowledgements', 'afterword'];
+const closing = await Promise.all(
+  ORDER.map(async (key) => {
+    const entry = backMatter.find((e) => e.data.slug === key);
+    return {
+      key,
+      title: lang === 'ar' ? (entry?.data.title ?? '') : BACK_MATTER_EN[key].title,
+      Content: entry && lang === 'ar' ? (await render(entry)).Content : null,
+      body: lang === 'en' ? BACK_MATTER_EN[key].body : null
+    };
+  })
+);
+
+const name = (c: { ar: string; en: string }) => (lang === 'ar' ? c.ar : c.en);
+const role = (c: { role_ar: string; role_en: string }) => (lang === 'ar' ? c.role_ar : c.role_en);
+const note = (c: { note_ar?: string; note_en?: string }) => (lang === 'ar' ? c.note_ar : c.note_en);
+
+const copy = {
+  ar: {
+    title: 'الكتاب ومَن صنعه',
+    lead: 'هذا الموقع مبنيٌّ على كتاب واحد. كل ما فيه من نصٍّ وصورةٍ يعود إلى مؤلفه ومَن أعانه، وهذه أسماؤهم كما ذكرها المؤلف نفسه في خاتمة كتابه.',
+    authorHeading: 'المؤلف',
+    contributorsHeading: 'ومَن أعان على الكتاب',
+    bookHeading: 'بطاقة الكتاب',
+    publisher: 'الناشر',
+    year: 'سنة النشر',
+    isbn: 'الترقيم الدولي',
+    pages: 'الحجم',
+    closingHeading: 'بكلمات المؤلف',
+    closingLead: 'الصفحتان الأخيرتان من الكتاب، منقولتان كما هما.',
+    siteHeading: 'عن هذا الموقع',
+    siteBody:
+      'النصوص العربية منقولة من الكتاب حرفياً. والنسخة الإنجليزية ترجمةٌ عن الأصل العربي أُعدَّت لهذا الموقع، إذ لا توجد طبعة إنجليزية للكتاب. الصور من صور الكتاب. وحيثما اختلفت المصادر بيّنّا الخلاف في موضعه بدل ترجيح رواية على أخرى.',
+    rightsHeading: 'الحقوق',
+    rightsBody: 'حقوق النص والصور محفوظة لمؤلف الكتاب. لا يُنشر هذا الموقع إلا بإذنه.',
+    translationCredit: 'الترجمة الإنجليزية أُعدَّت لهذا الموقع.'
+  },
+  en: {
+    title: 'The book and who made it',
+    lead: 'This site is built on a single book. Every word and every photograph in it belongs to its author and to the people who helped him. These are these are their names, as the author himself set them down on his closing pages.',
+    authorHeading: 'The author',
+    contributorsHeading: 'And those who helped make the book',
+    bookHeading: 'The book',
+    publisher: 'Publisher',
+    year: 'Published',
+    isbn: 'ISBN',
+    pages: 'Extent',
+    closingHeading: 'In the author’s own words',
+    closingLead: 'The last two pages of the book, carried over as they stand.',
+    siteHeading: 'About this site',
+    siteBody:
+      'The Arabic is the book’s own text, carried over word for word. The English is a translation of that Arabic made for this site: the book has no English edition. The photographs are the book’s. Where the sources disagree, the disagreement is stated on the page rather than settled in favour of one account.',
+    rightsHeading: 'Rights',
+    rightsBody:
+      'Rights in the text and the photographs remain with the author of the book. This site is not published without his permission.',
+    translationCredit: 'The English translation was made for this site.'
+  }
+}[lang];
+---
+
+<Base lang={lang} title={copy.title} description={copy.lead}>
+  <header class="head">
+    <h1>{copy.title}</h1>
+    <p class="lead">{copy.lead}</p>
+  </header>
+
+  <section class="author-block">
+    <div class="author">
+      <span class="label">{copy.authorHeading}</span>
+      <h2 class="author-name">{name(AUTHOR)}</h2>
+      <p class="author-role">{role(AUTHOR)}</p>
+      {note(AUTHOR) && <p class="author-note">{note(AUTHOR)}</p>}
+    </div>
+
+    <dl class="book-card">
+      <p class="card-title">{copy.bookHeading}</p>
+      <div><dt>{lang === 'ar' ? 'العنوان' : 'Title'}</dt><dd>{book.title}</dd></div>
+      <div><dt>{copy.publisher}</dt><dd>{book.publisher}</dd></div>
+      <div><dt>{copy.year}</dt><dd>{book.year}</dd></div>
+      <div><dt>{copy.pages}</dt><dd>{book.pages}</dd></div>
+      <div><dt>{copy.isbn}</dt><dd dir="ltr">{book.isbn}</dd></div>
+    </dl>
+  </section>
+
+  <section class="block">
+    <h2>{copy.contributorsHeading}</h2>
+    <ul class="people">
+      {
+        CONTRIBUTORS.map((c) => (
+          <li class="person">
+            <span class="person-name">{name(c)}</span>
+            <span class="person-role">{role(c)}</span>
+            {note(c) && <p class="person-note">{note(c)}</p>}
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="block">
+    <h2>{copy.closingHeading}</h2>
+    <p class="block-lead">{copy.closingLead}</p>
+    {
+      closing.map((c) => (
+        <article class="closing">
+          <h3>{c.title}</h3>
+          <div class="prose">
+            {c.Content ? <c.Content /> : <p>{c.body}</p>}
+          </div>
+          {lang === 'en' && <p class="translation-note">{copy.translationCredit}</p>}
+        </article>
+      ))
+    }
+  </section>
+
+  <section class="block">
+    <h2>{copy.siteHeading}</h2>
+    <p class="body-text">{copy.siteBody}</p>
+    <div class="rights">
+      <p class="rights-title">{copy.rightsHeading}</p>
+      <p>{copy.rightsBody}</p>
+    </div>
+    <p class="back"><a href={href(lang, 'discover')}>{t.entriesTitle} →</a></p>
+  </section>
+</Base>
+
+<style>
+  .head { display: flex; flex-direction: column; gap: .6rem; margin-block-end: 3rem; max-width: var(--measure); }
+  .head h1 { font-size: clamp(1.9rem, 5vw, 2.6rem); }
+  .lead { color: var(--ink-muted); }
+
+  .author-block { display: grid; gap: 2rem; align-items: start; margin-block-end: 3.5rem; }
+  @media (min-width: 54rem) { .author-block { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 3rem; } }
+
+  .author {
+    border-inline-start: 3px solid var(--clay);
+    padding-inline-start: 1.4rem;
+    display: flex; flex-direction: column; gap: .4rem;
+  }
+  .label { font-family: var(--sans); font-size: .72rem; letter-spacing: .14em; color: var(--ink-muted); }
+  [dir='ltr'] .label { text-transform: uppercase; }
+  .author-name { font-size: clamp(1.6rem, 4vw, 2.1rem); }
+  .author-role { font-family: var(--sans); font-size: .9rem; color: var(--clay); }
+  .author-note { font-family: var(--sans); font-size: .88rem; line-height: 1.85; color: var(--ink-muted); margin-block-start: .4rem; }
+
+  .book-card {
+    margin: 0; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface);
+    padding: 1.15rem 1.25rem; font-family: var(--sans);
+    display: flex; flex-direction: column; gap: .8rem;
+  }
+  .card-title {
+    font-size: .72rem; letter-spacing: .14em; color: var(--ink-muted);
+    padding-block-end: .7rem; border-block-end: 1px solid var(--rule-light); margin: 0;
+  }
+  [dir='ltr'] .card-title { text-transform: uppercase; }
+  .book-card > div { display: flex; flex-direction: column; gap: .1rem; }
+  dt { font-size: .7rem; color: var(--ink-faint); letter-spacing: .04em; }
+  dd { margin: 0; font-size: .88rem; line-height: 1.6; }
+
+  .block { margin-block-end: 3.5rem; }
+  .block h2 { font-size: 1.6rem; margin-block-end: .6rem; }
+  .block-lead { font-family: var(--sans); font-size: .9rem; color: var(--ink-muted); margin-block-end: 1.5rem; max-width: var(--measure); }
+
+  .people { list-style: none; margin: 1.25rem 0 0; padding: 0; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); }
+  .person {
+    border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface);
+    padding: 1rem 1.15rem; display: flex; flex-direction: column; gap: .25rem; font-family: var(--sans);
+  }
+  .person-name { font-family: var(--display); font-size: 1.15rem; font-weight: 700; }
+  .person-role { font-size: .82rem; color: var(--clay); }
+  .person-note { font-size: .82rem; line-height: 1.8; color: var(--ink-muted); margin-block-start: .35rem; }
+
+  .closing { margin-block-start: 2rem; }
+  .closing h3 { font-family: var(--display); font-size: 1.25rem; margin-block-end: .75rem; }
+  .translation-note { font-family: var(--sans); font-size: .75rem; color: var(--ink-faint); margin-block-start: .75rem; }
+
+  .body-text { max-width: var(--measure); font-size: .95rem; line-height: 1.9; color: var(--ink-muted); }
+
+  .rights {
+    margin-block-start: 1.75rem; max-width: var(--measure);
+    border: 1px solid var(--rule); border-inline-start: 3px solid var(--clay);
+    border-radius: var(--radius); background: var(--surface-sunk);
+    padding: 1.15rem 1.3rem; font-family: var(--sans);
+  }
+  .rights-title { font-size: .72rem; letter-spacing: .14em; color: var(--ink); margin-block-end: .5rem; }
+  [dir='ltr'] .rights-title { text-transform: uppercase; }
+  .rights p { font-size: .88rem; line-height: 1.85; color: var(--ink-muted); }
+
+  .back { margin-block-start: 2rem; font-family: var(--sans); font-size: .95rem; }
+</style>

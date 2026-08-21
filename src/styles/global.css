@@ -1,0 +1,200 @@
+/* The self-hosted @font-face rules, from work/fetch_fonts.py. @import-ed rather
+   than <link>-ed so they are bundled into this stylesheet: one blocking request
+   per page instead of two. Must stay first - @import is only valid at the top. */
+@import './fonts.css';
+
+/* ==========================================================================
+   Direction أ — الطين والظل / Clay & Shadow
+   Tokens lifted from design/Main.dc.html. Change a value here, not in a page.
+   ========================================================================== */
+
+:root {
+  color-scheme: light dark;
+
+  /* surface */
+  --bg:          oklch(0.965 0.010 78);
+  --surface:     oklch(0.980 0.006 80);
+  --surface-sunk:oklch(0.945 0.012 78);
+  --deep:        oklch(0.220 0.020 62);
+
+  /* ink. The three tiers are set so that ALL of them clear WCAG AA (4.5:1) on
+     every surface they are actually printed on - they carry labels at .68-.85rem,
+     which is body size for contrast purposes, so the 3:1 large-text allowance
+     never applies. work/check_contrast.py proves it; run it after any change. */
+  --ink:         oklch(0.260 0.014 62);
+  --ink-muted:   oklch(0.460 0.012 62);
+  --ink-faint:   oklch(0.525 0.010 62);
+  /* Text on an always-dark surface (the hero scrim). Light in BOTH themes. */
+  --ink-invert:  oklch(0.980 0.008 80);
+  /* Text on a clay fill. Flips with the theme, because clay itself does. */
+  --on-clay:     oklch(0.980 0.008 80);
+
+  /* clay accent */
+  --clay:        oklch(0.535 0.100 45);
+  --clay-deep:   oklch(0.440 0.110 42);
+  --clay-wash:   oklch(0.940 0.028 62);
+
+  /* rules. --rule and --rule-light are DECORATIVE hairlines that group content;
+     they are deliberately below 3:1 and that is allowed, because nothing depends
+     on seeing them. --rule-strong is for the border of an interactive control,
+     which does owe 3:1 under WCAG 1.4.11. Do not use --rule on a control. */
+  --rule:        oklch(0.860 0.014 76);
+  --rule-light:  oklch(0.900 0.012 76);
+  --rule-strong: oklch(0.620 0.014 76);
+
+  /* type */
+  --display: Amiri, 'Times New Roman', Georgia, serif;
+  --sans:    Tajawal, 'Segoe UI', system-ui, sans-serif;
+  --serif:   Lora, Georgia, 'Times New Roman', serif;
+
+  /* measure + rhythm */
+  --measure: 34rem;
+  --page-max: 76rem;
+  --gutter: clamp(1.25rem, 4vw, 2.75rem);
+  --radius: 2px;
+}
+
+/* Dark is a re-lighting of the same clay, not a second design. The paper turns
+   to a warm near-black rather than a neutral one, so the accent stays at home;
+   clay LIGHTENS, which is why --on-clay has to flip with it. Only the colour
+   tokens are redefined - every measurement above is shared. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:          oklch(0.205 0.012 62);
+    --surface:     oklch(0.245 0.014 62);
+    --surface-sunk:oklch(0.165 0.010 62);
+    --deep:        oklch(0.140 0.010 62);
+
+    --ink:         oklch(0.945 0.008 80);
+    --ink-muted:   oklch(0.780 0.010 70);
+    --ink-faint:   oklch(0.680 0.010 66);
+    --ink-invert:  oklch(0.980 0.008 80);
+    --on-clay:     oklch(0.165 0.012 62);
+
+    /* Hover goes BRIGHTER on dark, the opposite of the light theme, so that
+       "deep" keeps meaning "more emphatic" rather than literally darker. */
+    --clay:        oklch(0.720 0.095 50);
+    --clay-deep:   oklch(0.800 0.080 55);
+    --clay-wash:   oklch(0.285 0.035 50);
+
+    --rule:        oklch(0.330 0.012 66);
+    --rule-light:  oklch(0.280 0.010 66);
+    --rule-strong: oklch(0.530 0.012 66);
+  }
+
+  /* The book's photographs were scanned off warm printed paper and glare on a
+     dark page. Taking a little brightness out settles them into it. */
+  img { filter: brightness(0.92) contrast(1.02); }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: 1.85;
+  text-rendering: optimizeLegibility;
+}
+
+/* Latin pages read in a serif; Arabic pages read in Tajawal. The display face
+   is Amiri in both, which is what ties the two languages together. */
+[dir='ltr'] body { font-family: var(--serif); line-height: 1.75; }
+
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 700; line-height: 1.2; margin: 0; text-wrap: balance; }
+p { margin: 0; text-wrap: pretty; }
+
+a { color: var(--clay); text-decoration: none; }
+a:hover { color: var(--clay-deep); }
+a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: 3px;
+}
+
+img { max-width: 100%; display: block; }
+
+/* ---------- layout helpers ---------- */
+.wrap { max-width: var(--page-max); margin-inline: auto; padding-inline: var(--gutter); }
+.stack > * + * { margin-block-start: var(--stack-gap, 1rem); }
+.rule-top { border-block-start: 1px solid var(--rule); }
+.eyebrow {
+  font-family: var(--sans);
+  font-size: .75rem;
+  letter-spacing: .18em;
+  color: var(--ink-muted);
+  text-transform: none;
+}
+[dir='ltr'] .eyebrow { text-transform: uppercase; letter-spacing: .16em; }
+
+.skip-link {
+  position: absolute; inset-inline-start: -9999px; top: 0; z-index: 100;
+  background: var(--clay); color: var(--on-clay); padding: .75rem 1.25rem;
+}
+.skip-link:focus { inset-inline-start: 0; color: var(--on-clay); }
+
+/* ---------- long-form prose (the book's own text) ---------- */
+.prose { max-width: var(--measure); font-size: 1.0625rem; }
+[dir='rtl'] .prose { font-size: 1.125rem; line-height: 2.05; }
+.prose > * + * { margin-block-start: 1.35em; }
+.prose h2 { font-size: 1.6rem; margin-block-start: 2.4em; }
+.prose h3 { font-size: 1.3rem; margin-block-start: 2em; }
+.prose strong { font-weight: 700; color: var(--ink); }
+.prose em { font-style: italic; }
+.prose ul, .prose ol { padding-inline-start: 1.4em; margin-block: 1.2em; }
+.prose li + li { margin-block-start: .5em; }
+.prose blockquote {
+  margin-inline: 0;
+  padding-inline-start: 1.25rem;
+  border-inline-start: 2px solid var(--clay);
+  color: var(--ink-muted);
+  font-family: var(--display);
+  font-size: 1.15em;
+}
+
+/* An Arabic run quoted inside an English page - at present only the Qur'anic
+   verse on the mihrab of Mazara'a Mosque. The element carries its own lang and
+   dir, so the shaping and the right-to-left run are the browser's job, not a
+   text-align hack. It needs more size and far more leading than the Latin
+   blockquote around it: Amiri's Arabic is small on the body and the harakat sit
+   above and below the line. */
+.prose blockquote .ayah {
+  display: block;
+  font-size: 1.45em;
+  line-height: 2.15;
+  color: var(--ink);
+  margin-block-end: .85em;
+  text-wrap: initial;
+}
+.prose hr { border: 0; border-block-start: 1px solid var(--rule); margin-block: 2.5em; }
+.prose a { text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
+.prose table { width: 100%; border-collapse: collapse; font-size: .95em; }
+.prose th, .prose td { border: 1px solid var(--rule); padding: .6em .8em; text-align: start; }
+.prose th { background: var(--surface-sunk); font-weight: 700; }
+
+/* The book's own photo captions, lifted out of the running text by
+   src/lib/remark-book-captions.mjs. They name a photograph in the printed book;
+   they are not yet matched to a file in assets/photos/. */
+.prose .book-caption {
+  font-family: var(--sans);
+  font-size: .85rem;
+  line-height: 1.8;
+  color: var(--ink-muted);
+  border-inline-start: 2px solid var(--rule);
+  padding-inline-start: .9rem;
+  margin-block: 1.5em;
+}
+.prose .book-caption::before {
+  color: var(--ink-faint);
+  letter-spacing: .04em;
+}
+[dir='rtl'] .prose .book-caption::before { content: 'صورة في الكتاب، '; }
+[dir='ltr'] .prose .book-caption::before { content: 'Image in the book: '; }
+.prose .book-caption em { font-style: normal; }

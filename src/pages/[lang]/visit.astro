@@ -1,0 +1,98 @@
+---
+import Base from '../../layouts/Base.astro';
+import PlaceCard from '../../components/PlaceCard.astro';
+import { LANGS, ui, type Lang } from '../../lib/i18n';
+import { placesIn, CATEGORY_LABELS, CHECKED, type PlaceCategory } from '../../lib/places';
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Lang;
+const t = ui[lang];
+const labels = CATEGORY_LABELS[lang];
+
+// This is the one page on the site that goes stale, so it is kept apart from the
+// history and carries its own last-checked date. One data file to refresh.
+const GROUPS: PlaceCategory[] = ['stay', 'eat', 'shop', 'services'];
+const groups = GROUPS.map((c) => ({ category: c, label: labels[c], places: placesIn(c) })).filter(
+  (g) => g.places.length > 0
+);
+
+const copy = {
+  ar: {
+    lead: 'أماكن الإقامة والأكل داخل حارة العقر وحولها، بأسمائها وأوقات عملها وموضع كل منها على الخريطة.',
+    policy:
+      'لا نعرض تقييمات ولا أسعاراً: فهي تتغير، وسعرٌ خاطئ أسوأ من لا سعر. تأكّد من السعر ومن أوقات العمل مع المكان نفسه قبل الزيارة.',
+    coverage:
+      'هذه القائمة هي ما أمكن التحقق من موضعه على الخريطة، وليست حصراً للحارة. تتحدث الحارة عن أكثر من ٨١ مشروعاً، ولا تظهر البسطات ولا المنتجون من البيوت في أي دليل.',
+    checkedLabel: 'آخر تحقّق من هذه القائمة'
+  },
+  en: {
+    lead: 'Places to stay and eat inside Harat Al Aqur and around it, with names, opening hours and a map link for each.',
+    policy:
+      'No ratings and no prices are shown: they change, and a wrong price is worse than none. Confirm prices and hours with the place itself before you go.',
+    coverage:
+      'This list is what could be verified on the map, not a census of the quarter. The quarter claims 81 or more ventures; stalls and home producers appear in no directory at all.',
+    checkedLabel: 'This list was last checked'
+  }
+}[lang];
+---
+
+<Base lang={lang} title={t.visitTitle} description={copy.lead}>
+  <header class="head">
+    <h1>{t.visitTitle}</h1>
+    <p class="lead">{copy.lead}</p>
+    <p class="checked">{copy.checkedLabel}: <time datetime={CHECKED}>{CHECKED}</time></p>
+  </header>
+
+  <div class="caveats">
+    <p>{copy.policy}</p>
+    <p>{copy.coverage}</p>
+  </div>
+
+  {
+    groups.map((g) => (
+      <section class="group">
+        <h2>
+          {g.label}
+          <span class="count">
+            {lang === 'ar' ? new Intl.NumberFormat('ar-EG').format(g.places.length) : g.places.length}
+          </span>
+        </h2>
+        <ul class="places">
+          {g.places.map((p) => (
+            <PlaceCard place={p} lang={lang} />
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</Base>
+
+<style>
+  .head { display: flex; flex-direction: column; gap: .6rem; margin-block-end: 2rem; max-width: var(--measure); }
+  .head h1 { font-size: clamp(1.9rem, 5vw, 2.6rem); }
+  .lead { color: var(--ink-muted); }
+  .checked { font-family: var(--sans); font-size: .8rem; color: var(--ink-faint); }
+
+  .caveats {
+    display: grid; gap: .8rem; max-width: 46rem; margin-block-end: 3rem;
+    background: var(--surface-sunk);
+    border: 1px solid var(--rule); border-inline-start: 3px solid var(--clay);
+    border-radius: var(--radius); padding: 1.15rem 1.3rem;
+    font-family: var(--sans); font-size: .87rem; line-height: 1.85; color: var(--ink-muted);
+  }
+
+  .group { margin-block-end: 3rem; }
+  .group h2 { display: flex; align-items: baseline; gap: .7rem; font-size: 1.5rem; margin-block-end: 1.25rem; }
+  .count { font-family: var(--sans); font-size: .8rem; color: var(--ink-faint); }
+
+  /* Capped rather than 1fr: the services group holds a single place, and a 1fr
+     track stretched that one card across the whole page. */
+  .places {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; gap: 1.1rem;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 23rem));
+  }
+</style>
