@@ -18,9 +18,6 @@ export default defineConfig({
     format: 'directory',
   },
 
-  redirects: {
-    '/': '/ar',
-  },
 
   integrations: [
     sitemap({
