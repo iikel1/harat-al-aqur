@@ -15,6 +15,12 @@ extra request, where a <link> to /fonts/fonts.css was a second blocking hop on
 the critical path of every page. The woff2 files stay in public/ - their URLs are
 absolute, so Vite leaves them alone.
 
+The url() carries the site's BASE path (/harat-al-aqur on GitHub Pages). Vite does
+not rewrite a `/`-absolute url() to include the base, and a public asset under a
+base is served at <base>/fonts/..., not /fonts/... - so a bare /fonts/ 404s on the
+deployed site and every face falls back. If the site ever moves to a domain root,
+set BASE to "".
+
 The url() is rewritten WITHOUT re-stating format(): Google's block already ends
 in `format('woff2')`, and a second one makes the whole src descriptor invalid, so
 every face is silently dropped and the page falls back to Times New Roman. That
@@ -28,6 +34,9 @@ import urllib.request
 
 OUT = pathlib.Path("public/fonts")
 CSS = pathlib.Path("src/styles/fonts.css")
+# The `base` from astro.config.mjs. Prefixes each url() so the fonts resolve on
+# the deployed site. Empty string if the site is ever served from a domain root.
+BASE = "/harat-al-aqur"
 # A modern UA is required, or Google serves ttf instead of woff2.
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
@@ -64,7 +73,7 @@ def main() -> None:
             italic = "italic" in re.search(r"font-style:\s*(\w+)", block).group(1)
             name = f"{family.lower()}-{subset}-{weight}{'-italic' if italic else ''}.woff2"
             (OUT / name).write_bytes(get(url.group(1)))
-            blocks.append(block.replace(url.group(0), f"url(/fonts/{name})"))
+            blocks.append(block.replace(url.group(0), f"url({BASE}/fonts/{name})"))
             kept += 1
             print(f"  {name}")
 

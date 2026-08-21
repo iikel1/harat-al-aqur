@@ -15,3 +15,6 @@ astro.verify.config.mjs
 # os / editor
 .DS_Store
 Thumbs.db
+
+# project notes kept out of the repo
+CLAUDE.md

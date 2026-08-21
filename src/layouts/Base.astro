@@ -32,10 +32,17 @@ const dir = dirOf(lang);
 const og = await getImage({ src: imageFor('p05-1.jpeg'), width: 1200, format: 'jpeg' });
 const alt = otherLang(lang);
 
-// Every route is /<lang>/<shared-slug>, so the toggle is a segment swap - the
-// visitor lands on the same page in the other language, never on the homepage.
-const rest = Astro.url.pathname.replace(/^\/(ar|en)/, '');
-const altHref = altHrefOverride ?? `/${alt}${rest}`;
+// Every route is <base>/<lang>/<shared-slug>, so the toggle is a segment swap -
+// the visitor lands on the same page in the other language, never on the
+// homepage. The base path (/harat-al-aqur/ on GitHub Pages) sits in front of the
+// lang segment, so strip it before swapping and put it back after - otherwise
+// the /ar|/en at the START never matches and the toggle builds a broken URL.
+const base = import.meta.env.BASE_URL;
+const stripped = Astro.url.pathname.startsWith(base)
+  ? Astro.url.pathname.slice(base.length)
+  : Astro.url.pathname.replace(/^\//, '');
+const rest = stripped.replace(/^(ar|en)/, '');
+const altHref = altHrefOverride ?? `${base}${alt}${rest}`;
 
 // Arabic takes its own comma; English takes the pipe that is conventional in
 // page titles. Neither is an em-dash, which used to sit in all 74 of them.
@@ -51,8 +58,8 @@ const pageTitle = title === t.siteName ? `${t.siteName}${sep}${t.tagline}` : `${
     <title>{pageTitle}</title>
     {description && <meta name="description" content={description} />}
     {/* The mark, from work/build_icons.py. public/icon.svg is generated - do not hand-edit. */}
-    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" href={`${base}icon.svg`} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={`${base}apple-touch-icon.png`} />
 
     {noindex && <meta name="robots" content="noindex" />}
     {!noindex && <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />}
@@ -60,7 +67,7 @@ const pageTitle = title === t.siteName ? `${t.siteName}${sep}${t.tagline}` : `${
     {!noindex && <link rel="alternate" hreflang={lang} href={new URL(Astro.url.pathname, Astro.site)} />}
     {/* Trailing slash: build format is 'directory', so every real URL ends in one.
         Without it here the x-default alone disagreed with the canonical and the sitemap. */}
-    {!noindex && <link rel="alternate" hreflang="x-default" href={new URL('/ar/', Astro.site)} />}
+    {!noindex && <link rel="alternate" hreflang="x-default" href={new URL(`${base}ar/`, Astro.site)} />}
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={pageTitle} />
@@ -78,8 +85,8 @@ const pageTitle = title === t.siteName ? `${t.siteName}${sep}${t.tagline}` : `${
         fonts.css by unicode-range and never fetched on the other language. */}
     {
       (lang === 'ar'
-        ? ['/fonts/amiri-arabic-700.woff2', '/fonts/tajawal-arabic-400.woff2']
-        : ['/fonts/amiri-latin-700.woff2', '/fonts/lora-latin-400.woff2']
+        ? [`${base}fonts/amiri-arabic-700.woff2`, `${base}fonts/tajawal-arabic-400.woff2`]
+        : [`${base}fonts/amiri-latin-700.woff2`, `${base}fonts/lora-latin-400.woff2`]
       ).map((f) => <link rel="preload" href={f} as="font" type="font/woff2" crossorigin />)
     }
   </head>
