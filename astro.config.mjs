@@ -12,12 +12,11 @@ export default defineConfig({
   base: BASE,
 
   output: 'static',
-  trailingSlash: 'ignore',
+  trailingSlash: 'always',
 
   build: {
     format: 'directory',
   },
-
 
   integrations: [
     sitemap({
