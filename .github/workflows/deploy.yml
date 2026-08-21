@@ -23,7 +23,7 @@ jobs:
       - name: Build and upload Astro site
         uses: withastro/action@v6
         with:
-          node-version: 24
+          node-version: 22
           package-manager: npm
           build-cmd: npm run build
 
