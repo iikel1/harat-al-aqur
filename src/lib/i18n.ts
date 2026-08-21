@@ -1,13 +1,13 @@
 export const LANGS = ['ar', 'en'] as const;
 export type Lang = (typeof LANGS)[number];
 
-export const DEFAULT_LANG: Lang = 'ar'; // Arabic is primary; English is the secondary view.
+export const DEFAULT_LANG: Lang = 'ar';
 
 export const dirOf = (lang: Lang) => (lang === 'ar' ? 'rtl' : 'ltr');
 export const otherLang = (lang: Lang): Lang => (lang === 'ar' ? 'en' : 'ar');
 
-/** Build an in-site URL. Every link goes through here so a future `base` is a one-line change. */
-export const href = (lang: Lang, path = '') => `/${lang}${path ? `/${path.replace(/^\//, '')}` : ''}`;
+export const href = (lang: Lang, path = '') =>
+  `${import.meta.env.BASE_URL}${lang}${path ? `/${path.replace(/^\//, '')}` : ''}`;
 
 export const isLang = (v: unknown): v is Lang => LANGS.includes(v as Lang);
 
